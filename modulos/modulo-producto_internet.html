@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo: Producto Internet WIN</title>
+
+  <!-- ════════════════════════════════════════════════════════════
+       PALETA DE COLORES CORPORATIVA WIN
+       Si necesitas cambiar los colores, edita solo esta sección.
+       ──────────────────────────────────────────────────────────
+       --orange   : Color principal WIN (#FF5E00)
+       --yellow   : Acento amarillo (#FFB800)
+       --black    : Fondo oscuro principal (#121212)
+       --gray-dk  : Fondo de tarjetas (#1E1E1E)
+       --white    : Texto principal (#FFFFFF)
+  ════════════════════════════════════════════════════════════ -->
+  <style>
+    /* ── Reset global ──────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Variables CSS (edita aquí los colores globalmente) ────── */
+    :root {
+      --orange: #FF5E00;
+      --orange-d: #D44E00;
+      --orange-glow: rgba(255, 94, 0, 0.25);
+      --yellow: #FFB800;
+      --yellow-l: #FFD84D;
+      --black: #121212;
+      --gray-dk: #1E1E1E;
+      --gray-md: #2E2E2E;
+      --gray-border: #3A3A3A;
+      --gray-lt: #7A7A7A;
+      --white: #FFFFFF;
+      --off-white: #F0F0F0;
+      --green: #22c55e;
+      --green-d: #16a34a;
+      --red: #ef4444;
+
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 18px;
+      --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar personalizado ───────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--black);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--orange);
+      border-radius: 3px;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       BARRA SUPERIOR (TOP BAR)
+       ──────────────────────────────────────────────────────────
+       Para cambiar el texto del módulo, edita el HTML
+       dentro de <div class="top-bar">
+    ════════════════════════════════════════════════════════════ */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      background: linear-gradient(135deg, var(--orange) 0%, var(--orange-d) 100%);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Logo WIN (imagen PNG blanca) */
+    .top-bar .win-logo {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .top-bar .win-logo img {
+      height: 60px;
+      width: auto;
+      display: block;
+    }
+
+    .top-bar .module-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      line-height: 1.35;
+      flex: 1;
+    }
+
+    .module-number {
+      font-size: 0.6rem;
+      opacity: 0.7;
+      display: block;
+    }
+
+    /* Logo WinClic en el extremo derecho */
+    .top-bar .winclic-logo {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .top-bar .winclic-logo img {
+      height: 40px;
+      width: auto;
+      display: block;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       FASE 1 — VIDEO GATE
+       ──────────────────────────────────────────────────────────
+       El video se controla desde JavaScript (id="intro-video").
+       Cambia el nombre del archivo en:
+         <source src="intro_internet.mp4" ...>
+    ════════════════════════════════════════════════════════════ */
+    #phase1 {
+      width: 100%;
+      background: #000;
+    }
+
+    /* Wrapper del video */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      display: block;
+      max-height: 56vw;
+      object-fit: cover;
+    }
+
+    /* ── Placeholder (se muestra si el .mp4 no se encuentra) ───── */
+    /* Para ocultarlo, simplemente coloca el archivo intro_internet.mp4
+       en la misma carpeta y recarga la página. */
+    .video-placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1e1e1e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: center;
+      padding: 24px 20px;
+    }
+
+    .vp-play-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 0 28px var(--orange-glow);
+    }
+
+    .vp-filename {
+      font-size: 0.78rem;
+      color: var(--gray-lt);
+      line-height: 1.6;
+    }
+
+    .vp-filename code {
+      color: var(--yellow);
+      font-size: 0.82rem;
+      background: rgba(255, 184, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Enlace modo dev — útil para probar sin video */
+    #dev-unlock-link {
+      color: var(--orange);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    #dev-unlock-link:hover {
+      color: var(--yellow);
+    }
+
+    /* ── Barra de progreso del video ─────────────────────────── */
+    .video-progress-bar {
+      height: 4px;
+      background: var(--gray-md);
+    }
+
+    .video-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--orange), var(--yellow));
+      transition: width 0.3s linear;
+    }
+
+    /* ── Estado del video (texto debajo de la barra) ─────────── */
+    .video-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      background: var(--gray-dk);
+      font-size: 0.75rem;
+      color: var(--gray-lt);
+    }
+
+    .video-status .vs-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gray-lt);
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+
+    .video-status.vs-watching .vs-dot {
+      background: var(--yellow);
+      animation: pulse-dot 1.2s infinite;
+    }
+
+    .video-status.vs-done .vs-dot {
+      background: var(--green);
+    }
+
+    .video-status.vs-done {
+      color: var(--green);
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(1.5);
+      }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       BANNER CANDADO — sticky, visible mientras el video no termine
+       ──────────────────────────────────────────────────────────
+       El texto se puede editar en el HTML:
+       <div id="locked-banner">
+    ════════════════════════════════════════════════════════════ */
+    #locked-banner {
+      position: sticky;
+      top: 52px;
+      /* Ajusta si cambias el alto del top-bar */
+      z-index: 150;
+      background: rgba(12, 12, 12, 0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--orange);
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: opacity var(--transition), transform 0.4s ease;
+    }
+
+    #locked-banner .lb-icon {
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    #locked-banner p {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--off-white);
+    }
+
+    #locked-banner p strong {
+      color: var(--yellow);
+    }
+
+    /* La clase .hidden la agrega JS al terminar el video */
+    #locked-banner.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-110%);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       CONTENT GATE — todo el contenido bloqueado
+       ──────────────────────────────────────────────────────────
+       La clase .locked la controla JavaScript.
+       No modifiques estas propiedades directamente.
+    ════════════════════════════════════════════════════════════ */
+    #content-gate {
+      transition: filter 0.5s ease, opacity 0.5s ease;
+    }
+
+    #content-gate.locked {
+      filter: grayscale(1) brightness(0.4);
+      opacity: 0.5;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Animación de entrada al desbloquear */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #content-gate.unlocked>* {
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    #content-gate.unlocked>*:nth-child(2) {
+      animation-delay: 0.07s;
+    }
+
+    #content-gate.unlocked>*:nth-child(3) {
+      animation-delay: 0.14s;
+    }
+
+    #content-gate.unlocked>*:nth-child(4) {
+      animation-delay: 0.21s;
+    }
+
+    #content-gate.unlocked>*:nth-child(5) {
+      animation-delay: 0.28s;
+    }
+
+    #content-gate.unlocked>*:nth-child(6) {
+      animation-delay: 0.35s;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       UTILIDADES GLOBALES
+    ════════════════════════════════════════════════════════════ */
+    /* Separador entre secciones */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg,
+          transparent, rgba(255, 255, 255, 0.08), transparent);
+      margin: 0 16px;
+    }
+
+    /* Wrapper de sección genérico */
+    .section {
+      padding: 28px 16px;
+    }
+
+    .section.bg-alt {
+      background: #181818;
+    }
+
+    /* Encabezado de sección */
+    .section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--orange);
+      margin-bottom: 5px;
+    }
+
+    .section-title {
+      font-size: clamp(1.2rem, 5vw, 1.75rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--white);
+    }
+
+    .section-title span {
+      color: var(--yellow);
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SECCIÓN A — HERO IMAGE + ACORDEÓN FIBRA ÓPTICA
+       ──────────────────────────────────────────────────────────
+       IMAGEN DE FONDO:
+         Busca el comentario "REEMPLAZA HERO IMAGE" más abajo
+         en el HTML y cambia el src del <img>.
+         Tamaño recomendado: 800×480px
+         Contenido: Familia feliz usando dispositivos en su hogar
+    ════════════════════════════════════════════════════════════ */
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      min-height: 60vw;
+      max-height: 400px;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .hero-banner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+          rgba(0, 0, 0, 0.95) 0%,
+          rgba(255, 94, 0, 0.3) 55%,
+          transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 22px 18px 24px;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .hero-h1 {
+      font-size: clamp(1.4rem, 6vw, 2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--white);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+      margin-bottom: 8px;
+    }
+
+    .hero-h1 em {
+      font-style: normal;
+      color: var(--yellow);
+    }
+
+    /* ── Acordeón "¿Qué es la fibra óptica?" ───────────────── */
+    /* Este es el acordeón especial dentro del hero.
+       Para cambiar el texto, edita el HTML dentro de:
+       <div id="acordeon-fibra"> */
+    .hero-accordion {
+      margin-top: 12px;
+    }
+
+    .ha-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background var(--transition), border-color var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ha-btn:hover,
+    .ha-btn.open {
+      background: rgba(255, 94, 0, 0.3);
+      border-color: var(--orange);
+    }
+
+    .ha-btn .ha-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .ha-btn .ha-chevron {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.6);
+      transition: transform var(--transition);
+      flex-shrink: 0;
+    }
+
+    .ha-btn.open .ha-chevron {
+      transform: rotate(180deg);
+      color: var(--yellow);
+    }
+
+    /* Cuerpo del acordeón */
+    .ha-body {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .ha-body-inner {
+      padding: 12px 14px 14px;
+      background: rgba(59, 56, 54, 0.521);
+      border: 1px solid rgba(114, 95, 84, 0.555);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.65;
+    }
+
+    .ha-body-inner strong {
+      color: var(--orange);
+    }
+
+    /* Badge de "visto" que aparece cuando el acordeón se expande */
+    .seen-check {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-size: 0.5rem;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .seen-check.visible {
+      display: flex;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SECCIÓN B — FLIP CARDS DE VENTAJAS
+       ──────────────────────────────────────────────────────────
+       Para agregar o modificar tarjetas, copia/edita el bloque
+       <div class="flip-card" data-card-id="card-X">...</div>
+       y actualiza la variable totalCards en el JavaScript.
+    ════════════════════════════════════════════════════════════ */
+    .flip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    /* En pantallas muy pequeñas, 1 columna */
+    @media (max-width: 360px) {
+      .flip-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .flip-card {
+      perspective: 800px;
+      aspect-ratio: 0.8 / 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* La clase .flipped la agrega JavaScript al hacer tap */
+    .flip-card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 8px;
+    }
+
+    .flip-front {
+      background: linear-gradient(150deg, var(--gray-dk), #272727);
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(150deg, var(--orange), var(--orange-d));
+    }
+
+    .fc-icon {
+      font-size: 1.8rem;
+    }
+
+    .fc-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .fc-hint {
+      font-size: 0.58rem;
+      color: var(--gray-lt);
+    }
+
+    .fc-tap-anim {
+      font-size: 0.62rem;
+      color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .fc-back-icon {
+      font-size: 1.6rem;
+    }
+
+    .fc-back-title {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .fc-back-text {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.92);
+      line-height: 1.5;
+    }
+
+    /* Anillo verde cuando la tarjeta ya fue volteada */
+    .fc-seen-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      border: 2.5px solid var(--green);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+
+    .flip-card.flipped .fc-seen-ring {
+      opacity: 1;
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SECCIÓN C — ACORDEÓN BANDAS WiFi
+       ──────────────────────────────────────────────────────────
+       Para editar los textos de cada banda, busca los bloques
+       <div class="wifi-item" data-id="wifi-X"> en el HTML.
+    ════════════════════════════════════════════════════════════ */
+    .wifi-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wifi-item {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: border-color var(--transition);
+    }
+
+    .wifi-item.open {
+      border-color: var(--orange);
+    }
+
+    .wifi-btn {
+      width: 100%;
+      background: var(--gray-dk);
+      border: none;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: background var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .wifi-btn:hover,
+    .wifi-item.open .wifi-btn {
+      background: rgba(255, 94, 0, 0.15);
+    }
+
+    .wifi-freq {
+      font-size: 1.05rem;
+      font-weight: 800;
+      min-width: 70px;
+    }
+
+    /* Color diferente para cada banda */
+    .wifi-item[data-id="wifi-24"] .wifi-freq {
+      color: var(--yellow);
+    }
+
+    .wifi-item[data-id="wifi-5"] .wifi-freq {
+      color: var(--orange);
+    }
+
+    .wifi-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white);
+      flex: 1;
+    }
+
+    .wifi-seen-badge {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      font-size: 0.52rem;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wifi-item.seen .wifi-seen-badge {
+      display: flex;
+    }
+
+    .wifi-chevron {
+      font-size: 0.65rem;
+      color: var(--gray-lt);
+      transition: transform var(--transition), color var(--transition);
+    }
+
+    .wifi-item.open .wifi-chevron {
+      transform: rotate(180deg);
+      color: var(--yellow);
+    }
+
+    /* Cuerpo del acordeón wifi */
+    .wifi-body {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .wifi-body-inner {
+      padding: 14px 16px 16px;
+      background: rgba(255, 94, 0, 0.04);
+    }
+
+    .wifi-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .wifi-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+
+    /* Tags para 2.4 GHz */
+    .wifi-item[data-id="wifi-24"] .wifi-tag {
+      background: rgba(255, 184, 0, 0.12);
+      border-color: rgba(255, 184, 0, 0.35);
+      color: var(--yellow);
+    }
+
+    /* Tags para 5 GHz */
+    .wifi-item[data-id="wifi-5"] .wifi-tag {
+      background: rgba(255, 94, 0, 0.12);
+      border-color: rgba(255, 94, 0, 0.35);
+      color: var(--orange);
+    }
+
+    .wifi-desc {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.6;
+    }
+
+    .wifi-tip {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       SECCIÓN D — MODALES DE TIPOS DE IP
+       ──────────────────────────────────────────────────────────
+       Botones que abren modales internos.
+       Para editar el contenido de cada modal, edita los bloques
+       <div class="modal-card" id="modal-X"> en el HTML.
+       Para cambiar textos de los botones, edita class="ip-btn".
+    ════════════════════════════════════════════════════════════ */
+
+    /* ── Botones IP ──────────────────────────────────────────── */
+    .ip-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 380px) {
+      .ip-buttons-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ip-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 8px;
+      background: var(--gray-dk);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ip-btn:hover {
+      background: rgba(255, 94, 0, 0.15);
+      border-color: var(--orange);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 94, 0, 0.2);
+    }
+
+    .ip-btn.seen {
+      border-color: var(--green);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .ip-btn-icon {
+      font-size: 1.6rem;
+    }
+
+    .ip-btn-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .ip-btn-hint {
+      font-size: 0.58rem;
+      color: var(--gray-lt);
+    }
+
+    .ip-btn-seen-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      display: none;
+    }
+
+    .ip-btn.seen .ip-btn-seen-dot {
+      display: block;
+    }
+
+    /* ── Backdrop del modal ──────────────────────────────────── */
+    /* El backdrop oscurece el fondo cuando un modal está abierto */
+    #modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 500;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px 16px;
+      /* Para centrar el modal en desktop */
+    }
+
+    #modal-backdrop.open {
+      display: flex;
+    }
+
+    @media (min-width: 500px) {
+      #modal-backdrop {
+        align-items: center;
+      }
+    }
+
+    /* ── Tarjeta del modal ───────────────────────────────────── */
+    .modal-card {
+      display: none;
+      background: var(--gray-dk);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 380px;
+      position: relative;
+      animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-card.active {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      cursor: pointer;
+      color: var(--white);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 94, 0, 0.3);
+    }
+
+    .modal-icon {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .modal-title span {
+      color: var(--orange);
+    }
+
+    .modal-body {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.7;
+    }
+
+    .modal-body strong {
+      color: var(--yellow);
+    }
+
+    .modal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 14px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-badge.orange {
+      background: var(--orange);
+      color: var(--white);
+    }
+
+    .modal-badge.yellow {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .modal-badge.red {
+      background: rgba(224, 74, 33, 0.726);
+      color: var(--white);
+      border: 1px solid var(--red);
+    }
+
+    .modal-badge.green {
+      background: rgba(64, 173, 50, 0.2);
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       FASE 3 — GAMIFICACIÓN / CIERRE
+       ──────────────────────────────────────────────────────────
+       El botón "Módulo Completado" solo se activa cuando:
+         ✓ Se expandió el acordeón de fibra óptica
+         ✓ Se voltearon las 3 flip cards
+         ✓ Se abrieron los 2 acordeones de WiFi
+         ✓ Se abrieron los 3 modales de IP
+       La lógica está en la función checkCompletion() en el JS.
+    ════════════════════════════════════════════════════════════ */
+    .gamification-zone {
+      padding: 24px 16px 44px;
+      background: var(--gray-dk);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* ── Caja de progreso ────────────────────────────────────── */
+    .progress-box {
+      background: var(--black);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .pb-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--gray-lt);
+      margin-bottom: 14px;
+    }
+
+    .pb-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pb-label {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.7);
+      min-width: 115px;
+    }
+
+    .pb-track {
+      flex: 1;
+      height: 5px;
+      background: var(--gray-border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pb-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--yellow));
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    .pb-count {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--white);
+      min-width: 34px;
+      text-align: right;
+    }
+
+    /* ── Botón completar ─────────────────────────────────────── */
+    /* Estado gris (bloqueado) → Estado verde (activo) */
+    #complete-btn {
+      width: 100%;
+      padding: 17px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: not-allowed;
+      background: var(--gray-border);
+      color: var(--gray-lt);
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #complete-btn.active {
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-d) 100%);
+      color: var(--white);
+      box-shadow: 0 6px 26px rgba(34, 197, 94, 0.45);
+      animation: pulse-green 2s ease infinite;
+    }
+
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 26px rgba(34, 197, 94, 0.45);
+      }
+
+      50% {
+        box-shadow: 0 6px 36px rgba(34, 197, 94, 0.7);
+      }
+    }
+
+    /* Efecto ripple al hacer clic */
+    #complete-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: none;
+    }
+
+    #complete-btn.rippling::after {
+      width: 400px;
+      height: 400px;
+      opacity: 0;
+      transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    }
+
+    /* ── Mensaje de celebración ──────────────────────────────── */
+    #celebration {
+      display: none;
+      margin-top: 16px;
+      padding: 20px 16px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg,
+          rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      text-align: center;
+    }
+
+    #celebration .cel-emoji {
+      font-size: 2.5rem;
+    }
+
+    #celebration h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--green);
+      margin: 10px 0 6px;
+    }
+
+    #celebration p {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+    }
+
+    .cert-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      background: var(--orange);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition);
+    }
+
+    .cert-btn:hover {
+      background: var(--orange-d);
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       RESPONSIVE — ajustes para pantallas >= 600px
+    ════════════════════════════════════════════════════════════ */
+    @media (min-width: 600px) {
+      .section {
+        padding: 34px 24px;
+      }
+
+      .hero-banner {
+        min-height: 300px;
+        max-height: 440px;
+      }
+
+      .flip-grid {
+        gap: 16px;
+      }
+
+      .ip-buttons-grid {
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════════════════════════════
+     BARRA SUPERIOR DE MARCA
+     ──────────────────────────────────────────────────────────────
+     EDITAR: Cambia el texto "Módulo 02" y "Producto Internet"
+     si necesitas renombrar el módulo.
+════════════════════════════════════════════════════════════════ -->
+  <div class="top-bar">
+    <!-- Logo WIN blanco — misma ruta que en modulo-historia.html -->
+    <div class="win-logo"><img src="../assets/img/logos/logo_winblanco.png" height="60"></div>
+    <div class="module-label">
+      <span class="module-number">Módulo 02</span>
+      Producto Internet
+    </div>
+    <!-- Logo WinClic al extremo derecho — misma ruta que en modulo-historia.html -->
+    <div class="winclic-logo"><img src="../assets/img/logos/logo-winclic-blanco.png" height="40"></div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+     FASE 1 — VIDEO GATE
+     ──────────────────────────────────────────────────────────────
+     INSTRUCCIONES:
+     1. Coloca tu archivo de video en la MISMA CARPETA que este HTML.
+     2. El nombre del archivo debe ser exactamente: intro_internet.mp4
+        (si usas otro nombre, cambia el atributo src aquí abajo).
+     3. Al terminar el video, el módulo se desbloquea automáticamente.
+════════════════════════════════════════════════════════════════ -->
+  <div id="phase1">
+    <div class="video-wrapper">
+
+      <!-- ── VIDEO PRINCIPAL ────────────────────────────────────
+         EDITAR src: Cambia "intro_internet.mp4" por el nombre
+         real de tu archivo si es diferente.
+    ───────────────────────────────────────────────────────── -->
+      <video id="intro-video" playsinline controls preload="metadata" style="display: none;">
+        <source src="../assets/video/intro_identidad.mp4" type="video/mp4" />
+        Tu navegador no soporta el elemento video.
+      </video>
+
+      <!-- ── PLACEHOLDER (visible si el video no existe) ────────
+         Se oculta automáticamente cuando el video carga.
+         No necesitas editar este bloque normalmente.
+    ───────────────────────────────────────────────────────── -->
+      <div class="video-placeholder" id="video-placeholder">
+        <div class="vp-play-icon">▶</div>
+        <div class="vp-filename">
+          <strong style="color: var(--white);">Video: Producto Internet WIN</strong><br />
+          Coloca el archivo <code>intro_internet.mp4</code> en esta<br />
+          carpeta y recarga la página para activar el video.
+        </div>
+        <span id="dev-unlock-link">
+          → Modo Dev: Simular video completado
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Barra de progreso del video (se llena automáticamente) -->
+    <div class="video-progress-bar">
+      <div class="video-progress-fill" id="video-progress-fill"></div>
+    </div>
+
+    <!-- Estado del video -->
+    <div class="video-status" id="video-status-bar">
+      <div class="vs-dot"></div>
+      <span id="video-status-text">
+        Mira el video completo para desbloquear el módulo
+      </span>
+    </div>
+  </div><!-- /phase1 -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+     BANNER CANDADO — desaparece cuando termina el video
+     EDITAR: Cambia el texto si quieres un mensaje diferente.
+════════════════════════════════════════════════════════════════ -->
+  <div id="locked-banner">
+    <div class="lb-icon">🔒</div>
+    <p>
+      <strong>Mira el video completo para desbloquear el contenido</strong><br />
+      Las secciones se habilitarán automáticamente al finalizar.
+    </p>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+     CONTENT GATE — TODO el contenido del módulo
+     La clase .locked la gestiona JavaScript. No edites estas clases.
+════════════════════════════════════════════════════════════════ -->
+  <div id="content-gate" class="locked">
+
+    <!-- ──────────────────────────────────────────────────────────
+       SECCIÓN A — HERO + ACORDEÓN FIBRA ÓPTICA
+       ────────────────────────────────────────────────────────── -->
+    <div class="hero-banner">
+
+      <!--
+         ════════════════════════════════════════════════════════
+         REEMPLAZA HERO IMAGE
+         ──────────────────────────────────────────────────────
+         Cambia el nombre del archivo por tu imagen real.
+         Contenido ideal: Familia feliz usando tablets/celulares
+         en un hogar moderno, tonos cálidos.
+         Tamaño recomendado: 800×480 px (o superior, 16:9)
+         Formato: .jpg o .webp para mejor rendimiento.
+         La ruta ../assets/img/ es compartida con los demás módulos.
+    ════════════════════════════════════════════════════════════ -->
+      <img src="../assets/img/fondo-producto.jpg" alt="Familia feliz usando internet de fibra óptica WIN en su hogar"
+        loading="lazy" />
+
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <div class="hero-eyebrow">⚡ Tecnología de punta</div>
+
+        <!-- EDITAR: Título principal del módulo -->
+        <h1 class="hero-h1">
+          Internet <em>100%</em><br />Fibra Óptica
+        </h1>
+
+        <!-- Acordeón: ¿Qué es la fibra óptica? -->
+        <!-- EDITAR: Texto dentro de ha-body-inner -->
+        <div class="hero-accordion">
+          <button class="ha-btn" id="btn-fibra" onclick="toggleHeroAccordion()" aria-expanded="false">
+            <span class="ha-icon">💡</span>
+            <span style="flex:1;">¿Qué es la fibra óptica?</span>
+            <!-- Badge verde que aparece al abrir por primera vez -->
+            <span class="seen-check" id="fibra-check">✓</span>
+            <span class="ha-chevron">▼</span>
+          </button>
+          <div class="ha-body" id="fibra-body">
+            <div class="ha-body-inner">
+              <!-- ════════════════════════════════════════════════
+                 EDITAR: Definición de fibra óptica
+                 Puedes cambiar este párrafo con tu propio texto.
+            ════════════════════════════════════════════════ -->
+              Transmite datos mediante <strong>destellos de luz</strong>,
+              logrando una conexión más rápida, estable y sin
+              interferencias que el cable de cobre tradicional.
+              La señal llega directamente a tu hogar sin degradarse
+              en el camino — eso es <strong>FTTH (Fiber To The Home)</strong>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /hero-banner -->
+
+    <div class="divider"></div>
+
+    <!-- ──────────────────────────────────────────────────────────
+       SECCIÓN B — FLIP CARDS DE VENTAJAS
+       ──────────────────────────────────────────────────────────
+       Para editar cada tarjeta:
+         - Cara frontal: cambia el emoji (.fc-icon), título (.fc-title)
+         - Cara trasera: cambia título (.fc-back-title) y texto (.fc-back-text)
+         - El data-card-id debe ser único para cada tarjeta.
+  ───────────────────────────────────────────────────────────── -->
+    <div class="section bg-alt">
+      <div class="section-label">✅ Ventajas Clave</div>
+      <h2 class="section-title">¿Por qué <span>fibra óptica</span>?</h2>
+      <p class="section-subtitle">Toca cada tarjeta para descubrir las ventajas</p>
+
+      <div class="flip-grid" style="margin-top: 16px;">
+
+        <!-- TARJETA 1: Internet Simétrico -->
+        <!-- EDITAR: data-card-id debe ser único -->
+        <div class="flip-card" data-card-id="card-simetrico" onclick="flipCard(this)">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="fc-icon">↕️</div>
+              <!-- EDITAR: Título cara frontal -->
+              <div class="fc-title">Internet Simétrico</div>
+              <div class="fc-tap-anim">Toca ✦</div>
+            </div>
+            <div class="flip-back">
+              <div class="fc-back-icon">🚀</div>
+              <!-- EDITAR: Título y texto cara trasera -->
+              <div class="fc-back-title">Sube y baja igual</div>
+              <div class="fc-back-text">
+                Carga y descarga al instante a la <strong>misma velocidad</strong>.
+                Ideal para videollamadas y subir archivos.
+              </div>
+            </div>
+            <div class="fc-seen-ring"></div>
+          </div>
+        </div>
+
+        <!-- TARJETA 2: Alta Capacidad -->
+        <div class="flip-card" data-card-id="card-capacidad" onclick="flipCard(this)">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="fc-icon">📱</div>
+              <!-- EDITAR: Título cara frontal -->
+              <div class="fc-title">Alta Capacidad</div>
+              <div class="fc-tap-anim">Toca ✦</div>
+            </div>
+            <div class="flip-back">
+              <div class="fc-back-icon">📡</div>
+              <!-- EDITAR: Título y texto cara trasera -->
+              <div class="fc-back-title">+20 dispositivos</div>
+              <div class="fc-back-text">
+                Conecta hasta <strong>20 dispositivos</strong> simultáneamente
+                sin perder velocidad ni estabilidad.
+              </div>
+            </div>
+            <div class="fc-seen-ring"></div>
+          </div>
+        </div>
+
+        <!-- TARJETA 3: Estabilidad Real -->
+        <div class="flip-card" data-card-id="card-estabilidad" onclick="flipCard(this)">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="fc-icon">🔒</div>
+              <!-- EDITAR: Título cara frontal -->
+              <div class="fc-title">Estabilidad Real</div>
+              <div class="fc-tap-anim">Toca ✦</div>
+            </div>
+            <div class="flip-back">
+              <div class="fc-back-icon">🏠</div>
+              <!-- EDITAR: Título y texto cara trasera -->
+              <div class="fc-back-title">Sin saturación</div>
+              <div class="fc-back-text">
+                Servicio directo al hogar sin saturación.
+                <strong>Más estable que el HFC</strong> (cable coaxial).
+              </div>
+            </div>
+            <div class="fc-seen-ring"></div>
+          </div>
+        </div>
+
+      </div><!-- /flip-grid -->
+    </div><!-- /section ventajas -->
+
+    <div class="divider"></div>
+
+    <!-- ──────────────────────────────────────────────────────────
+       SECCIÓN C — ACORDEÓN BANDAS WiFi
+       ──────────────────────────────────────────────────────────
+       Para editar cada banda:
+         - Cambia los textos en .wifi-tags y .wifi-desc
+         - El data-id debe ser: "wifi-24" y "wifi-5" (no cambiar
+           si no actualizas también el JS)
+  ───────────────────────────────────────────────────────────── -->
+    <div class="section">
+      <div class="section-label">📶 Conectividad</div>
+      <h2 class="section-title">Bandas <span>WiFi</span></h2>
+      <p class="section-subtitle">Conoce la diferencia y cuándo usar cada una</p>
+
+      <div class="wifi-list" style="margin-top: 16px;">
+
+        <!-- BANDA 2.4 GHz -->
+        <!-- EDITAR: Cambia los textos dentro de wifi-tags y wifi-desc -->
+        <div class="wifi-item" data-id="wifi-24">
+          <button class="wifi-btn" onclick="toggleWifi(this)">
+            <!-- EDITAR: Frecuencia y nombre de la banda -->
+            <span class="wifi-freq">2.4 GHz</span>
+            <span class="wifi-name">Mayor alcance</span>
+            <span class="wifi-seen-badge">✓</span>
+            <span class="wifi-chevron">▼</span>
+          </button>
+          <div class="wifi-body">
+            <div class="wifi-body-inner">
+              <!-- EDITAR: Etiquetas características de la banda -->
+              <div class="wifi-tags">
+                <span class="wifi-tag">📏 Alcance 5–8m</span>
+                <span class="wifi-tag">🐢 Velocidad menor</span>
+                <span class="wifi-tag">🧱 Atraviesa paredes</span>
+              </div>
+              <!-- EDITAR: Descripción detallada -->
+              <p class="wifi-desc">
+                Ideal para dispositivos alejados del router o en otras habitaciones.
+                Su señal penetra mejor a través de paredes y obstáculos,
+                aunque ofrece menor velocidad que la banda de 5 GHz.
+              </p>
+              <span class="wifi-tip">
+                💡 Úsala para: celulares lejanos, smart TVs, electrodomésticos smart
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BANDA 5 GHz -->
+        <!-- EDITAR: Cambia los textos dentro de wifi-tags y wifi-desc -->
+        <div class="wifi-item" data-id="wifi-5">
+          <button class="wifi-btn" onclick="toggleWifi(this)">
+            <!-- EDITAR: Frecuencia y nombre de la banda -->
+            <span class="wifi-freq">5 GHz</span>
+            <span class="wifi-name">Más velocidad</span>
+            <span class="wifi-seen-badge">✓</span>
+            <span class="wifi-chevron">▼</span>
+          </button>
+          <div class="wifi-body">
+            <div class="wifi-body-inner">
+              <!-- EDITAR: Etiquetas características de la banda -->
+              <div class="wifi-tags">
+                <span class="wifi-tag">⚡ Más rápida</span>
+                <span class="wifi-tag">🎮 Gaming & Streaming</span>
+                <span class="wifi-tag">📍 Alcance 3–6m</span>
+              </div>
+              <!-- EDITAR: Descripción detallada -->
+              <p class="wifi-desc">
+                Perfecta para dispositivos cercanos al router. Ofrece mayor velocidad
+                y menor latencia, ideal para videollamadas, gaming online y
+                streaming en 4K sin interrupciones.
+              </p>
+              <span class="wifi-tip">
+                💡 Úsala para: laptops, consolas, PCs, Smart TVs cercanas
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /wifi-list -->
+    </div><!-- /section wifi -->
+
+    <div class="divider"></div>
+
+    <!-- ──────────────────────────────────────────────────────────
+       SECCIÓN D — BOTONES DE TIPO DE IP
+       ──────────────────────────────────────────────────────────
+       Para editar el contenido de cada modal:
+         Busca <div class="modal-card" id="modal-privada"> etc.
+         y edita los textos dentro.
+       Para cambiar el texto del botón, edita .ip-btn-label
+  ───────────────────────────────────────────────────────────── -->
+    <div class="section bg-alt">
+      <div class="section-label">🌐 Conceptos técnicos</div>
+      <h2 class="section-title">Tipos de <span>IP</span></h2>
+      <p class="section-subtitle">
+        Toca cada tipo para conocer su definición
+      </p>
+
+      <!-- Botones que abren los modales -->
+      <div class="ip-buttons-grid" style="margin-top: 16px;">
+
+        <!-- BOTÓN IP PRIVADA -->
+        <!-- EDITAR: data-modal debe coincidir con el id del modal -->
+        <button class="ip-btn" data-modal="modal-privada" data-ip-id="ip-privada"
+          onclick="openModal('modal-privada', 'ip-privada')">
+          <div class="ip-btn-icon">🏠</div>
+          <!-- EDITAR: Texto del botón -->
+          <div class="ip-btn-label">IP Privada</div>
+          <div class="ip-btn-hint">Toca para ver</div>
+          <div class="ip-btn-seen-dot"></div>
+        </button>
+
+        <!-- BOTÓN IP PÚBLICA -->
+        <button class="ip-btn" data-modal="modal-publica" data-ip-id="ip-publica"
+          onclick="openModal('modal-publica', 'ip-publica')">
+          <div class="ip-btn-icon">🌍</div>
+          <!-- EDITAR: Texto del botón -->
+          <div class="ip-btn-label">IP Pública</div>
+          <div class="ip-btn-hint">Toca para ver</div>
+          <div class="ip-btn-seen-dot"></div>
+        </button>
+
+        <!-- BOTÓN IP ESTÁTICA -->
+        <button class="ip-btn" data-modal="modal-estatica" data-ip-id="ip-estatica"
+          onclick="openModal('modal-estatica', 'ip-estatica')">
+          <div class="ip-btn-icon">📌</div>
+          <!-- EDITAR: Texto del botón -->
+          <div class="ip-btn-label">IP Estática</div>
+          <div class="ip-btn-hint">Toca para ver</div>
+          <div class="ip-btn-seen-dot"></div>
+        </button>
+        <!-- BOTÓN IP DINAMICA -->
+        <button class="ip-btn" data-modal="modal-dinamica" data-ip-id="ip-dinamica"
+          onclick="openModal('modal-dinamica', 'ip-dinamica')">
+          <div class="ip-btn-icon"> 🛜 </div>
+          <!-- EDITAR: Texto del botón -->
+          <div class="ip-btn-label">IP Dinamica</div>
+          <div class="ip-btn-hint">Toca para ver</div>
+          <div class="ip-btn-seen-dot"></div>
+        </button>
+
+      </div><!-- /ip-buttons-grid -->
+    </div><!-- /section ip -->
+
+    <div class="divider"></div>
+
+    <!-- ──────────────────────────────────────────────────────────
+       FASE 3 — GAMIFICACIÓN / BOTÓN DE CIERRE
+  ───────────────────────────────────────────────────────────── -->
+    <div class="gamification-zone">
+
+      <div class="section-label">🎯 Tu Progreso</div>
+      <h2 class="section-title" style="margin-bottom: 6px;">
+        Completa el <span>Módulo</span>
+      </h2>
+      <p class="section-subtitle" style="margin-bottom: 18px;">
+        Interactúa con todos los elementos para habilitar el cierre
+      </p>
+
+      <!-- Barras de progreso por sección -->
+      <div class="progress-box">
+        <div class="pb-title">📋 Estado de interacciones</div>
+        <div class="pb-rows">
+
+          <div class="pb-row">
+            <span class="pb-label">💡 Fibra óptica</span>
+            <div class="pb-track">
+              <div class="pb-fill" id="bar-fibra"></div>
+            </div>
+            <span class="pb-count" id="count-fibra">0/1</span>
+          </div>
+
+          <div class="pb-row">
+            <span class="pb-label">✅ Ventajas (flip)</span>
+            <div class="pb-track">
+              <div class="pb-fill" id="bar-cards"></div>
+            </div>
+            <span class="pb-count" id="count-cards">0/3</span>
+          </div>
+
+          <div class="pb-row">
+            <span class="pb-label">📶 Bandas WiFi</span>
+            <div class="pb-track">
+              <div class="pb-fill" id="bar-wifi"></div>
+            </div>
+            <span class="pb-count" id="count-wifi">0/2</span>
+          </div>
+
+          <div class="pb-row">
+            <span class="pb-label">🌐 Tipos de IP</span>
+            <div class="pb-track">
+              <div class="pb-fill" id="bar-ip"></div>
+            </div>
+            <span class="pb-count" id="count-ip">0/4</span>
+          </div>
+
+        </div>
+      </div><!-- /progress-box -->
+
+      <!-- Botón completar (empieza deshabilitado) -->
+      <button id="complete-btn" disabled onclick="completarModulo(this)">
+        <span id="btn-icon">🔒</span>
+        <span id="btn-text">Completa todas las interacciones</span>
+      </button>
+
+      <!-- Mensaje de celebración (oculto hasta completar) -->
+      <div id="celebration">
+        <div class="cel-emoji">🎉</div>
+        <h3>¡Módulo Completado!</h3>
+        <p>
+          Completaste el módulo <strong>Producto Internet WIN</strong>.
+          Ya conoces la fibra óptica, sus ventajas, las bandas WiFi y los tipos de IP.
+        </p>
+      </div>
+
+    </div><!-- /gamification-zone -->
+
+  </div><!-- /content-gate -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+     MODALES DE TIPOS DE IP
+     ──────────────────────────────────────────────────────────────
+     Los modales viven FUERA del content-gate para poder
+     mostrarse correctamente con el backdrop.
+     EDITAR: Cambia los textos dentro de cada .modal-card
+════════════════════════════════════════════════════════════════ -->
+
+  <!-- Backdrop (fondo oscuro) — no editar -->
+  <div id="modal-backdrop" onclick="closeModalOnBackdrop(event)">
+
+    <!-- ── MODAL: IP PRIVADA ──────────────────────────────────────
+       EDITAR: Icono (.modal-icon), Título (.modal-title),
+       Descripción (.modal-body) y Badge (.modal-badge)
+  ─────────────────────────────────────────────────────────── -->
+    <div class="modal-card" id="modal-privada">
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
+      <!-- EDITAR: Emoji representativo -->
+      <div class="modal-icon">🏠</div>
+      <!-- EDITAR: Nombre del tipo de IP -->
+      <div class="modal-title">IP <span>Privada</span></div>
+      <!-- EDITAR: Definición y descripción -->
+      <div class="modal-body">
+        Identifica tus <strong>dispositivos dentro del hogar</strong> en tu
+        red local (LAN). Es asignada por tu router y NO es visible desde
+        Internet.<br /><br />
+        Ejemplos comunes: <strong>192.168.1.x</strong> o <strong>10.0.0.x</strong>.
+        Cada dispositivo en tu casa tiene una IP privada diferente.
+      </div>
+      <!-- EDITAR: Etiqueta del badge y clase de color (orange / yellow / red) -->
+      <div class="modal-badge orange">🏠 Solo en tu red local</div>
+    </div>
+
+    <!-- ── MODAL: IP PÚBLICA ──────────────────────────────────────
+       EDITAR: Icono, Título, Descripción y Badge
+  ─────────────────────────────────────────────────────────── -->
+    <div class="modal-card" id="modal-publica">
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
+      <!-- EDITAR: Emoji representativo -->
+      <div class="modal-icon">🌍</div>
+      <!-- EDITAR: Nombre del tipo de IP -->
+      <div class="modal-title">IP <span>Pública</span></div>
+      <!-- EDITAR: Definición y descripción -->
+      <div class="modal-body">
+        Identifica tu <strong>conexión ante la red de Internet</strong>
+        (la WAN). Es asignada por WIN a tu servicio y es visible
+        desde el exterior.<br /><br />
+        WIN utiliza una IP pública <strong>dinámica</strong>: puede
+        cambiar cada vez que tu router se reinicia. Esto es normal
+        y no afecta tu experiencia de uso.
+      </div>
+      <!-- EDITAR: Badge -->
+      <div class="modal-badge yellow">🌍 Visible en Internet</div>
+    </div>
+
+    <!-- ── MODAL: IP ESTÁTICA ─────────────────────────────────────
+       EDITAR: Icono, Título, Descripción y Badge
+  ─────────────────────────────────────────────────────────── -->
+    <div class="modal-card" id="modal-estatica">
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
+      <!-- EDITAR: Emoji representativo -->
+      <div class="modal-icon">📌</div>
+      <!-- EDITAR: Nombre del tipo de IP -->
+      <div class="modal-title">IP <span>Estática</span></div>
+      <!-- EDITAR: Definición y descripción -->
+      <div class="modal-body">
+        Una IP estática <strong>permanece fija</strong>, no cambia
+        con los reinicios del router. Es útil para servidores,
+        cámaras IP o acceso remoto.<br /><br />
+        ⚠️ <strong>Importante:</strong> La IP Estática
+        <strong>NO ESTÁ DISPONIBLE en WIN Hogar</strong>.
+        Solo aplica para servicios empresariales (WIN Empresas).
+      </div>
+      <!-- Badge de color rojo para indicar "no disponible" -->
+      <div class="modal-badge red"> ⛔ No disponible en WIN Hogar</div>
+    </div>
+
+    <!-- ── MODAL: IP DINAMICA ─────────────────────────────────────
+       EDITAR: Icono, Título, Descripción y Badge
+  ─────────────────────────────────────────────────────────── -->
+    <div class="modal-card" id="modal-dinamica">
+      <button class="modal-close" onclick="closeModal()" aria-label="Cerrar">✕</button>
+      <!-- EDITAR: Emoji representativo -->
+      <div class="modal-icon">🛜</div>
+      <!-- EDITAR: Nombre del tipo de IP -->
+      <div class="modal-title">IP <span>Dinamica</span></div>
+      <!-- EDITAR: Definición y descripción -->
+      <div class="modal-body">
+        Una IP dinamica <strong>sí cambia</strong>, cada cierto tiempo y por ello que trae mayor seguridad y menos casos
+        de internet saturado.<br /><br />
+        ⚠️ <strong>Importante:</strong> La IP Dinamica
+        <strong>ESTÁ DISPONIBLE en WIN Hogar</strong>.
+        Aplica para servicios de hogar y casos de RUC 10 y RUC 20.
+      </div>
+      <!-- Badge de color rojo para indicar "no disponible" -->
+      <div class="modal-badge green">✅ Disponible en WIN Hogar</div>
+    </div>
+
+  </div><!-- /modal-backdrop -->
+
+
+  <!-- ════════════════════════════════════════════════════════════════
+     JAVASCRIPT — LÓGICA COMPLETA DEL MÓDULO
+     ──────────────────────────────────────────────────────────────
+     Secciones del script:
+       1. Estado global (state)
+       2. Video Gate
+       3. Desbloquear contenido (unlockContent)
+       4. Acordeón fibra óptica (toggleHeroAccordion)
+       5. Flip Cards (flipCard)
+       6. Acordeón WiFi (toggleWifi)
+       7. Modales IP (openModal / closeModal)
+       8. Progreso y gamificación (updateProgress / checkCompletion)
+       9. Botón completar (completarModulo)
+      10. Comunicación con iframe parent
+
+     ⚠️ ADVERTENCIA: No cambies los id ni data-* de los elementos
+     HTML sin actualizar también las referencias en este script.
+════════════════════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ══════════════════════════════════════════════════════════════
+         1. ESTADO GLOBAL DEL MÓDULO
+         ──────────────────────────────────────────────────────────
+         Aquí se registra el progreso del usuario.
+         NO edites este objeto — es gestionado automáticamente.
+      ══════════════════════════════════════════════════════════════ */
+      var STORAGE_KEY = 'win_modulo_producto_internet_v1';
+
+      var state = {
+        videoCompleted: false,
+        fibraOpened: false,   // Acordeón fibra óptica expandido
+        cardsFlipped: {},      // { 'card-id': true }
+        wifiOpened: {},      // { 'wifi-id': true }
+        modalsOpened: {},      // { 'modal-id': true }
+        moduleCompleted: false,
+
+        // Totales (actualiza si agregas/quitas elementos)
+        totalCards: 3,       // Número de flip cards
+        totalWifi: 2,       // Número de acordeones wifi
+        totalModals: 4,       // Número de modales de IP
+
+        // Modal actualmente abierto
+        currentModal: null,
+        currentIpBtnId: null,
+      };
+
+      /* ══════════════════════════════════════════════════════════════
+         PERSISTENCIA — localStorage
+         saveState() guarda el progreso; loadState() lo recupera.
+      ══════════════════════════════════════════════════════════════ */
+      function saveState() {
+        try {
+          var data = {
+            videoCompleted: state.videoCompleted,
+            fibraOpened: state.fibraOpened,
+            cardsFlipped: state.cardsFlipped,
+            wifiOpened: state.wifiOpened,
+            modalsOpened: state.modalsOpened,
+            moduleCompleted: state.moduleCompleted,
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) { /* ignorar si localStorage no está disponible */ }
+      }
+
+      function loadState() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var saved = JSON.parse(raw);
+          if (saved.videoCompleted) state.videoCompleted = true;
+          if (saved.fibraOpened) state.fibraOpened = true;
+          if (saved.cardsFlipped) state.cardsFlipped = saved.cardsFlipped;
+          if (saved.wifiOpened) state.wifiOpened = saved.wifiOpened;
+          if (saved.modalsOpened) state.modalsOpened = saved.modalsOpened;
+          if (saved.moduleCompleted) state.moduleCompleted = true;
+        } catch (e) { /* ignorar */ }
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         2. REFERENCIAS DOM
+      ══════════════════════════════════════════════════════════════ */
+      var video = document.getElementById('intro-video');
+      var placeholder = document.getElementById('video-placeholder');
+      var progressFill = document.getElementById('video-progress-fill');
+      var statusBar = document.getElementById('video-status-bar');
+      var statusText = document.getElementById('video-status-text');
+      var lockedBanner = document.getElementById('locked-banner');
+      var contentGate = document.getElementById('content-gate');
+      var completeBtn = document.getElementById('complete-btn');
+      var devLink = document.getElementById('dev-unlock-link');
+      var backdrop = document.getElementById('modal-backdrop');
+      var celebration = document.getElementById('celebration');
+
+      /* ══════════════════════════════════════════════════════════════
+         3. VIDEO GATE — carga y eventos del video
+      ══════════════════════════════════════════════════════════════ */
+      function initVideo() {
+        // Si el video carga correctamente, muéstralo y oculta el placeholder
+        video.addEventListener('loadedmetadata', function () {
+          video.style.display = 'block';
+          placeholder.style.display = 'none';
+          statusBar.classList.add('vs-watching');
+          statusText.textContent = 'Reproduciendo — míralo hasta el final para desbloquear…';
+        });
+
+        // Si hay error (archivo no encontrado), mantén el placeholder
+        video.addEventListener('error', function () {
+          video.style.display = 'none';
+          placeholder.style.display = 'flex';
+        });
+
+        // Actualizar barra de progreso mientras reproduce
+        video.addEventListener('timeupdate', function () {
+          if (!video.duration) return;
+          var pct = (video.currentTime / video.duration) * 100;
+          progressFill.style.width = pct + '%';
+        });
+
+        // Al TERMINAR el video → desbloquear
+        video.addEventListener('ended', unlockContent);
+
+        // Estado visual mientras reproduce
+        video.addEventListener('playing', function () {
+          statusBar.classList.add('vs-watching');
+          statusText.textContent = 'Reproduciendo — míralo hasta el final para desbloquear…';
+        });
+
+        // Estado visual en pausa
+        video.addEventListener('pause', function () {
+          if (state.videoCompleted) return;
+          statusBar.classList.remove('vs-watching');
+          statusText.textContent = 'Video en pausa — reanúdalo para continuar.';
+        });
+
+        // Intentar cargar el video
+        video.load();
+      }
+
+      // Enlace "Modo Dev" — solo para pruebas sin video
+      if (devLink) {
+        devLink.addEventListener('click', function () {
+          progressFill.style.width = '100%';
+          unlockContent();
+        });
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         4. DESBLOQUEAR CONTENIDO
+         Se llama automáticamente cuando el video termina.
+      ══════════════════════════════════════════════════════════════ */
+      function unlockContent() {
+        if (state.videoCompleted) return; // Ejecutar solo una vez
+        state.videoCompleted = true;
+        saveState();
+
+        // Actualizar estado visual del video
+        statusBar.classList.remove('vs-watching');
+        statusBar.classList.add('vs-done');
+        statusText.textContent = '✅ ¡Video completado! Módulo desbloqueado.';
+
+        // Ocultar el banner del candado
+        lockedBanner.classList.add('hidden');
+
+        // Quitar el bloqueo del contenido
+        contentGate.classList.remove('locked');
+        contentGate.classList.add('unlocked');
+
+        // Scroll suave al contenido
+        setTimeout(function () {
+          contentGate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 500);
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         5. ACORDEÓN — FIBRA ÓPTICA (Sección A)
+         Función global llamada desde el botón en HTML.
+      ══════════════════════════════════════════════════════════════ */
+      window.toggleHeroAccordion = function () {
+        var btn = document.getElementById('btn-fibra');
+        var body = document.getElementById('fibra-body');
+        var isOpen = btn.classList.contains('open');
+
+        if (isOpen) {
+          // Cerrar
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          body.style.maxHeight = null;
+        } else {
+          // Abrir
+          btn.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          body.style.maxHeight = body.scrollHeight + 'px';
+
+          // Marcar como visto la primera vez
+          if (!state.fibraOpened) {
+            state.fibraOpened = true;
+            document.getElementById('fibra-check').classList.add('visible');
+            updateProgress();
+            saveState();
+          }
+        }
+      };
+
+      /* ══════════════════════════════════════════════════════════════
+         6. FLIP CARDS (Sección B)
+         Función global llamada desde onclick en HTML.
+      ══════════════════════════════════════════════════════════════ */
+      window.flipCard = function (card) {
+        card.classList.toggle('flipped');
+
+        var id = card.dataset.cardId;
+        if (!state.cardsFlipped[id]) {
+          state.cardsFlipped[id] = true;
+          updateProgress();
+          saveState();
+        }
+      };
+
+      /* ══════════════════════════════════════════════════════════════
+         7. ACORDEÓN WIFI (Sección C)
+         Función global llamada desde onclick en HTML.
+      ══════════════════════════════════════════════════════════════ */
+      window.toggleWifi = function (btn) {
+        var item = btn.closest('.wifi-item');
+        var body = item.querySelector('.wifi-body');
+        var isOpen = item.classList.contains('open');
+
+        // Cerrar todos primero
+        document.querySelectorAll('.wifi-item.open').forEach(function (el) {
+          el.classList.remove('open');
+          el.querySelector('.wifi-body').style.maxHeight = null;
+          el.querySelector('.wifi-chevron').style.transform = '';
+        });
+
+        if (!isOpen) {
+          item.classList.add('open');
+          body.style.maxHeight = body.scrollHeight + 'px';
+
+          // Marcar como visto
+          var id = item.dataset.id;
+          if (!state.wifiOpened[id]) {
+            state.wifiOpened[id] = true;
+            item.classList.add('seen');
+            updateProgress();
+            saveState();
+          }
+        }
+      };
+
+      /* ══════════════════════════════════════════════════════════════
+         8. MODALES DE IP (Sección D)
+      ══════════════════════════════════════════════════════════════ */
+
+      /* Abrir un modal — llamado desde onclick en HTML */
+      window.openModal = function (modalId, ipBtnId) {
+        // Cerrar cualquier modal previo
+        if (state.currentModal) {
+          var prev = document.getElementById(state.currentModal);
+          if (prev) prev.classList.remove('active');
+        }
+
+        // Abrir el nuevo modal
+        var modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        backdrop.classList.add('open');
+        modal.classList.add('active');
+        state.currentModal = modalId;
+        state.currentIpBtnId = ipBtnId;
+
+        // Bloquear scroll del body mientras el modal está abierto
+        document.body.style.overflow = 'hidden';
+
+        // Marcar como visto
+        if (!state.modalsOpened[modalId]) {
+          state.modalsOpened[modalId] = true;
+
+          // Marcar el botón visualmente como "visto"
+          var btn = document.querySelector('[data-ip-id="' + ipBtnId + '"]');
+          if (btn) btn.classList.add('seen');
+
+          updateProgress();
+          saveState();
+        }
+      };
+
+      /* Cerrar modal — llamado desde botón "✕" */
+      window.closeModal = function () {
+        if (state.currentModal) {
+          var modal = document.getElementById(state.currentModal);
+          if (modal) modal.classList.remove('active');
+          state.currentModal = null;
+        }
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+      };
+
+      /* Cerrar modal al tocar el backdrop (fondo oscuro) */
+      window.closeModalOnBackdrop = function (e) {
+        if (e.target === backdrop) closeModal();
+      };
+
+      /* Cerrar con tecla Escape */
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      /* ══════════════════════════════════════════════════════════════
+         9. PROGRESO Y GAMIFICACIÓN
+         updateProgress() se llama cada vez que el usuario completa
+         una interacción. Actualiza las barras de progreso y verifica
+         si todas las interacciones están completas.
+      ══════════════════════════════════════════════════════════════ */
+      function countObj(obj) {
+        return Object.keys(obj).length;
+      }
+
+      function updateProgress() {
+        var fibraCount = state.fibraOpened ? 1 : 0;
+        var cardsCount = countObj(state.cardsFlipped);
+        var wifiCount = countObj(state.wifiOpened);
+        var modalsCount = countObj(state.modalsOpened);
+
+        var totalCards = state.totalCards;
+        var totalWifi = state.totalWifi;
+        var totalModals = state.totalModals;
+
+        // Actualizar barras
+        document.getElementById('bar-fibra').style.width = ((fibraCount / 1) * 100) + '%';
+        document.getElementById('bar-cards').style.width = ((cardsCount / totalCards) * 100) + '%';
+        document.getElementById('bar-wifi').style.width = ((wifiCount / totalWifi) * 100) + '%';
+        document.getElementById('bar-ip').style.width = ((modalsCount / totalModals) * 100) + '%';
+
+        // Actualizar contadores de texto
+        document.getElementById('count-fibra').textContent = fibraCount + '/1';
+        document.getElementById('count-cards').textContent = cardsCount + '/' + totalCards;
+        document.getElementById('count-wifi').textContent = wifiCount + '/' + totalWifi;
+        document.getElementById('count-ip').textContent = modalsCount + '/' + totalModals;
+
+        // Verificar si todo está completo
+        if (
+          fibraCount >= 1 &&
+          cardsCount >= totalCards &&
+          wifiCount >= totalWifi &&
+          modalsCount >= totalModals &&
+          !state.moduleCompleted
+        ) {
+          enableCompleteButton();
+        }
+      }
+
+      /* Activar el botón verde de completar */
+      function enableCompleteButton() {
+        state.moduleCompleted = true;
+        completeBtn.disabled = false;
+        completeBtn.classList.add('active');
+        document.getElementById('btn-icon').textContent = '✅';
+        document.getElementById('btn-text').textContent = 'Módulo Completado — ¡Haz clic aquí!';
+
+        // Scroll suave al botón
+        setTimeout(function () {
+          completeBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         10. BOTÓN COMPLETAR
+      ══════════════════════════════════════════════════════════════ */
+      window.completarModulo = function (btn) {
+        if (!btn.classList.contains('active')) return;
+
+        // Efecto ripple
+        btn.classList.remove('rippling');
+        void btn.offsetWidth; // forzar reflow
+        btn.classList.add('rippling');
+
+        // Mostrar celebración
+        celebration.style.display = 'block';
+        setTimeout(function () {
+          celebration.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 200);
+
+        // Flash de fondo
+        document.body.style.transition = 'background 0.25s';
+        document.body.style.background = 'rgba(34,197,94,0.06)';
+        setTimeout(function () {
+          document.body.style.background = '';
+        }, 600);
+
+        // Guardar estado final
+        saveState();
+
+        // Notificar al iframe parent (útil para LMS/plataforma)
+        try {
+          window.parent.postMessage({
+            event: 'win_module_completed',
+            module: 'producto-internet',
+            version: '1.0'
+          }, '*');
+        } catch (e) { /* ignorar si no está en iframe */ }
+      };
+
+      /* ══════════════════════════════════════════════════════════════
+         11. RESTAURAR UI DESDE localStorage
+         Reconstruye el estado visual sin animaciones de "primera vez".
+      ══════════════════════════════════════════════════════════════ */
+      function restoreUI() {
+        // ── Video completado ──────────────────────────────────────
+        if (state.videoCompleted) {
+          progressFill.style.width = '100%';
+          statusBar.classList.remove('vs-watching');
+          statusBar.classList.add('vs-done');
+          statusText.textContent = '✅ ¡Video completado! Módulo desbloqueado.';
+          lockedBanner.classList.add('hidden');
+          contentGate.classList.remove('locked');
+          contentGate.classList.add('unlocked');
+        }
+
+        // ── Fibra óptica vista ────────────────────────────────────
+        if (state.fibraOpened) {
+          document.getElementById('fibra-check').classList.add('visible');
+        }
+
+        // ── Flip cards volteadas ──────────────────────────────────
+        Object.keys(state.cardsFlipped).forEach(function (id) {
+          var card = document.querySelector('[data-card-id="' + id + '"]');
+          if (card) card.classList.add('flipped');
+        });
+
+        // ── Acordeones WiFi vistos ────────────────────────────────
+        Object.keys(state.wifiOpened).forEach(function (id) {
+          var item = document.querySelector('.wifi-item[data-id="' + id + '"]');
+          if (item) item.classList.add('seen');
+        });
+
+        // ── Modales de IP vistos ──────────────────────────────────
+        Object.keys(state.modalsOpened).forEach(function (modalId) {
+          var btn = document.querySelector('[data-modal="' + modalId + '"]');
+          if (btn) btn.classList.add('seen');
+        });
+
+        // ── Módulo completado ─────────────────────────────────────
+        if (state.moduleCompleted) {
+          updateProgress();
+          completeBtn.disabled = false;
+          completeBtn.classList.add('active');
+          document.getElementById('btn-icon').textContent = '✅';
+          document.getElementById('btn-text').textContent = 'Módulo Completado — ¡Haz clic aquí!';
+          celebration.style.display = 'block';
+        } else {
+          updateProgress(); // Barras con progreso parcial
+        }
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         INICIALIZACIÓN
+      ══════════════════════════════════════════════════════════════ */
+      loadState();   // 1. Cargar estado guardado
+      restoreUI();   // 2. Reconstruir UI con ese estado
+      initVideo();   // 3. Inicializar video (puede estar ya completado)
+
+    })(); // fin IIFE
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard CFD | WIN Capacitación</title>
+  <meta name="description"
+    content="Dashboard de capacitación WIN: Guía de Contenidos y Reglas del Desafío CFD para asesores y backoffice." />
+
+  <!-- ============================================================
+       FUENTE: Google Fonts (Inter + Outfit)
+       ============================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       VARIABLES DE DISEÑO (PALETA CORPORATIVA WIN)
+       ============================================================ */
+    :root {
+      --color-orange: #FF6B00;
+      --color-orange-light: #FF8C35;
+      --color-orange-dark: #D95700;
+      --color-yellow: #FFD000;
+      --color-yellow-dark: #F0C000;
+
+      --color-bg: #F4F6F9;
+      --color-surface: #FFFFFF;
+      --color-border: #E2E8F0;
+
+      --color-text-primary: #1A202C;
+      --color-text-secondary: #4A5568;
+      --color-text-muted: #A0AEC0;
+
+      --color-success: #38A169;
+      --color-success-light: #C6F6D5;
+
+      --color-quiz: #454545;
+      --color-quiz-light: #E9D8FD;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10), 0 2px 4px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+      --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       RESET Y BASE
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+        /* ============================================================
+        PANTALLA DE LOGIN (Idea 3: Red de Nodos + Soft UI)
+        ============================================================ */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background-color: #FAFCFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1.5rem;
+      animation: fadeIn 0.4s ease-out;
+      overflow: hidden;
+    }
+
+    #login-screen.hidden {
+      animation: fadeOut 0.5s ease-in forwards;
+      pointer-events: none;
+    }
+
+    /* --- Animación de Fondo CSS: Red de Nodos --- */
+    .login-nodes-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 107, 0, 0.15) 2px, transparent 2px);
+      background-size: 40px 40px;
+      z-index: -2;
+    }
+
+    .login-nodes-pulse {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.06) 0%, transparent 60%);
+      z-index: -1;
+      animation: pulseNodes 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseNodes {
+      0% { transform: scale(1); opacity: 0.6; }
+      100% { transform: scale(1.5); opacity: 1; }
+    }
+
+    /* --- Tarjeta Soft UI --- */
+    .login-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 107, 0, 0.05);
+    }
+
+    .login-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.5px;
+    }
+
+    .login-subtitle {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    /* --- Inputs Soft UI (Forma de Pastilla) --- */
+    .login-label {
+      display: block;
+      text-align: left;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      padding-left: 1rem;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--color-border);
+      border-radius: 50px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--color-text-primary);
+      background: var(--color-bg);
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      outline: none;
+    }
+
+    .login-input:focus {
+      border-color: var(--color-orange);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.12);
+    }
+
+    /* --- Botón Gordito (Chunky Button) --- */
+    .login-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--color-orange);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      /* Sombra inferior dura para el efecto 3D */
+      box-shadow: 0 6px 0 var(--color-orange-dark), 0 10px 20px rgba(255, 107, 0, 0.25);
+      transform: translateY(0);
+    }
+
+    .login-btn:hover {
+      background: #FF7B1A;
+    }
+
+    .login-btn:active {
+      /* Al hacer clic, el botón se hunde */
+      transform: translateY(6px);
+      box-shadow: 0 0 0 var(--color-orange-dark), 0 4px 10px rgba(255, 107, 0, 0.15);
+    }
+
+    .login-error {
+      margin-top: 1rem;
+      padding: 0.8rem 1.5rem;
+      background: #FFF5F5;
+      border: 1px solid #FEB2B2;
+      border-radius: 50px;
+      color: #C53030;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    .login-error.visible {
+      display: block;
+    }
+
+      /* ============================================================
+        DASHBOARD PRINCIPAL
+        ============================================================ */
+      #dashboard {
+        display: none;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      #dashboard.visible {
+        display: block;
+      }
+
+      /* ============================================================
+        HEADER / HERO BANNER
+        ============================================================ */
+      .site-header {
+        background: linear-gradient(135deg, var(--color-orange) 0%, var(--color-orange-light) 40%, var(--color-yellow) 100%);
+        padding: 2.5rem 1rem 3.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .site-header::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 220px;
+        height: 220px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .site-header::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -40px;
+        width: 280px;
+        height: 280px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 50%;
+      }
+
+      .header-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+    /* ── LOGO HEADER ──
+       Reemplaza el div.header-logo-placeholder con:
+       <img src="URL_LOGO_GITHUB" alt="Logo WIN"
+            style="max-height:80px; filter:brightness(0) invert(1);" />
+       El filtro CSS lo pone en blanco para que se vea sobre fondo naranja.
+    ── */
+    .header-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .header-logo-placeholder {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-lg);
+      padding: 0.75rem 2rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -1px;
+    }
+
+    .header-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .video-wrapper {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      max-width: 640px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-xl);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .video-placeholder:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .play-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+    }
+
+    .video-placeholder:hover .play-icon {
+      transform: scale(1.1);
+      background: white;
+    }
+
+    .video-placeholder p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       CONTENIDO PRINCIPAL
+       ============================================================ */
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ============================================================
+       SECCIONES / BLOQUES
+       ============================================================ */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.875rem;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .section-icon.orange {
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-light));
+    }
+
+    .section-icon.yellow {
+      background: linear-gradient(135deg, var(--color-yellow-dark), var(--color-yellow));
+    }
+
+    .section-icon.green {
+      background: linear-gradient(135deg, #2F855A, #38A169);
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.1rem, 3vw, 1.35rem);
+      font-weight: 800;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    /* ============================================================
+       GRID DE TARJETAS
+       ============================================================ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 540px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ============================================================
+       TARJETA DE TEMA
+       ============================================================ */
+    .topic-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--color-border);
+      padding: 1.4rem 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-sm);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-yellow));
+      border-radius: 0 0 4px 4px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .topic-card:hover {
+      border-color: var(--color-orange);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .topic-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .topic-card:active {
+      transform: translateY(-1px);
+    }
+
+    /* Estado completado */
+    .topic-card.completed {
+      border-color: var(--color-success);
+      background: #F0FFF4;
+    }
+
+    .topic-card.completed::before {
+      background: linear-gradient(90deg, #38A169, #68D391);
+      transform: scaleX(1);
+    }
+
+    .card-emoji {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .card-number {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .card-action {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-orange);
+    }
+
+    .card-check {
+      font-size: 1.3rem;
+      display: none;
+    }
+
+    .topic-card.completed .card-check {
+      display: block;
+    }
+
+    .topic-card.completed .card-action {
+      display: none;
+    }
+
+    /* ============================================================
+       BOTÓN CHECKPOINT / QUIZ
+       ============================================================ */
+    .checkpoint-wrapper {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .quiz-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.875rem 1.75rem;
+      background: linear-gradient(135deg, var(--color-quiz), #1A202C);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(107, 70, 193, 0.35);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    .quiz-btn:hover {
+      background: linear-gradient(135deg, #0D0C0C, var(--color-quiz));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(107, 70, 193, 0.45);
+    }
+
+    .quiz-btn:active {
+      transform: translateY(0);
+    }
+
+    .quiz-badge {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50px;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       BIFURCACIÓN DE ROLES
+       ============================================================ */
+    .roles-section {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      border: 2px solid var(--color-border);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2.5rem;
+    }
+
+    .roles-header {
+      background: linear-gradient(135deg, #1A202C, #2D3748);
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .roles-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.25rem;
+    }
+
+    .roles-header p {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .roles-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 600px) {
+      .roles-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .role-option {
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    @media (min-width: 600px) {
+      .role-option:first-child {
+        border-right: 2px solid var(--color-border);
+        border-bottom: none;
+      }
+
+      .role-option:last-child {
+        border-bottom: none;
+      }
+    }
+
+    .role-emoji {
+      font-size: 3rem;
+    }
+
+    .role-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+    }
+
+    .role-desc {
+      font-size: 0.82rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    .role-btn-front {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, var(--color-orange), var(--color-orange-light));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .role-btn-front:hover {
+      background: linear-gradient(135deg, var(--color-orange-dark), var(--color-orange));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
+    }
+
+    .role-btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, #2D3748, #4A5568);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(45, 55, 72, 0.3);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .role-btn-back:hover {
+      background: linear-gradient(135deg, #1A202C, #2D3748);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(45, 55, 72, 0.4);
+    }
+
+    /* Tarjeta Backoffice oculta por defecto */
+    #backoffice-card {
+      display: none;
+      margin: 0 1.5rem 1.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #F2F2F2, #C4C4C4);
+      border: 2px dashed #FF5A09;
+      border-radius: var(--radius-lg);
+      animation: slideDown 0.4s ease-out;
+    }
+
+    #backoffice-card.visible {
+      display: block;
+    }
+
+    #backoffice-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #000000;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #backoffice-card p {
+      font-size: 0.85rem;
+      color: #000000;
+      line-height: 1.6;
+    }
+
+    /* ── Contenedor de botones Backoffice: grid 2 columnas iguales ── */
+    .backoffice-actions {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Ambos botones comparten la misma base para quedar idénticos en tamaño */
+    .backoffice-open-btn,
+    .backoffice-reward-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      /* ocupa toda la columna del grid */
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+
+    /* Colores propios de "Abrir Módulo" */
+    .backoffice-open-btn {
+      background: #953005;
+      color: white;
+    }
+
+    .backoffice-open-btn:hover {
+      background: #F97316;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(107, 70, 193, 0.35);
+    }
+
+    /* Estado BLOQUEADO del botón de descarga */
+    .backoffice-reward-btn--locked {
+      background: #9CA3AF;
+      color: #FFFFFF;
+      cursor: not-allowed;
+    }
+
+    .backoffice-reward-btn--locked:hover {
+      background: #6B7280;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Estado DESBLOQUEADO del botón de descarga */
+    .backoffice-reward-btn--unlocked {
+      background: linear-gradient(135deg, #F97316, #FB923C);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.40);
+      animation: pulse-reward 2.5s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    .backoffice-reward-btn--unlocked:hover {
+      background: linear-gradient(135deg, #EA580C, #F97316);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(249, 115, 22, 0.55);
+      animation: none;
+    }
+
+    /* ============================================================
+       META FINAL
+       ============================================================ */
+    #meta-final {
+      background: linear-gradient(135deg, #1A202C 0%, #2D3748 100%);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+
+    #meta-final::before {
+      content: '🏆';
+      position: absolute;
+      font-size: 8rem;
+      opacity: 0.05;
+      top: -1rem;
+      right: -1rem;
+      transform: rotate(15deg);
+    }
+
+    .meta-label {
+      display: inline-block;
+      background: rgba(255, 208, 0, 0.2);
+      border: 1px solid rgba(255, 208, 0, 0.4);
+      color: var(--color-yellow);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+    }
+
+    .meta-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 900;
+      color: white;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .meta-desc {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── BOTÓN DE ASISTENCIA ──
+       Cambia href="#" en el HTML por la URL de tu Microsoft Forms:
+       href="https://forms.office.com/r/TU_ID_DE_FORMULARIO"
+       O actualiza CONFIG.attendanceUrl en el JavaScript.
+    ── */
+    .attendance-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1.25rem 2.5rem;
+      background: linear-gradient(135deg, var(--color-yellow-dark), var(--color-yellow));
+      color: #1A202C;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: clamp(1rem, 3vw, 1.15rem);
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 6px 30px rgba(255, 208, 0, 0.5);
+      animation: pulse-glow 2.5s ease-in-out infinite;
+      border: none;
+      letter-spacing: 0.01em;
+    }
+
+    .attendance-btn:hover {
+      background: linear-gradient(135deg, var(--color-yellow), #FFE34D);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(255, 208, 0, 0.65);
+      animation: none;
+    }
+
+    .attendance-btn:active {
+      transform: translateY(-1px) scale(1);
+    }
+
+    /* ============================================================
+       BARRA DE PROGRESO GLOBAL
+       ============================================================ */
+    .progress-bar-section {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 2px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    .progress-count {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-orange);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: var(--color-border);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-yellow));
+      border-radius: 50px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    /* ============================================================
+       MODAL
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 32, 44, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      transform: scale(0.92) translateY(20px);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 2px solid var(--color-border);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      z-index: 1;
+    }
+
+    .modal-header-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .modal-header-text {
+      flex: 1;
+    }
+
+    .modal-header-text small {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+    }
+
+    .modal-header-text h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      font-weight: 800;
+      color: var(--color-text-primary);
+      line-height: 1.2;
+    }
+
+    .modal-close {
+      background: var(--color-bg);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+      color: var(--color-text-secondary);
+    }
+
+    .modal-close:hover {
+      background: #FFF5F5;
+      color: #C53030;
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .content-frame-wrapper {
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 2px solid var(--color-border);
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .content-frame-wrapper iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    .content-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .content-placeholder .ph-icon {
+      font-size: 3.5rem;
+    }
+
+    .content-placeholder h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+    }
+
+    .content-placeholder p {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      max-width: 340px;
+      line-height: 1.6;
+    }
+
+    .content-placeholder code {
+      display: inline-block;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.75rem;
+      color: var(--color-orange);
+      font-family: 'Courier New', monospace;
+    }
+
+    .modal-mark-done {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, var(--color-success), #48BB78);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .modal-mark-done:hover {
+      background: linear-gradient(135deg, #2F855A, var(--color-success));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(56, 161, 105, 0.35);
+    }
+
+    .modal-mark-done.already-done {
+      background: var(--color-success-light);
+      color: var(--color-success);
+      cursor: default;
+    }
+
+    .modal-mark-done.already-done:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ============================================================
+       SEPARADORES Y UTILIDADES
+       ============================================================ */
+    .block-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .block-divider::before,
+    .block-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .site-footer {
+      background: #000000;
+      color: rgba(255, 255, 255, 0.55);
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .site-footer strong {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .site-footer .footer-credit {
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.68rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ============================================================
+       ANIMACIONES
+       ============================================================ */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 30px rgba(255, 208, 0, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 6px 45px rgba(255, 208, 0, 0.75);
+      }
+    }
+
+    /* ================================================================
+       BOTÓN DESBLOQUEABLE — MATERIAL DE REFUERZO
+       ================================================================ */
+
+    .reward-btn-wrapper {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .reward-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      width: 100%;
+      max-width: 420px;
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reward-btn-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+      display: block;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .reward-btn-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .reward-btn-hint {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      font-weight: 400;
+    }
+
+    /* Estado BLOQUEADO */
+    .reward-btn--locked {
+      background: #9CA3AF;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(156, 163, 175, 0.35);
+      cursor: not-allowed;
+    }
+
+    .reward-btn--locked:hover {
+      background: #6B7280;
+    }
+
+    .reward-btn--locked:hover .reward-btn-icon {
+      animation: shake-lock 0.5s ease;
+    }
+
+    /* Estado DESBLOQUEADO */
+    .reward-btn--unlocked {
+      background: linear-gradient(135deg, #F97316, #FB923C);
+      color: #FFFFFF;
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.40);
+      cursor: pointer;
+      animation: pulse-reward 2.5s ease-in-out infinite;
+    }
+
+    .reward-btn--unlocked:hover {
+      background: linear-gradient(135deg, #EA580C, #F97316);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 10px 30px rgba(249, 115, 22, 0.55);
+      animation: none;
+    }
+
+    .reward-btn--unlocked:hover .reward-btn-icon {
+      transform: scale(1.2) rotate(-8deg);
+    }
+
+    .reward-btn--unlocked:active {
+      transform: translateY(-1px) scale(1);
+    }
+
+    .reward-btn.is-unlocking .reward-btn-icon {
+      animation: pop-unlock 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes pulse-reward {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 20px rgba(249, 115, 22, 0.40);
+      }
+
+      50% {
+        box-shadow: 0 6px 32px rgba(249, 115, 22, 0.65);
+      }
+    }
+
+    @keyframes shake-lock {
+
+      0%,
+      100% {
+        transform: translateX(0) rotate(0deg);
+      }
+
+      20% {
+        transform: translateX(-4px) rotate(-5deg);
+      }
+
+      40% {
+        transform: translateX(4px) rotate(5deg);
+      }
+
+      60% {
+        transform: translateX(-3px) rotate(-3deg);
+      }
+
+      80% {
+        transform: translateX(3px) rotate(3deg);
+      }
+    }
+
+    @keyframes pop-unlock {
+      0% {
+        transform: scale(0.5) rotate(-20deg);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    /* ================================================================
+       MODAL DE DESCARGA
+       ================================================================ */
+
+    .reward-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.72);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .reward-modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .reward-modal-box {
+      background: #FFFFFF;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem 1.75rem 1.5rem;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.12);
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.4s cubic-bezier(0.34, 1.40, 0.64, 1), opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .reward-modal-overlay.open .reward-modal-box {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .reward-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 50%;
+      background: #F3F4F6;
+      color: #6B7280;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      line-height: 1;
+    }
+
+    .reward-modal-close:hover {
+      background: #FEE2E2;
+      color: #DC2626;
+      transform: rotate(90deg);
+    }
+
+    .reward-modal-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      animation: bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+
+    @keyframes bounce-in {
+      from {
+        transform: scale(0.3) rotate(-15deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .reward-modal-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .reward-modal-desc {
+      font-size: 0.875rem;
+      color: #6B7280;
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .reward-downloads-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .reward-download-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 0.9rem 1.1rem;
+      border-radius: 14px;
+      text-decoration: none;
+      text-align: left;
+      border: 2px solid transparent;
+      transition: all 0.22s ease;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .dl-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .dl-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .dl-text strong {
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .dl-text small {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      font-weight: 400;
+    }
+
+    .dl-arrow {
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .reward-download-btn:hover .dl-arrow {
+      transform: translateY(3px);
+    }
+
+    /* PDF (gris azulado oscuro) */
+    .reward-download-btn--pdf {
+      background: #FF5A09;
+      color: #000000;
+      border-color: #FF5A09;
+    }
+
+    .reward-download-btn--pdf:hover {
+      background: #C84206;
+      border-color: #C84206;
+      transform: translateX(3px);
+      box-shadow: 0 4px 14px rgba(30, 41, 59, 0.30);
+    }
+
+    /* Infografía (azul corporativo) */
+    .reward-download-btn--infographic {
+      background: #FFC200;
+      color: #000000;
+      border-color: #FFC200;
+    }
+
+    .reward-download-btn--infographic:hover {
+      background: #BE9200;
+      border-color: #BE9200;
+      transform: translateX(3px);
+      box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
+    }
+
+    /* Botón Cerrar inferior */
+    .reward-modal-close-bottom {
+      width: 100%;
+      padding: 0.75rem;
+      background: #F3F4F6;
+      color: #6B7280;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 0.25rem;
+    }
+
+    .reward-modal-close-bottom:hover {
+      background: #E5E7EB;
+      color: #374151;
+    }
+
+    /* ================================================================
+       VIDEO DE BIENVENIDA — CONTROLES PERSONALIZADOS
+       ================================================================ */
+
+    /* El <video> ocupa todo el ancho del wrapper, sin controles nativos */
+    #welcome-video {
+      width: 100%;
+      display: block;
+      border-radius: 12px 12px 0 0;
+      background: #000;
+      max-height: 420px;
+      object-fit: contain;
+    }
+
+    /* Barra de controles debajo del video */
+    .video-custom-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #1A202C;
+      padding: 0.6rem 1rem;
+      border-radius: 0 0 12px 12px;
+    }
+
+    /* Botón Play/Pause */
+    .video-play-btn {
+      background: var(--color-orange);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .video-play-btn:hover {
+      background: var(--color-orange-dark);
+      transform: scale(1.08);
+    }
+
+    /* Barra de progreso (solo lectura) */
+    .video-progress-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 99px;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .video-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-yellow));
+      border-radius: 99px;
+      transition: width 0.5s linear;
+    }
+
+    /* Tiempo transcurrido */
+    .video-time {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
+    /* ================================================================
+       BANNER DE CANDADO — DEBAJO DEL HEADER
+       ================================================================ */
+
+    .video-lock-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      transition: all 0.5s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Estado BLOQUEADO: fondo oscuro llamativo */
+    .video-lock-banner--locked {
+      background: linear-gradient(135deg, #1A202C, #2D3748);
+      color: #FFFFFF;
+      border-bottom: 3px solid var(--color-orange);
+    }
+
+    /* Estado DESBLOQUEADO: fondo verde éxito */
+    .video-lock-banner--unlocked {
+      background: linear-gradient(135deg, #065F46, #047857);
+      color: #FFFFFF;
+      border-bottom: 3px solid #34D399;
+    }
+
+    /* ================================================================
+       BLOQUEO DEL CONTENIDO DE CURSOS
+       ================================================================ */
+
+    /* Envuelve todo el <main> con transición suave */
+    #main-content {
+      transition: opacity 0.6s ease, filter 0.6s ease;
+    }
+
+    /* Estado BLOQUEADO: opacidad reducida + desenfoque leve */
+    #main-content.content-locked {
+      opacity: 0.45;
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Estado DESBLOQUEADO: transición limpia de vuelta */
+    #main-content.content-unlocked {
+      opacity: 1;
+      filter: none;
+      pointer-events: auto;
+      user-select: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       PANTALLA DE LOGIN
+       Contraseña: edita CONFIG.password en el bloque <script>
+       ============================================================ -->
+       <!-- ============================================================
+     2. REEMPLAZA EN TU <body> EL DIV #login-screen COMPLETO
+     ============================================================ -->
+<div id="login-screen" role="dialog" aria-modal="true" aria-label="Inicio de sesión">
+  <!-- Fondo animado: Red de Nodos -->
+  <div class="login-nodes-bg"></div>
+  <div class="login-nodes-pulse"></div>
+
+  <div class="login-card">
+    <div class="header-logo" style="margin-bottom:1rem;">
+      <!-- Ruta ajustada a tu árbol de carpetas actual -->
+      <img src="assets/img/logos/logo-winclic-naranja.png" alt="Logo WinClic" style="max-height:100px; width:auto; display:block; margin:0 auto;" />
+    </div>
+    
+    <h1 class="login-title">¡Bienvenido a WinClic! 🚀</h1>
+    <p class="login-subtitle">Desafío CFD — Ingresa la contraseña de tu agencia para continuar</p>
+
+    <label class="login-label" for="password-input">Contraseña de Agencia</label>
+    <input id="password-input" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password" aria-describedby="login-error-msg" />
+
+    <!-- Mantengo el mismo ID (login-btn) para no romper tu lógica JS -->
+    <button id="login-btn" class="login-btn" type="button">
+      Ingresar ⚡
+    </button>
+
+    <div id="login-error-msg" class="login-error" role="alert">
+      ❌ Contraseña incorrecta. Intenta nuevamente.
+    </div>
+  </div>
+</div>
+
+  <!-- ============================================================
+       DASHBOARD PRINCIPAL
+       ============================================================ -->
+  <div id="dashboard" aria-live="polite">
+
+    <!-- HEADER HERO -->
+    <header class="site-header">
+      <div class="header-inner">
+
+        <!-- ── LOGO HEADER ──
+             Reemplaza este div por tu imagen (filtro para fondo naranja):
+             <img src="https://raw.githubusercontent.com/TU_USER/TU_REPO/main/img/logo.png"
+                  alt="Logo WIN" style="max-height:80px; filter:brightness(0) invert(1);" />
+        ── -->
+        <div class="header-logo">
+          <img src="../assets/img/logos/logo-winclic-blanco.png" alt="Logo WinClic"
+            style="max-height:130px; width:auto; display:block;" />
+        </div>
+
+        <h1 class="header-title">Tu Ruta hacia el Éxito 🚀</h1>
+        <p class="header-subtitle">Tu entrenamiento comercial a un solo clic. Navega por los módulos, completa los
+          quizzes y registra tu avance para desbloquear tu éxito.</p>
+
+        -->
+        <div class="video-wrapper" role="region" aria-label="Video de bienvenida">
+          <video id="welcome-video" src="../assets/video/videobienvenida.mp4" playsinline
+            preload="metadata" aria-label="Video de bienvenida al entrenamiento CFD WIN">
+            Tu navegador no soporta la reproducción de video.
+          </video>
+
+          <!-- Capa de control personalizada: solo Play/Pause -->
+          <div class="video-custom-controls">
+            <button id="video-play-btn" class="video-play-btn" type="button" aria-label="Reproducir video"
+              onclick="toggleVideoPlay()">
+              <span id="video-play-icon">▶</span>
+            </button>
+
+            <!-- Barra de progreso (solo lectura, no permite adelantar) -->
+            <div class="video-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+              id="video-progress-bar">
+              <div class="video-progress-fill" id="video-progress-fill"></div>
+            </div>
+
+            <span class="video-time" id="video-time">0:00</span>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- BANNER DE CANDADO / DESBLOQUEO
+         Visible debajo del header: cambia apariencia al terminar el video.
+    -->
+    <div id="video-lock-banner" class="video-lock-banner video-lock-banner--locked" role="status" aria-live="polite">
+      <span id="video-lock-icon">🔒</span>
+      <span id="video-lock-text"> Mira el video completo para desbloquear tu entrenamiento</span>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content" id="main-content">
+
+      <!-- ── BARRA DE PROGRESO GLOBAL ── -->
+      <section class="progress-bar-section" aria-label="Progreso general">
+        <div class="progress-header">
+          <span class="progress-label">🎯 Tu Progreso General</span>
+          <span class="progress-count" id="progress-text">0 / 9 temas</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0"
+          id="progress-bar-el">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           BLOQUE 1: ADN WIN — LAS BASES
+           ============================================================ -->
+      <section class="section" aria-labelledby="block1-title">
+
+        <div class="section-header">
+          <div class="section-icon orange" aria-hidden="true">🧬</div>
+          <div>
+            <div class="section-label">Bloque 1</div>
+            <h2 class="section-title" id="block1-title">ADN WIN</h2>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+
+          <!-- TARJETA 1: HISTORIA WIN
+          -->
+          <button class="topic-card" id="card-1" data-card-id="card-1" data-card-number="Tarjeta 1"
+            data-card-title="Historia WIN" data-card-emoji="🏢"
+            data-card-desc="Conoce los orígenes, valores y cultura de WIN Empresas."
+            data-content-url="../PROYECTO AGENCIAS - DISEÑO/modulos/modulo-historia.html" data-content-type="html"
+            aria-label="Abrir módulo Historia WIN" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">🏢</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 1</div>
+            <div class="card-title">Historia WIN</div>
+            <div class="card-desc">Conoce los orígenes, valores y cultura de WIN.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+          <!-- TARJETA 2: INTRODUCCIÓN AL PUESTO
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"  |  "scorm"  |  "video"
+          -->
+          <button class="topic-card" id="card-2" data-card-id="card-2" data-card-number="Tarjeta 2"
+            data-card-title="Introducción al Puesto" data-card-emoji="👤"
+            data-card-desc="Entiende tu rol, responsabilidades y expectativas del cargo." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Introducción al Puesto" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">👤</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 2</div>
+            <div class="card-title">Introducción al Puesto</div>
+            <div class="card-desc">Entiende tu rol, responsabilidades y expectativas del cargo.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- QUIZ 1 — Cambia data-quiz-url por la URL de tu formulario/quiz:
+             data-quiz-url="https://forms.office.com/r/TU_QUIZ_ADN_WIN"
+        -->
+        <div class="checkpoint-wrapper">
+          <button class="quiz-btn" id="quiz-btn-1" data-quiz-url="" onclick="openQuiz(this)" type="button"
+            aria-label="Abrir Quiz ADN WIN — Checkpoint 1">
+            📋<span>QUIZ BLOQUE</span>
+            <span class="quiz-badge">01</span>
+          </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             BOTÓN DESBLOQUEABLE — MATERIAL DE REFUERZO BLOQUE 1
+             Se activa automáticamente cuando el usuario completa
+             todas las tarjetas de este bloque (card-1 y card-2).
+             Para añadirlo en Bloque 2 o 3, duplica el botón y el
+             modal cambiando el sufijo -b1 por -b2 o -b3, y
+             actualiza REWARD_CONFIG en el bloque de JavaScript.
+        ══════════════════════════════════════════════════════ -->
+        <div class="reward-btn-wrapper">
+          <button id="reward-btn-b1" class="reward-btn reward-btn--locked" data-block="b1"
+            onclick="handleRewardClick('b1')" type="button"
+            aria-label="Material de refuerzo del Bloque 1, actualmente bloqueado">
+            <span class="reward-btn-icon" aria-hidden="true">🔒</span>
+            <span class="reward-btn-text">Material de Refuerzo Bloqueado</span>
+            <span class="reward-btn-hint">Completa todas las tarjetas para revelar tu recompensa</span>
+          </button>
+        </div>
+
+        <!-- MODAL DE DESCARGA — BLOQUE 1
+             ── URLS DE DESCARGA ──
+             Edita los href="#" de cada <a> con la URL real de tu archivo en GitHub.
+             Formato para descarga directa desde GitHub Raw:
+             https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/carpeta/archivo.pdf
+        -->
+        <div id="reward-modal-b1" class="reward-modal-overlay" role="dialog" aria-modal="true"
+          aria-labelledby="reward-modal-title-b1" tabindex="-1" onclick="closeRewardModal('reward-modal-b1', event)">
+          <div class="reward-modal-box">
+
+            <!-- Botón X para cerrar -->
+            <button class="reward-modal-close" onclick="closeRewardModal('reward-modal-b1')" type="button"
+              aria-label="Cerrar modal de descargas">✕</button>
+
+            <div class="reward-modal-icon" aria-hidden="true">📂</div>
+
+            <h2 class="reward-modal-title" id="reward-modal-title-b1">
+              Material de Refuerzo
+            </h2>
+            <p class="reward-modal-desc">
+              Elige el archivo que deseas descargar para repasar los temas de este bloque:
+            </p>
+
+            <div class="reward-downloads-list" role="list">
+
+              <!-- DESCARGA 1: PDF Resumen
+                   ↓ Reemplaza href="#" con la URL de tu PDF en GitHub:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque1/resumen.pdf"
+                   El atributo download="" define el nombre al guardar en el dispositivo.
+              -->
+              <a href="#" download="resumen-adn-win.pdf" class="reward-download-btn reward-download-btn--pdf"
+                role="listitem" aria-label="Descargar PDF Resumen del Bloque ADN WIN">
+                <span class="dl-icon" aria-hidden="true">📝</span>
+                <span class="dl-text">
+                  <strong>Descargar PDF Resumen</strong>
+                  <small>Resumen completo del bloque ADN WIN</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+              <!-- DESCARGA 2: Infografía
+                   ↓ Reemplaza href="#" con la URL de tu infografía en GitHub:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque1/infografia.pdf"
+              -->
+              <a href="#" download="infografia-adn-win.pdf" class="reward-download-btn reward-download-btn--infographic"
+                role="listitem" aria-label="Descargar Infografía Rápida del Bloque ADN WIN">
+                <span class="dl-icon" aria-hidden="true">📰</span>
+                <span class="dl-text">
+                  <strong>Descargar Infografía Rápida</strong>
+                  <small>Visual de una página para repasar</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+            </div><!-- /.reward-downloads-list -->
+
+            <button class="reward-modal-close-bottom" onclick="closeRewardModal('reward-modal-b1')" type="button">
+              Cerrar
+            </button>
+
+          </div><!-- /.reward-modal-box -->
+        </div><!-- /#reward-modal-b1 -->
+
+      </section>
+
+      <div class="block-divider" aria-hidden="true">Continúa tu camino</div>
+
+      <!-- ============================================================
+           BLOQUE 2: ECOSISTEMA DE PRODUCTOS — EL ARMAMENTO
+           ============================================================ -->
+      <section class="section" aria-labelledby="block2-title">
+
+        <div class="section-header">
+          <div class="section-icon yellow" aria-hidden="true">⚡</div>
+          <div>
+            <div class="section-label">Bloque 2</div>
+            <h2 class="section-title" id="block2-title">Ecosistema de Productos</h2>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+
+          <!-- TARJETA 3: MUNDO CONECTIVIDAD
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-3" data-card-id="card-3" data-card-number="Tarjeta 3"
+            data-card-title="Mundo Conectividad" data-card-emoji="🛜"
+            data-card-desc="Planes, velocidades, tecnología y argumentario de ventas."
+            data-content-url="../PROYECTO AGENCIAS - DISEÑO/modulos/modulo-producto_internet.html"
+            data-content-type="pdf" aria-label="Abrir módulo Mundo Conectividad" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">🛜</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 3</div>
+            <div class="card-title">Mundo Conectividad</div>
+            <div class="card-desc">Planes, velocidades, tecnología y argumentario de ventas.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+          <!-- TARJETA 4: MUNDO ENTRETENIMIENTO
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-4" data-card-id="card-4" data-card-number="Tarjeta 4"
+            data-card-title="Mundo Entretenimiento" data-card-emoji="📺"
+            data-card-desc="TV en vivo, plataformas de streaming y paquetes combinados." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Mundo Entretenimiento" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">📺</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 4</div>
+            <div class="card-title">Mundo Entretenimiento</div>
+            <div class="card-desc">TV en vivo, plataformas de streaming y paquetes combinados.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+          <!-- TARJETA 5: HOGAR INTELIGENTE & VOZ
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-5" data-card-id="card-5" data-card-number="Tarjeta 5"
+            data-card-title="Hogar Inteligente &amp; Voz" data-card-emoji="🏠"
+            data-card-desc="Dispositivos de hogar inteligente, domótica y telefonía IP." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Hogar Inteligente y Voz" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">🏠</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 5</div>
+            <div class="card-title">Hogar Inteligente &amp; Voz</div>
+            <div class="card-desc">Dispositivos de hogar inteligente, domótica y telefonía IP.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- QUIZ 2 — Cambia data-quiz-url:
+             data-quiz-url="https://forms.office.com/r/TU_QUIZ_ECOSISTEMA"
+        -->
+        <div class="checkpoint-wrapper">
+          <button class="quiz-btn" id="quiz-btn-2" data-quiz-url="" onclick="openQuiz(this)" type="button"
+            aria-label="Abrir Quiz Ecosistema — Checkpoint 2">
+            📋 <span>QUIZ BLOQUE</span>
+            <span class="quiz-badge">02</span>
+          </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             BOTÓN DESBLOQUEABLE — MATERIAL DE REFUERZO BLOQUE 2
+             Se activa cuando el usuario completa card-3, card-4 y card-5.
+        ══════════════════════════════════════════════════════ -->
+        <div class="reward-btn-wrapper">
+          <button id="reward-btn-b2" class="reward-btn reward-btn--locked" data-block="b2"
+            onclick="handleRewardClick('b2')" type="button"
+            aria-label="Material de refuerzo del Bloque 2, actualmente bloqueado">
+            <span class="reward-btn-icon" aria-hidden="true">🔒</span>
+            <span class="reward-btn-text">Material de Refuerzo Bloqueado</span>
+            <span class="reward-btn-hint">Completa todas las tarjetas para revelar tu recompensa</span>
+          </button>
+        </div>
+
+        <!-- MODAL DE DESCARGA — BLOQUE 2
+             ── URLS DE DESCARGA ──
+             Edita los href="#" con la URL real de tu archivo en GitHub:
+             https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque2/ARCHIVO.pdf
+        -->
+        <div id="reward-modal-b2" class="reward-modal-overlay" role="dialog" aria-modal="true"
+          aria-labelledby="reward-modal-title-b2" tabindex="-1" onclick="closeRewardModal('reward-modal-b2', event)">
+          <div class="reward-modal-box">
+
+            <button class="reward-modal-close" onclick="closeRewardModal('reward-modal-b2')" type="button"
+              aria-label="Cerrar modal de descargas">✕</button>
+
+            <div class="reward-modal-icon" aria-hidden="true">⚡</div>
+
+            <h2 class="reward-modal-title" id="reward-modal-title-b2">
+              Material de Refuerzo
+            </h2>
+            <p class="reward-modal-desc">
+              Elige el archivo que deseas descargar para repasar los temas de Ecosistema de Productos:
+            </p>
+
+            <div class="reward-downloads-list" role="list">
+
+              <!-- DESCARGA 1: PDF Resumen Ecosistema
+                   ↓ Pega aquí la URL de tu PDF:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque2/resumen-ecosistema.pdf"
+              -->
+              <a href="#" download="resumen-ecosistema-productos.pdf"
+                class="reward-download-btn reward-download-btn--pdf" role="listitem"
+                aria-label="Descargar PDF Resumen del Ecosistema de Productos">
+                <span class="dl-icon" aria-hidden="true">📄</span>
+                <span class="dl-text">
+                  <strong>Descargar PDF Resumen</strong>
+                  <small>Resumen del Ecosistema de Productos</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+              <!-- DESCARGA 2: Infografía Ecosistema
+                   ↓ Pega aquí la URL de tu infografía:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque2/infografia-ecosistema.pdf"
+              -->
+              <a href="#" download="infografia-ecosistema-productos.pdf"
+                class="reward-download-btn reward-download-btn--infographic" role="listitem"
+                aria-label="Descargar Infografía Rápida del Ecosistema de Productos">
+                <span class="dl-icon" aria-hidden="true">🖼️</span>
+                <span class="dl-text">
+                  <strong>Descargar Infografía Rápida</strong>
+                  <small>Comparativo visual de planes y productos</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+            </div><!-- /.reward-downloads-list -->
+
+            <button class="reward-modal-close-bottom" onclick="closeRewardModal('reward-modal-b2')" type="button">
+              Cerrar
+            </button>
+
+          </div><!-- /.reward-modal-box -->
+        </div><!-- /#reward-modal-b2 -->
+
+      </section>
+
+      <div class="block-divider" aria-hidden="true">Casi en la meta</div>
+
+      <!-- ============================================================
+           BLOQUE 3: LA CANCHA — GESTIÓN Y PROCESOS
+           ============================================================ -->
+      <section class="section" aria-labelledby="block3-title">
+
+        <div class="section-header">
+          <div class="section-icon green" aria-hidden="true">⚽</div>
+          <div>
+            <div class="section-label">Bloque 3</div>
+            <h2 class="section-title" id="block3-title">La Cancha — Gestión y Procesos</h2>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+
+          <!-- TARJETA 6: DOMINIO COMERCIAL
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-6" data-card-id="card-6" data-card-number="Tarjeta 6"
+            data-card-title="Dominio Comercial" data-card-emoji="💵"
+            data-card-desc="Técnicas de venta, manejo de objeciones y cierre efectivo." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Dominio Comercial" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">💵</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 6</div>
+            <div class="card-title">Dominio Comercial</div>
+            <div class="card-desc">Técnicas de venta, manejo de objeciones y cierre efectivo.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+          <!-- TARJETA 7: REGLAS DEL JUEGO
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-7" data-card-id="card-7" data-card-number="Tarjeta 7"
+            data-card-title="Reglas del Juego" data-card-emoji="🪪"
+            data-card-desc="Políticas, compliance, ética comercial y reglamento del desafío." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Reglas del Juego" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true">🪪</span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 7</div>
+            <div class="card-title">Reglas del Juego</div>
+            <div class="card-desc">Políticas, compliance, ética comercial y reglamento del desafío.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+          <!-- TARJETA 8: CANALES DE ATENCIÓN
+               data-content-url="URL_DE_TU_CONTENIDO"
+               data-content-type="pdf"
+          -->
+          <button class="topic-card" id="card-8" data-card-id="card-8" data-card-number="Tarjeta 8"
+            data-card-title="Canales de Atención" data-card-emoji="📞"
+            data-card-desc="Canales oficiales, escalamiento, tiempos de respuesta y protocolos." data-content-url=""
+            data-content-type="pdf" aria-label="Abrir módulo Canales de Atención" type="button">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="card-emoji" aria-hidden="true"> 📞 </span>
+              <span class="card-check" aria-label="Completado">✅</span>
+            </div>
+            <div class="card-number">Tarjeta 8</div>
+            <div class="card-title">Canales de Atención</div>
+            <div class="card-desc">Canales oficiales, escalamiento, tiempos de respuesta y protocolos.</div>
+            <div class="card-footer">
+              <span class="card-action">Ver módulo →</span>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- QUIZ 3 — Cambia data-quiz-url:
+             data-quiz-url="https://forms.office.com/r/TU_QUIZ_GESTION"
+        -->
+        <div class="checkpoint-wrapper">
+          <button class="quiz-btn" id="quiz-btn-3" data-quiz-url="" onclick="openQuiz(this)" type="button"
+            aria-label="Abrir Quiz Gestión — Checkpoint 3">
+            📋 <span>QUIZ BLOQUE</span>
+            <span class="quiz-badge">03</span>
+          </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════════
+             BOTÓN DESBLOQUEABLE — MATERIAL DE REFUERZO BLOQUE 3
+             Se activa cuando el usuario completa card-6, card-7 y card-8.
+        ══════════════════════════════════════════════════════ -->
+        <div class="reward-btn-wrapper">
+          <button id="reward-btn-b3" class="reward-btn reward-btn--locked" data-block="b3"
+            onclick="handleRewardClick('b3')" type="button"
+            aria-label="Material de refuerzo del Bloque 3, actualmente bloqueado">
+            <span class="reward-btn-icon" aria-hidden="true">🔒</span>
+            <span class="reward-btn-text">Material de Refuerzo Bloqueado</span>
+            <span class="reward-btn-hint">Completa todas las tarjetas para revelar tu recompensa</span>
+          </button>
+        </div>
+
+        <!-- MODAL DE DESCARGA — BLOQUE 3
+             ── URLS DE DESCARGA ──
+             Edita los href="#" con la URL real de tu archivo en GitHub:
+             https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque3/ARCHIVO.pdf
+        -->
+        <div id="reward-modal-b3" class="reward-modal-overlay" role="dialog" aria-modal="true"
+          aria-labelledby="reward-modal-title-b3" tabindex="-1" onclick="closeRewardModal('reward-modal-b3', event)">
+          <div class="reward-modal-box">
+
+            <button class="reward-modal-close" onclick="closeRewardModal('reward-modal-b3')" type="button"
+              aria-label="Cerrar modal de descargas">✕</button>
+
+            <div class="reward-modal-icon" aria-hidden="true">⚽</div>
+
+            <h2 class="reward-modal-title" id="reward-modal-title-b3">
+              Material de Refuerzo
+            </h2>
+            <p class="reward-modal-desc">
+              Elige el archivo que deseas descargar para repasar los temas de Gestión y Procesos:
+            </p>
+
+            <div class="reward-downloads-list" role="list">
+
+              <!-- DESCARGA 1: PDF Resumen Gestión
+                   ↓ Pega aquí la URL de tu PDF:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque3/resumen-gestion.pdf"
+              -->
+              <a href="#" download="resumen-gestion-procesos.pdf" class="reward-download-btn reward-download-btn--pdf"
+                role="listitem" aria-label="Descargar PDF Resumen de Gestión y Procesos">
+                <span class="dl-icon" aria-hidden="true">📄</span>
+                <span class="dl-text">
+                  <strong>Descargar PDF Resumen</strong>
+                  <small>Resumen de Gestión y Procesos</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+              <!-- DESCARGA 2: Infografía Gestión
+                   ↓ Pega aquí la URL de tu infografía:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/bloque3/infografia-gestion.pdf"
+              -->
+              <a href="#" download="infografia-gestion-procesos.pdf"
+                class="reward-download-btn reward-download-btn--infographic" role="listitem"
+                aria-label="Descargar Infografía Rápida de Gestión y Procesos">
+                <span class="dl-icon" aria-hidden="true">🖼️</span>
+                <span class="dl-text">
+                  <strong>Descargar Infografía Rápida</strong>
+                  <small>Flujos y canales en un solo vistazo</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+            </div><!-- /.reward-downloads-list -->
+
+            <button class="reward-modal-close-bottom" onclick="closeRewardModal('reward-modal-b3')" type="button">
+              Cerrar
+            </button>
+
+          </div><!-- /.reward-modal-box -->
+        </div><!-- /#reward-modal-b3 -->
+
+      </section>
+
+      <!-- ============================================================
+           BIFURCACIÓN DE ROLES
+           ============================================================ -->
+      <section class="roles-section" aria-labelledby="roles-title">
+
+        <div class="roles-header">
+          <h2 id="roles-title">🔀 Bifurcación de Roles</h2>
+          <p>Selecciona tu perfil para continuar con tu ruta personalizada</p>
+        </div>
+
+        <div class="roles-grid">
+
+          <!-- OPCIÓN A: Asesor Comercial (Front) -->
+          <div class="role-option">
+            <div class="role-emoji" aria-hidden="true">🎯</div>
+            <div class="role-title">Asesor Comercial</div>
+            <div class="role-desc">Tu ruta va directo a registrar asistencia. ¡Ya completaste todo lo necesario!</div>
+            <button class="role-btn-front" id="btn-front" onclick="scrollToMeta()" type="button"
+              aria-label="Ir directo a la sección de asistencia final">
+              🚀 Soy Asesor Comercial<br />Ir a mi Asistencia Final
+            </button>
+          </div>
+
+          <!-- OPCIÓN B: Backoffice -->
+          <div class="role-option">
+            <div class="role-emoji" aria-hidden="true">🖥️</div>
+            <div class="role-title">Backoffice</div>
+            <div class="role-desc">Tu ruta incluye un módulo adicional de sistemas y herramientas internas.</div>
+            <button class="role-btn-back" id="btn-back" onclick="toggleBackoffice()" type="button" aria-expanded="false"
+              aria-controls="backoffice-card" aria-label="Mostrar o esconder el módulo Herramientas Backoffice">
+              💻 Soy Backoffice<br />Continuar a Sistemas
+            </button>
+          </div>
+
+        </div>
+
+        <!-- TARJETA 9: HERRAMIENTAS BACKOFFICE (oculta por defecto)
+             ── PARA INSERTAR CONTENIDO ──
+             Edita el onclick del botón .backoffice-open-btn cambiando url:'' por tu URL:
+             url:'https://TU_USER.github.io/TU_REPO/scorm/backoffice/index.html'
+             y type:'scorm' (o 'pdf' / 'video')
+        -->
+        <div id="backoffice-card" aria-hidden="true">
+          <h3><span aria-hidden="true">🖥️</span> Tarjeta 9: Herramientas Backoffice</h3>
+          <p>
+            Módulo exclusivo para el equipo de operaciones: sistemas internos, CRM,
+            plataforma de gestión de tickets y herramientas de soporte técnico.
+          </p>
+
+          <!-- Fila de botones: Abrir Módulo + Descargar Material -->
+          <div class="backoffice-actions">
+
+            <!-- Botón original: Abrir Módulo -->
+            <button class="backoffice-open-btn" id="btn-open-backoffice" type="button"
+              onclick="openModal({id:'card-9', number:'Tarjeta 9', title:'Herramientas Backoffice', emoji:'🖥️', url:'', type:'scorm'})"
+              aria-label="Abrir módulo Herramientas Backoffice">
+              🔓 Abrir Módulo
+            </button>
+
+            <!-- Botón Desbloqueable: se activa cuando card-9 está completada -->
+            <button id="reward-btn-bk" class="backoffice-reward-btn backoffice-reward-btn--locked"
+              onclick="handleRewardClick('bk')" type="button"
+              aria-label="Material de descarga Backoffice, actualmente bloqueado">
+              <span id="reward-bk-icon" aria-hidden="true">🔒</span>
+              <span id="reward-bk-text">Material Bloqueado</span>
+            </button>
+
+          </div><!-- /.backoffice-actions -->
+
+        </div><!-- /#backoffice-card -->
+
+        <!-- MODAL DE DESCARGA — BACKOFFICE
+             ── URLS DE DESCARGA ──
+             Edita los href="#" con la URL real de tu archivo en GitHub:
+             https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/backoffice/ARCHIVO.pdf
+        -->
+        <div id="reward-modal-bk" class="reward-modal-overlay" role="dialog" aria-modal="true"
+          aria-labelledby="reward-modal-title-bk" tabindex="-1" onclick="closeRewardModal('reward-modal-bk', event)">
+          <div class="reward-modal-box">
+
+            <button class="reward-modal-close" onclick="closeRewardModal('reward-modal-bk')" type="button"
+              aria-label="Cerrar modal de descargas">✕</button>
+
+            <div class="reward-modal-icon" aria-hidden="true">🖥️</div>
+
+            <h2 class="reward-modal-title" id="reward-modal-title-bk">
+              Material de Refuerzo
+            </h2>
+            <p class="reward-modal-desc">
+              Elige el archivo que deseas descargar para repasar las herramientas y sistemas del equipo Backoffice:
+            </p>
+
+            <div class="reward-downloads-list" role="list">
+
+              <!-- DESCARGA 1: PDF Resumen Backoffice
+                   ↓ Pega aquí la URL de tu PDF:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/backoffice/resumen-backoffice.pdf"
+              -->
+              <a href="#" download="resumen-herramientas-backoffice.pdf"
+                class="reward-download-btn reward-download-btn--pdf" role="listitem"
+                aria-label="Descargar PDF Resumen de Herramientas Backoffice">
+                <span class="dl-icon" aria-hidden="true">📄</span>
+                <span class="dl-text">
+                  <strong>Descargar PDF Resumen</strong>
+                  <small>Guía de herramientas y sistemas internos</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+
+              <!-- DESCARGA 2: Infografía Backoffice
+                   ↓ Pega aquí la URL de tu infografía:
+                   href="https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/refuerzo/backoffice/infografia-backoffice.pdf"
+              -->
+              <a href="#" download="infografia-herramientas-backoffice.pdf"
+                class="reward-download-btn reward-download-btn--infographic" role="listitem"
+                aria-label="Descargar Infografía de Herramientas Backoffice">
+                <span class="dl-icon" aria-hidden="true">🖼️</span>
+                <span class="dl-text">
+                  <strong>Descargar Infografía Rápida</strong>
+                  <small>Flujo de sistemas en un solo vistazo</small>
+                </span>
+                <span class="dl-arrow" aria-hidden="true">↓</span>
+              </a>
+            </div><!-- /.reward-downloads-list -->
+
+            <button class="reward-modal-close-bottom" onclick="closeRewardModal('reward-modal-bk')" type="button">
+              Cerrar
+            </button>
+
+          </div><!-- /.reward-modal-box -->
+        </div><!-- /#reward-modal-bk -->
+
+      </section>
+
+      <!-- ============================================================
+           META FINAL — REGISTRO DE ASISTENCIA
+           ============================================================ -->
+      <section id="meta-final" aria-labelledby="meta-title">
+
+        <div class="meta-label">🏁 Meta Final</div>
+
+        <h2 class="meta-title" id="meta-title">
+          ¡Lo lograste! Ahora registra<br />tu asistencia oficial
+        </h2>
+
+        <p class="meta-desc">
+          Haz clic en el botón y completa el formulario para registrar tu participación
+          en el Desafío CFD. Este paso es <strong style="color:var(--color-yellow)">obligatorio</strong> para que tu
+          progreso sea válido.
+        </p>
+
+        <!-- ── BOTÓN DE ASISTENCIA FINAL ──
+             Cambia href="#" por la URL de tu Microsoft Forms:
+             href="https://forms.office.com/r/TU_ID_DE_FORMULARIO"
+             Agrega target="_blank" rel="noopener noreferrer" para abrir en nueva pestaña.
+             O actualiza CONFIG.attendanceUrl en el bloque <script>.
+        ── -->
+        <a href="#" id="btn-asistencia" class="attendance-btn" role="button"
+          aria-label="Registrar tu asistencia en el Desafío CFD" onclick="handleAttendance(event)">
+          🏆 Registrar Asistencia Final
+        </a>
+
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <p>© 2026 <strong>WinClic</strong> — Desafío CFD | Portal de Capacitación Win</p>
+      <p style="margin-top:0.35rem;font-size:0.72rem;">El progreso se guarda localmente en este dispositivo y navegador.
+      </p>
+      <p class="footer-credit">Pensado y creado por <strong style="color:rgba(255,255,255,0.5);">Madeloun
+          Terrel</strong></p>
+    </footer>
+
+  </div><!-- /#dashboard -->
+
+  <!-- ============================================================
+       MODAL DE CONTENIDO
+       ============================================================ -->
+  <div id="content-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-text"
+    tabindex="-1">
+    <div class="modal-box" id="modal-box">
+
+      <div class="modal-header">
+        <div class="modal-header-icon" id="modal-emoji" aria-hidden="true">📄</div>
+        <div class="modal-header-text">
+          <small id="modal-number">Tarjeta 1</small>
+          <h2 id="modal-title-text">Título del Módulo</h2>
+        </div>
+        <button class="modal-close" id="modal-close-btn" onclick="closeModal()" type="button"
+          aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="content-frame-wrapper" id="content-frame-wrapper">
+          <!-- El JS inyecta el iframe aquí si hay URL. Si no, muestra el placeholder. -->
+          <div class="content-placeholder" id="content-placeholder">
+            <div class="ph-icon" aria-hidden="true">🔗</div>
+            <h3>Contenido pendiente de vincular</h3>
+            <p>
+              Edita el atributo <code>data-content-url</code> de la tarjeta en el HTML
+              con la URL de tu archivo en GitHub.
+            </p>
+            <p style="margin-top:0.5rem;">
+              <code>data-content-type</code>: <code>pdf</code> · <code>scorm</code> · <code>video</code>
+            </p>
+          </div>
+        </div>
+
+        <button class="modal-mark-done" id="modal-mark-done" type="button"
+          aria-label="Marcar este módulo como completado">
+          ✅ Marcar como Completado
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       JAVASCRIPT — TODA LA LÓGICA
+       ============================================================ -->
+  <script>
+    'use strict';
+
+    /* ══════════════════════════════════════════════════════════════
+       ██████  CONFIGURACIÓN CENTRAL — EDITA AQUÍ
+       ══════════════════════════════════════════════════════════════
+       Modifica estos valores sin tocar el resto del código.
+    ══════════════════════════════════════════════════════════════ */
+    const CONFIG = {
+
+      /* ── CONTRASEÑA DE ACCESO ──────────────────────────────────
+         Cambia "test2026" por tu clave real de agencia.
+      ─────────────────────────────────────────────────────────── */
+      password: 'MadeWin26',
+
+      /* ── CLAVE DEL LOCAL STORAGE ───────────────────────────────
+         Si tienes múltiples dashboards en el mismo dominio,
+         usa claves diferentes para cada uno.
+      ─────────────────────────────────────────────────────────── */
+      storageKey: 'cfd_win_progress_v1',
+
+      /* ── URL DEL FORMULARIO DE ASISTENCIA ──────────────────────
+         Pega aquí la URL de tu Microsoft Forms:
+         'https://forms.office.com/r/TU_ID_FORMULARIO'
+         También puedes editarlo directamente en el href del botón.
+      ─────────────────────────────────────────────────────────── */
+      attendanceUrl: '#',
+
+      /* ── TOTAL DE TARJETAS RASTREABLES (incluyendo backoffice) ─ */
+      totalCards: 9,
+    };
+
+    /* ══════════════════════════════════════════════════════════════
+       ESTADO DE LA APLICACIÓN
+    ══════════════════════════════════════════════════════════════ */
+    let currentCardId = null;
+    let backofficeVisible = false;
+
+    /* ══════════════════════════════════════════════════════════════
+       1. SISTEMA DE LOGIN
+    ══════════════════════════════════════════════════════════════ */
+    const loginScreen = document.getElementById('login-screen');
+    const dashboard = document.getElementById('dashboard');
+    const passwordInput = document.getElementById('password-input');
+    const loginBtn = document.getElementById('login-btn');
+    const loginError = document.getElementById('login-error-msg');
+
+    function attemptLogin() {
+      const entered = passwordInput.value.trim();
+
+      if (entered === CONFIG.password) {
+        loginError.classList.remove('visible');
+        loginScreen.classList.add('hidden');
+
+        setTimeout(() => {
+          loginScreen.style.display = 'none';
+          dashboard.classList.add('visible');
+          applyProgressToCards(); // Carga progreso al mostrar el dashboard
+          checkRewardButtonState('b1'); // Verifica estado del botón de recompensa Bloque 1
+          checkRewardButtonState('b2'); // Verifica estado del botón de recompensa Bloque 2
+          checkRewardButtonState('b3'); // Verifica estado del botón de recompensa Bloque 3
+          checkRewardButtonState('bk'); // Verifica estado del botón de recompensa Backoffice
+          initVideoLock();             // Aplica estado del candado de video
+        }, 500);
+
+      } else {
+        loginError.classList.add('visible');
+        passwordInput.classList.add('shake');
+        passwordInput.value = '';
+        passwordInput.focus();
+        setTimeout(() => passwordInput.classList.remove('shake'), 400);
+      }
+    }
+
+    loginBtn.addEventListener('click', attemptLogin);
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptLogin();
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       2. PROGRESO CON LOCAL STORAGE
+    ══════════════════════════════════════════════════════════════ */
+
+    /** Carga el Set de IDs completados desde localStorage. */
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(CONFIG.storageKey);
+        return raw ? new Set(JSON.parse(raw)) : new Set();
+      } catch { return new Set(); }
+    }
+
+    /** Guarda el Set de IDs completados en localStorage. */
+    function saveProgress(completedSet) {
+      try {
+        localStorage.setItem(CONFIG.storageKey, JSON.stringify([...completedSet]));
+      } catch (e) {
+        console.warn('[WIN CFD] Error al guardar progreso:', e);
+      }
+    }
+
+    /** Aplica el estado visual .completed a todas las tarjetas según localStorage. */
+    function applyProgressToCards() {
+      const completed = loadProgress();
+      document.querySelectorAll('.topic-card').forEach(card => {
+        card.classList.toggle('completed', completed.has(card.dataset.cardId));
+      });
+      updateProgressBar();
+    }
+
+    /** Actualiza la barra de progreso y el texto del contador. */
+    function updateProgressBar() {
+      const completed = loadProgress();
+      const count = completed.size;
+      const total = CONFIG.totalCards;
+      const pct = Math.min(100, Math.round((count / total) * 100));
+
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = `${count} / ${total} temas`;
+      const barEl = document.getElementById('progress-bar-el');
+      barEl.setAttribute('aria-valuenow', count);
+    }
+
+    /** Marca una tarjeta como completada y guarda en localStorage. */
+    function markCardDone(cardId) {
+      const completed = loadProgress();
+      completed.add(cardId);
+      saveProgress(completed);
+      applyProgressToCards();
+      // Verifica si se desbloquea algún botón de recompensa al completar esta tarjeta
+      checkRewardButtonState('b1');
+      checkRewardButtonState('b2');
+      checkRewardButtonState('b3');
+      checkRewardButtonState('bk'); // Verifica desbloqueo del botón Backoffice
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       3. MODAL DE CONTENIDO
+    ══════════════════════════════════════════════════════════════ */
+    const modalOverlay = document.getElementById('content-modal');
+    const modalEmoji = document.getElementById('modal-emoji');
+    const modalNumber = document.getElementById('modal-number');
+    const modalTitleText = document.getElementById('modal-title-text');
+    const frameWrapper = document.getElementById('content-frame-wrapper');
+    const placeholder = document.getElementById('content-placeholder');
+    const markDoneBtn = document.getElementById('modal-mark-done');
+
+    /**
+     * Abre el modal con la información de la tarjeta.
+     * @param {Object} data - {id, number, title, emoji, url, type}
+     */
+    function openModal(data) {
+      const { emoji = '📄', number = '', title = 'Módulo', url = '', type = 'pdf', id = '' } = data;
+
+      currentCardId = id;
+      modalEmoji.textContent = emoji;
+      modalNumber.textContent = number;
+      modalTitleText.textContent = title;
+
+      // Limpia iframe anterior
+      const existingFrame = frameWrapper.querySelector('iframe');
+      if (existingFrame) existingFrame.remove();
+
+      if (url && url !== '') {
+        placeholder.style.display = 'none';
+
+        const iframe = document.createElement('iframe');
+        iframe.title = title;
+        iframe.setAttribute('loading', 'lazy');
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.setAttribute('allow', 'fullscreen; autoplay; clipboard-write; encrypted-media');
+
+        if (type === 'video') {
+          // YouTube/Vimeo: aspecto 16:9
+          iframe.src = url;
+          iframe.style.aspectRatio = '16/9';
+          iframe.style.height = 'auto';
+        } else {
+          // PDF, SCORM, HTML5: altura fija
+          iframe.src = url;
+          iframe.style.height = '520px';
+        }
+
+        frameWrapper.appendChild(iframe);
+
+      } else {
+        placeholder.style.display = 'flex';
+      }
+
+      // Estado del botón "Marcar como Completado"
+      const completed = loadProgress();
+      if (completed.has(id)) {
+        markDoneBtn.textContent = '✅ Módulo ya Completado';
+        markDoneBtn.classList.add('already-done');
+      } else {
+        markDoneBtn.textContent = '✅ Marcar como Completado';
+        markDoneBtn.classList.remove('already-done');
+      }
+
+      modalOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modalOverlay.focus();
+    }
+
+    /** Cierra el modal y detiene el iframe (videos, audio). */
+    function closeModal() {
+      modalOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      currentCardId = null;
+
+      setTimeout(() => {
+        const existingFrame = frameWrapper.querySelector('iframe');
+        if (existingFrame) existingFrame.remove();
+        placeholder.style.display = 'flex';
+      }, 300);
+    }
+
+    // Cerrar al hacer clic fuera del modal-box
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+    });
+
+    // Botón "Marcar como Completado" dentro del modal
+    markDoneBtn.addEventListener('click', () => {
+      if (!currentCardId || markDoneBtn.classList.contains('already-done')) return;
+
+      markCardDone(currentCardId);
+      markDoneBtn.textContent = '✅ Módulo ya Completado';
+      markDoneBtn.classList.add('already-done');
+
+      // Micro-animación en la tarjeta de fondo
+      const card = document.getElementById(currentCardId);
+      if (card) {
+        card.style.transform = 'scale(1.04)';
+        setTimeout(() => { card.style.transform = ''; }, 200);
+      }
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       4. VINCULACIÓN DE TARJETAS → MODAL
+       Lee los data-attributes de cada tarjeta y abre el modal.
+    ══════════════════════════════════════════════════════════════ */
+    document.querySelectorAll('.topic-card').forEach(card => {
+      card.addEventListener('click', () => {
+        openModal({
+          id: card.dataset.cardId,
+          number: card.dataset.cardNumber,
+          title: card.dataset.cardTitle,
+          emoji: card.dataset.cardEmoji,
+          url: card.dataset.contentUrl,
+          type: card.dataset.contentType,
+        });
+      });
+    });
+
+    /* ══════════════════════════════════════════════════════════════
+       5. BOTONES QUIZ / CHECKPOINT
+    ══════════════════════════════════════════════════════════════ */
+
+    /**
+     * Abre el quiz en nueva pestaña si hay URL configurada.
+     * Si no, muestra un aviso temporal en el botón.
+     * @param {HTMLElement} btn - El botón de quiz clickeado
+     */
+    function openQuiz(btn) {
+      const url = btn.dataset.quizUrl;
+      if (url && url !== '' && url !== '#') {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else {
+        const original = btn.innerHTML;
+        btn.innerHTML = '⚠️ Quiz aún sin configurar';
+        btn.style.background = 'linear-gradient(135deg, #DD6B20, #ED8936)';
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.style.background = '';
+        }, 2500);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       6. BIFURCACIÓN DE ROLES
+    ══════════════════════════════════════════════════════════════ */
+
+    /** Scroll suave hacia la sección Meta Final con efecto de atención. */
+    function scrollToMeta() {
+      const meta = document.getElementById('meta-final');
+      if (!meta) return;
+      meta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      meta.style.transition = 'outline 0s, box-shadow 0.3s';
+      meta.style.boxShadow = '0 0 0 4px var(--color-yellow), 0 20px 50px rgba(0,0,0,0.15)';
+      setTimeout(() => { meta.style.boxShadow = ''; }, 1500);
+    }
+
+    /** Muestra u oculta la tarjeta de Herramientas Backoffice. */
+    function toggleBackoffice() {
+      backofficeVisible = !backofficeVisible;
+      const card = document.getElementById('backoffice-card');
+      const btn = document.getElementById('btn-back');
+
+      card.classList.toggle('visible', backofficeVisible);
+      card.setAttribute('aria-hidden', String(!backofficeVisible));
+      btn.setAttribute('aria-expanded', String(backofficeVisible));
+
+      if (backofficeVisible) {
+        setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 150);
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       7. BOTÓN DE ASISTENCIA FINAL
+    ══════════════════════════════════════════════════════════════ */
+
+    /**
+     * Si CONFIG.attendanceUrl tiene una URL real, la asigna al href.
+     * Si no, muestra un aviso temporal.
+     */
+    function handleAttendance(e) {
+      const url = CONFIG.attendanceUrl;
+      const btn = document.getElementById('btn-asistencia');
+
+      if (!url || url === '#') {
+        e.preventDefault();
+        const original = btn.innerHTML;
+        btn.innerHTML = '⚙️ Configura la URL del formulario en CONFIG.attendanceUrl';
+        btn.style.background = 'linear-gradient(135deg, #DD6B20, #ED8936)';
+        btn.style.color = 'white';
+        setTimeout(() => {
+          btn.innerHTML = original;
+          btn.style.background = '';
+          btn.style.color = '';
+        }, 3500);
+      } else {
+        btn.href = url;
+      }
+    }
+
+
+    /* ══════════════════════════════════════════════════════════════
+       8. BOTÓN DESBLOQUEABLE + MODAL DE DESCARGA
+       ══════════════════════════════════════════════════════════════
+
+       CONFIGURACIÓN DE DESBLOQUEO POR BLOQUE:
+       Agrega aquí los card-ids que el usuario debe completar
+       para desbloquear el material de refuerzo de cada bloque.
+       Los IDs deben coincidir con los data-card-id del HTML.
+    ══════════════════════════════════════════════════════════════ */
+    const REWARD_CONFIG = {
+      b1: {
+        // Bloque 1 — ADN WIN: requiere completar Tarjeta 1 y Tarjeta 2
+        requiredCards: ['card-1', 'card-2'],
+        modalId: 'reward-modal-b1',
+      },
+      b2: {
+        // Bloque 2 — Ecosistema de Productos: requiere completar Tarjetas 3, 4 y 5
+        requiredCards: ['card-3', 'card-4', 'card-5'],
+        modalId: 'reward-modal-b2',
+      },
+      b3: {
+        // Bloque 3 — La Cancha: requiere completar Tarjetas 6, 7 y 8
+        requiredCards: ['card-6', 'card-7', 'card-8'],
+        modalId: 'reward-modal-b3',
+      },
+      bk: {
+        // Backoffice — Tarjeta 9: requiere completar la Tarjeta 9
+        requiredCards: ['card-9'],
+        modalId: 'reward-modal-bk',
+      },
+    };
+
+    /**
+     * Verifica en el LocalStorage si todas las tarjetas requeridas del
+     * bloque están completadas. Si es así, desbloquea el botón.
+     * @param {string} blockId - 'b1', 'b2', etc.
+     */
+    function checkRewardButtonState(blockId) {
+      const config = REWARD_CONFIG[blockId];
+      if (!config) return;
+      const btn = document.getElementById(`reward-btn-${blockId}`);
+      if (!btn) return;
+
+      const completed = loadProgress(); // Usa la función existente del dashboard
+      const allDone = config.requiredCards.every(id => completed.has(id));
+
+      if (allDone) unlockRewardButton(blockId);
+    }
+
+    /**
+     * Aplica visualmente el estado DESBLOQUEADO al botón.
+     * @param {string} blockId
+     */
+    function unlockRewardButton(blockId) {
+      const btn = document.getElementById(`reward-btn-${blockId}`);
+      if (!btn) return;
+
+      if (blockId === 'bk') {
+        // Caso especial: botón compacto del Backoffice (usa clases propias)
+        if (btn.classList.contains('backoffice-reward-btn--unlocked')) return;
+        btn.classList.remove('backoffice-reward-btn--locked');
+        btn.classList.add('backoffice-reward-btn--unlocked');
+        document.getElementById('reward-bk-icon').textContent = '📥';
+        document.getElementById('reward-bk-text').textContent = '¡Descargar Material!';
+        btn.setAttribute('aria-label', 'Material de descarga Backoffice desbloqueado — haz clic para descargar');
+      } else {
+        // Caso estándar: botones grandes de los Bloques 1, 2 y 3
+        if (btn.classList.contains('reward-btn--unlocked')) return;
+        btn.classList.add('is-unlocking');
+        btn.classList.remove('reward-btn--locked');
+        btn.classList.add('reward-btn--unlocked');
+        btn.querySelector('.reward-btn-icon').textContent = '📥';
+        btn.querySelector('.reward-btn-text').textContent = '¡Felicidades! Descarga tu Resumen Aquí';
+        btn.querySelector('.reward-btn-hint').textContent = 'Haz clic para elegir tu archivo de descarga';
+        btn.setAttribute('aria-label', 'Material de refuerzo desbloqueado — haz clic para descargar');
+        setTimeout(() => btn.classList.remove('is-unlocking'), 600);
+      }
+    }
+
+    /**
+     * Maneja el clic en el botón según su estado actual.
+     * - Bloqueado  → muestra alerta
+     * - Desbloqueado → abre modal de descarga
+     * @param {string} blockId
+     */
+    function handleRewardClick(blockId) {
+      const btn = document.getElementById(`reward-btn-${blockId}`);
+      if (!btn) return;
+
+      // Detecta si el botón aún está en estado bloqueado
+      const isLocked = btn.classList.contains('reward-btn--locked') ||
+        btn.classList.contains('backoffice-reward-btn--locked');
+
+      if (isLocked) {
+        alert('🔒 Termina de ver las tarjetas de este bloque para revelar tu recompensa.');
+        return;
+      }
+
+      const config = REWARD_CONFIG[blockId];
+      if (config && config.modalId) openRewardModal(config.modalId);
+    }
+
+    /**
+     * Abre el modal de descarga con animación fade-in.
+     * @param {string} modalId
+     */
+    function openRewardModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      modal.focus();
+    }
+
+    /**
+     * Cierra el modal de descarga.
+     * Si se pasa event, solo cierra al hacer clic en el fondo del overlay.
+     * @param {string} modalId
+     * @param {Event|undefined} event
+     */
+    function closeRewardModal(modalId, event) {
+      if (event && event.target !== document.getElementById(modalId)) return;
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Cierra cualquier modal de recompensa abierto al presionar Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.reward-modal-overlay.open').forEach(m => {
+          m.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      }
+    });
+
+    /* ── MODO PRUEBA ─────────────────────────────────────────────
+       Para probar el estado desbloqueado sin completar tarjetas,
+       descomenta temporalmente esta línea y recarga la página:
+
+       // unlockRewardButton('b1');
+
+       Vuelve a comentarla cuando termines de probar.
+    ─────────────────────────────────────────────────────────── */
+
+    /* ══════════════════════════════════════════════════════════════
+       9. VIDEO DE BIENVENIDA — SISTEMA DE CANDADO OBLIGATORIO
+    ══════════════════════════════════════════════════════════════
+
+       Clave en LocalStorage: 'cfd_video_visto'
+       Valor cuando se completó: '1'
+    ══════════════════════════════════════════════════════════════ */
+
+    const VIDEO_STORAGE_KEY = 'cfd_video_visto';
+
+    const welcomeVideo = document.getElementById('welcome-video');
+    const playBtn = document.getElementById('video-play-btn');
+    const playIcon = document.getElementById('video-play-icon');
+    const progressFill = document.getElementById('video-progress-fill');
+    const progressBar = document.getElementById('video-progress-bar');
+    const videoTimeEl = document.getElementById('video-time');
+    const lockBanner = document.getElementById('video-lock-banner');
+    const lockIcon = document.getElementById('video-lock-icon');
+    const lockText = document.getElementById('video-lock-text');
+    const mainContent = document.getElementById('main-content');
+
+    /** Formatea segundos como M:SS */
+    function formatTime(secs) {
+      if (!secs || isNaN(secs)) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    /** Desbloquea todo el contenido de cursos */
+    function unlockCourseContent() {
+      // 1. Quitar bloqueo del contenido
+      if (mainContent) {
+        mainContent.classList.remove('content-locked');
+        mainContent.classList.add('content-unlocked');
+      }
+
+      // 2. Actualizar banner
+      if (lockBanner) {
+        lockBanner.classList.remove('video-lock-banner--locked');
+        lockBanner.classList.add('video-lock-banner--unlocked');
+      }
+      if (lockIcon) lockIcon.textContent = '✅';
+      if (lockText) lockText.textContent = ' ¡Entrenamiento Desbloqueado! Ya puedes acceder a todos los módulos.';
+
+      // 3. Guardar en LocalStorage para que persista en recargas
+      localStorage.setItem(VIDEO_STORAGE_KEY, '1');
+    }
+
+    /** Aplica el estado inicial (bloqueado o ya visto) al cargar */
+    function initVideoLock() {
+      if (!welcomeVideo) return;
+
+      const yaVisto = localStorage.getItem(VIDEO_STORAGE_KEY) === '1';
+
+      if (yaVisto) {
+        // El usuario ya vio el video — desbloquear de inmediato sin animación
+        if (mainContent) {
+          mainContent.classList.remove('content-locked');
+          mainContent.classList.add('content-unlocked');
+        }
+        if (lockBanner) {
+          lockBanner.classList.remove('video-lock-banner--locked');
+          lockBanner.classList.add('video-lock-banner--unlocked');
+        }
+        if (lockIcon) lockIcon.textContent = '✅';
+        if (lockText) lockText.textContent = ' ¡Entrenamiento Desbloqueado! Ya puedes acceder a todos los módulos.';
+      } else {
+        // Primera visita — bloquear el contenido
+        if (mainContent) {
+          mainContent.classList.add('content-locked');
+        }
+      }
+    }
+
+    /* ── Controles del video ── */
+
+    /** Alterna Play / Pause */
+    function toggleVideoPlay() {
+      if (!welcomeVideo) return;
+      if (welcomeVideo.paused) {
+        welcomeVideo.play();
+      } else {
+        welcomeVideo.pause();
+      }
+    }
+
+    if (welcomeVideo) {
+
+      // Actualizar ícono del botón según el estado
+      welcomeVideo.addEventListener('play', () => { if (playIcon) playIcon.textContent = '⏸'; });
+      welcomeVideo.addEventListener('pause', () => { if (playIcon) playIcon.textContent = '▶'; });
+
+      // Actualizar barra de progreso y tiempo en tiempo real
+      welcomeVideo.addEventListener('timeupdate', () => {
+        if (!welcomeVideo.duration) return;
+        const pct = (welcomeVideo.currentTime / welcomeVideo.duration) * 100;
+        if (progressFill) progressFill.style.width = `${pct}%`;
+        if (progressBar) progressBar.setAttribute('aria-valuenow', Math.round(pct));
+        if (videoTimeEl) videoTimeEl.textContent = formatTime(welcomeVideo.currentTime);
+      });
+
+      // ★ EVENTO PRINCIPAL: video terminado → desbloquear cursos
+      welcomeVideo.addEventListener('ended', () => {
+        if (playIcon) playIcon.textContent = '▶';
+        unlockCourseContent();
+      });
+
+      // Bloquear el seek: si el usuario intenta adelantar, lo regresamos
+      // (solo aplica si acceden al video desde las DevTools o elementos nativos)
+      let lastTime = 0;
+      welcomeVideo.addEventListener('timeupdate', () => {
+        // Si el usuario avanzó más de 2 s de forma anormal, lo devolvemos
+        if (welcomeVideo.currentTime > lastTime + 2 && !welcomeVideo.ended) {
+          welcomeVideo.currentTime = lastTime;
+        } else {
+          lastTime = welcomeVideo.currentTime;
+        }
+      });
+    }
+
+    // Inicializar al cargar el dashboard (se llama después del login también)
+    initVideoLock();
+
+  </script>
+
+</body>
+
+</html>
