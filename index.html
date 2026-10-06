@@ -62,7 +62,7 @@
       padding: 0;
     }
       /* ============================================================
-      2. NAVEGACIÓN ESTILO DUOLINGO (MOBILE FIRST)
+      2. NAVEGACIÓN ESTILO SERPIENTE (MOBILE FIRST)
       ============================================================ */
     .app-container {
       display: flex;
@@ -171,6 +171,144 @@
       .main-view {
         margin-left: 260px; /* Deja espacio al menú lateral */
         padding: 3rem 4rem;
+      }
+    }
+    /* ============================================================
+   3. CAMINO WIN (RUTA ESTILO DUOLINGO)
+   ============================================================ */
+    /* Contenedor principal de la ruta */
+    .path-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Centramos todo */
+      padding: 4rem 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      gap: 3rem; /* Espacio vertical entre cada nodo */
+    }
+
+    /* La línea conectora (el "camino" de fondo) */
+    .path-container::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      bottom: 60px;
+      left: 50%;
+      width: 4px;
+      background-color: var(--color-border);
+      transform: translateX(-50%);
+      z-index: 0;
+      border-radius: 10px;
+    }
+
+    /* --- El Nodo (Botón Circular) --- */
+    .node-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Alternancia: Derecha / Izquierda para el zigzag */
+    .node-wrapper:nth-child(odd) .node-btn { transform: translateX(40px); }
+    .node-wrapper:nth-child(even) .node-btn { transform: translateX(-40px); }
+
+    /* Ajuste de alternancia en móviles pequeños (menos zigzag) */
+    @media (max-width: 480px) {
+      .node-wrapper:nth-child(odd) .node-btn { transform: translateX(20px); }
+      .node-wrapper:nth-child(even) .node-btn { transform: translateX(-20px); }
+    }
+
+    .node-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      background-color: var(--color-surface);
+      box-shadow: 0 8px 0 var(--color-border), 0 15px 25px rgba(0,0,0,0.05); /* Efecto 3D Chunky */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      position: relative;
+    }
+
+    /* Animación al hacer clic (El botón se hunde) */
+    .node-btn:active {
+      margin-top: 8px; /* Lo empujamos hacia abajo */
+      box-shadow: 0 0 0 var(--color-border), 0 5px 10px rgba(0,0,0,0.05); /* Quitamos la sombra dura inferior */
+      margin-bottom: -8px; /* Compensamos para no empujar el resto del diseño */
+    }
+
+    /* --- Estados del Nodo --- */
+
+    /* 1. Completado (Verde / Gris Claro) */
+    .node-btn.completed {
+      background-color: #E2E8F0; /* Gris completado */
+      box-shadow: 0 8px 0 #CBD5E1, 0 15px 25px rgba(0,0,0,0.05);
+    }
+
+    /* 2. Actual (Naranja brillante con rebote) */
+    .node-btn.current {
+      background-color: var(--color-orange);
+      box-shadow: 0 8px 0 var(--color-orange-dark), 0 15px 25px rgba(255,107,0,0.3);
+      color: white;
+      animation: bounceNode 2s infinite ease-in-out;
+    }
+    @keyframes bounceNode {
+      0%, 100% { transform: translateY(0) translateX(var(--translate-x)); }
+      50% { transform: translateY(-10px) translateX(var(--translate-x)); }
+    }
+    /* Re-aplicamos el translateX para la animación del nodo actual */
+    .node-wrapper:nth-child(odd) .node-btn.current { --translate-x: 40px; }
+    .node-wrapper:nth-child(even) .node-btn.current { --translate-x: -40px; }
+
+    /* 3. Bloqueado (Gris Oscuro con Candado) */
+    .node-btn.locked {
+      background-color: var(--color-surface);
+      box-shadow: 0 8px 0 var(--color-border), 0 15px 25px rgba(0,0,0,0.05);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .node-btn.locked::after {
+      content: '🔒';
+      font-size: 1rem;
+      position: absolute;
+      bottom: -5px;
+      right: -5px;
+      background: white;
+      border-radius: 50%;
+      padding: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* --- Tooltip (Título flotante) --- */
+    .node-tooltip {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      text-align: center;
+      opacity: 0; /* Oculto por defecto */
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      pointer-events: none; /* Para no interferir con los clics */
+    }
+
+    /* Mostrar Tooltip al hacer hover en el botón (Solo PC) */
+    @media (min-width: 768px) {
+      .node-wrapper:hover .node-tooltip {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
@@ -1983,8 +2121,45 @@
 
       <!-- CONTENEDOR DE LA RUTA DE APRENDIZAJE -->
       <main class="main-view">
-        <!-- Aquí armaremos el camino serpenteante en el próximo paso -->
-        <h2>Tu Camino Win (En construcción...) 🚀</h2>
+        
+        <div class="path-container">
+          
+          <!-- Nodo 1: Completado -->
+          <div class="node-wrapper">
+            <!-- Mantenemos tus data-attributes de Supabase/Vercel -->
+            <button class="node-btn completed" data-card-id="card-1" data-content-url="modulos/modulo-historia.html" aria-label="Historia WIN - Completado">
+              ✔️
+            </button>
+            <div class="node-tooltip">Historia WIN <br><span style="color:var(--color-orange);">Completado</span></div>
+          </div>
+
+          <!-- Nodo 2: Actual (Pulsando) -->
+          <div class="node-wrapper">
+            <button class="node-btn current" data-card-id="card-2" data-content-url="modulos/modulo-producto_internet.html" aria-label="Producto Internet - Actual">
+              🌐
+            </button>
+            <div class="node-tooltip">Producto Internet <br><span style="color:var(--color-text-secondary);">En curso</span></div>
+          </div>
+
+          <!-- Nodo 3: Bloqueado -->
+          <div class="node-wrapper">
+            <button class="node-btn locked" disabled aria-label="Planeta Gamer - Bloqueado">
+              🎮
+            </button>
+            <div class="node-tooltip">Planeta Gamer <br><span style="color:var(--color-text-secondary);">Bloqueado</span></div>
+          </div>
+
+          <!-- Nodo 4: Checkpoint (El Formulario) -->
+          <div class="node-wrapper">
+            <!-- Nota cómo este nodo es diferente, rompiendo la forma para el examen -->
+            <button class="node-btn locked" style="border-radius: 16px; width: 120px;" disabled aria-label="Checkpoint 1 - Bloqueado">
+              🏆 Quiz
+            </button>
+            <div class="node-tooltip">Checkpoint 1</div>
+          </div>
+
+        </div>
+
       </main>
     </div>
 
