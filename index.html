@@ -80,9 +80,9 @@
       overflow-x: hidden;
     }
 
-        /* ============================================================
-        PANTALLA DE LOGIN (Idea 3: Red de Nodos + Soft UI)
-        ============================================================ */
+    /* ============================================================
+      PANTALLA DE LOGIN (Idea 3 Mejorada: Mesh Gradient + Orbes Flotantes)
+      ============================================================ */
     #login-screen {
       position: fixed;
       inset: 0;
@@ -101,40 +101,81 @@
       pointer-events: none;
     }
 
-    /* --- Animación de Fondo CSS: Red de Nodos --- */
-    .login-nodes-bg {
+    /* --- Fondo Dinámico: Orbes Flotantes y Malla --- */
+    .login-mesh-bg {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(255, 107, 0, 0.15) 2px, transparent 2px);
-      background-size: 40px 40px;
+      z-index: -3;
+      overflow: hidden;
+      background: #FAFCFF;
+    }
+
+    /* Orbe Naranja */
+    .login-orb-orange {
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: rgba(255, 107, 0, 0.25);
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: floatOrb1 15s infinite alternate ease-in-out;
+    }
+
+    /* Orbe Amarillo */
+    .login-orb-yellow {
+      position: absolute;
+      bottom: -20%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: rgba(255, 208, 0, 0.2);
+      border-radius: 50%;
+      filter: blur(90px);
+      animation: floatOrb2 12s infinite alternate ease-in-out;
+    }
+
+    /* Animaciones de los Orbes */
+    @keyframes floatOrb1 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(10vw, 15vh) scale(1.1); }
+      100% { transform: translate(25vw, 5vh) scale(0.9); }
+    }
+
+    @keyframes floatOrb2 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-15vw, -10vh) scale(1.05); }
+      100% { transform: translate(-5vw, -25vh) scale(1.1); }
+    }
+
+    /* Cuadrícula Tech (Grid) por encima de los orbes */
+    .login-grid-overlay {
+      position: absolute;
+      inset: 0;
       z-index: -2;
+      background-image: 
+        linear-gradient(to right, rgba(255, 107, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 107, 0, 0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+      -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
     }
 
-    .login-nodes-pulse {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.06) 0%, transparent 60%);
-      z-index: -1;
-      animation: pulseNodes 4s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulseNodes {
-      0% { transform: scale(1); opacity: 0.6; }
-      100% { transform: scale(1.5); opacity: 1; }
-    }
-
-    /* --- Tarjeta Soft UI --- */
+    /* --- Tarjeta Soft UI Premium --- */
     .login-card {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.85); /* Semitransparente para ver el fondo */
+      backdrop-filter: blur(12px); /* Desenfoque tipo Apple/Revolut */
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 28px;
       padding: 3rem 2.5rem;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(255, 107, 0, 0.1);
       text-align: center;
       position: relative;
       z-index: 1;
-      border: 1px solid rgba(255, 107, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
 
     .login-title {
@@ -174,7 +215,7 @@
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       color: var(--color-text-primary);
-      background: var(--color-bg);
+      background: #FFFFFF;
       transition: var(--transition);
       margin-bottom: 1.5rem;
       outline: none;
@@ -182,7 +223,6 @@
 
     .login-input:focus {
       border-color: var(--color-orange);
-      background: #FFFFFF;
       box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.12);
     }
 
@@ -1781,36 +1821,38 @@
        PANTALLA DE LOGIN
        Contraseña: edita CONFIG.password en el bloque <script>
        ============================================================ -->
-       <!-- ============================================================
-     2. REEMPLAZA EN TU <body> EL DIV #login-screen COMPLETO
-     ============================================================ -->
-<div id="login-screen" role="dialog" aria-modal="true" aria-label="Inicio de sesión">
-  <!-- Fondo animado: Red de Nodos -->
-  <div class="login-nodes-bg"></div>
-  <div class="login-nodes-pulse"></div>
 
-  <div class="login-card">
-    <div class="header-logo" style="margin-bottom:1rem;">
-      <!-- Ruta ajustada a tu árbol de carpetas actual -->
-      <img src="assets/img/logos/logo-winclic-naranja.png" alt="Logo WinClic" style="max-height:100px; width:auto; display:block; margin:0 auto;" />
-    </div>
-    
-    <h1 class="login-title">¡Bienvenido a WinClic! 🚀</h1>
-    <p class="login-subtitle">Desafío CFD — Ingresa la contraseña de tu agencia para continuar</p>
+      <div id="login-screen" role="dialog" aria-modal="true" aria-label="Inicio de sesión">
+        
+        <!-- Fondo Dinámico -->
+        <div class="login-mesh-bg">
+          <div class="login-orb-orange"></div>
+          <div class="login-orb-yellow"></div>
+        </div>
+        <div class="login-grid-overlay"></div>
 
-    <label class="login-label" for="password-input">Contraseña de Agencia</label>
-    <input id="password-input" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password" aria-describedby="login-error-msg" />
+        <!-- Tarjeta con Blur (Cristal) -->
+        <div class="login-card">
+          <div class="header-logo" style="margin-bottom:1rem;">
+            <img src="assets/img/logos/logo-winclic-naranja.png" alt="Logo WinClic" style="max-height:100px; width:auto; display:block; margin:0 auto;" />
+          </div>
+          
+          <h1 class="login-title">¡Bienvenido a WinClic! 🚀</h1>
+          <p class="login-subtitle">Tu armamento comercial a un solo clic. Ingresa la llave de tu agencia.</p>
 
-    <!-- Mantengo el mismo ID (login-btn) para no romper tu lógica JS -->
-    <button id="login-btn" class="login-btn" type="button">
-      Ingresar ⚡
-    </button>
+          <label class="login-label" for="password-input">Contraseña de Agencia</label>
+          <input id="password-input" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password" aria-describedby="login-error-msg" />
 
-    <div id="login-error-msg" class="login-error" role="alert">
-      ❌ Contraseña incorrecta. Intenta nuevamente.
-    </div>
-  </div>
-</div>
+          <button id="login-btn" class="login-btn" type="button">
+            Ingresar ⚡
+          </button>
+
+          <div id="login-error-msg" class="login-error" role="alert">
+            ❌ Contraseña incorrecta. Intenta nuevamente.
+          </div>
+        </div>
+      </div>
+
 
   <!-- ============================================================
        DASHBOARD PRINCIPAL
