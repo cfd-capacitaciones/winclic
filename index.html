@@ -41,16 +41,16 @@
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* MODO OSCURO (Se activa vía JavaScript) */
+    /* MODO OSCURO PREMIUM (Tonos Carbón/Gris Oscuro) */
     [data-theme="dark"] {
-      --color-bg: #0B0F19; /* Azul noche profundo, tipo Apple */
-      --color-surface: #131A2A; /* Ligeramente más claro para separar elementos */
-      --color-border: #1E293B;
-      --color-text-primary: #F8FAFC;
-      --color-text-secondary: #94A3B8;
-      --color-orange: #FF8533; /* Naranja ligeramente más brillante para contrastar */
-      --shadow-nav: 0 -4px 20px rgba(0, 0, 0, 0.5);
-      --shadow-nav-pc: 4px 0 20px rgba(0, 0, 0, 0.5);
+      --color-bg: #121212; /* Gris casi negro, muy profundo */
+      --color-surface: #1E1E1E; /* Gris carbón para las tarjetas */
+      --color-border: #2A2A2A; /* Bordes sutiles para separar elementos */
+      --color-text-primary: #FFFFFF; /* Blanco puro para máxima legibilidad */
+      --color-text-secondary: #A0A0A0; /* Gris claro para textos secundarios */
+      --color-orange: #FF8533; /* El naranja se mantiene vibrante */
+      --shadow-nav: 0 -4px 20px rgba(0, 0, 0, 0.7);
+      --shadow-nav-pc: 4px 0 20px rgba(0, 0, 0, 0.7);
     }
 
     body {
@@ -88,49 +88,50 @@
       .node-wrapper:nth-child(even) { justify-content: flex-end; }
 
       /* ── EL CUERPO DE LA SERPIENTE (La línea conectora gruesa) ── */
+      /* ── EL CUERPO DE LA SERPIENTE (Línea conectora) ── */
       .node-path {
         position: absolute;
         top: 50%;
-        height: 100%; /* Conecta exactamente al centro del siguiente botón */
-        left: 28px;   /* Se alinea al centro del botón de 80px */
-        right: 28px;
-        z-index: -1;
+        height: 100%;
+        left: 36px;   /* Ajuste fino al centro geométrico del botón de 80px */
+        right: 36px;
+        z-index: 0;   /* CAPA BASE: Debe estar detrás de todo */
         transition: border-color 0.4s ease;
       }
 
-      /* Nodos Izquierdos: La línea baja y dobla a la derecha */
+      /* Nodos Izquierdos: Baja y dobla a la derecha */
       .node-wrapper:nth-child(odd) .node-path {
-        border-left: 24px solid var(--color-border);
-        border-bottom: 24px solid var(--color-border);
-        border-radius: 0 0 0 80px; /* Curva inferior izquierda */
+        border-left: 8px solid var(--color-border); /* Línea más gruesa (8px en vez de 24px) para mejor curva */
+        border-bottom: 8px solid var(--color-border);
+        border-radius: 0 0 0 40px; /* Curva más suave */
       }
 
-      /* Nodos Derechos: La línea baja y dobla a la izquierda */
+      /* Nodos Derechos: Baja y dobla a la izquierda */
       .node-wrapper:nth-child(even) .node-path {
-        border-right: 24px solid var(--color-border);
-        border-bottom: 24px solid var(--color-border);
-        border-radius: 0 0 80px 0; /* Curva inferior derecha */
+        border-right: 8px solid var(--color-border);
+        border-bottom: 8px solid var(--color-border);
+        border-radius: 0 0 40px 0;
       }
 
-      /* Ocultar el camino que sale del último nodo */
-      .node-wrapper:last-child .node-path {
-        display: none;
-      }
-
-      /* Color del camino cuando el nodo está completado */
+      /* Color del camino completado */
       .node-wrapper.completed .node-path {
         border-color: var(--color-orange); 
       }
 
-      /* ── CONTENEDOR DEL BOTÓN Y TEXTO ── */
+      /* Ocultar la línea que sale del último nodo */
+      .node-wrapper:last-child .node-path {
+        display: none;
+      }
+
+      /* ── CONTENEDOR DEL BOTÓN ── */
       .node-content {
         position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 80px; /* Mantiene el centro geométrico perfecto */
-        z-index: 2;
+        width: 80px; 
+        z-index: 2; /* CAPA SUPERIOR: Se sobrepone a la línea */
       }
 
       /* --- El Nodo (Botón Circular) --- */
@@ -149,6 +150,7 @@
         transition: transform 0.1s ease, box-shadow 0.1s ease;
         position: relative;
         flex-shrink: 0;
+        z-index: 3; /* Asegura que el botón siempre esté al frente */
       }
 
       /* Animación al hacer clic */
@@ -361,7 +363,7 @@
 
     .login-input {
       width: 100%;
-      padding: 1rem 1.5rem;
+      padding: 0.7rem 1.5rem;
       border: 2px solid var(--color-border);
       border-radius: 50px;
       font-size: 1rem;
@@ -2032,7 +2034,7 @@
           <span class="nav-text">Ligas</span>
         </a>
 
-        <!-- Interruptor Modo Camaleón -->
+        <!-- El botón de Modo Noche al final -->
         <button id="theme-toggle-btn" class="nav-item theme-toggle-btn" aria-label="Cambiar modo de iluminación">
           <span class="nav-icon theme-icon">🌙</span>
           <span class="nav-text theme-text">Modo Noche</span>
