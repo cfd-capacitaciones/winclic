@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>WinClic · Panel de Administración</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/winclic-ui.css" />
+</head>
+
+<body class="wc-panel">
+
+  <!-- ═════════════ LOGIN ADMIN (Supabase Auth) ═════════════ -->
+  <div class="wc-overlay wc-open" id="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <form class="wc-modal" id="auth-form" novalidate>
+      <img src="assets/img/logos/logo-winclic-naranja.png" alt="WinClic" style="max-height:70px;margin:0 auto .5rem;display:block" />
+      <h2 id="auth-title">Acceso Administrador</h2>
+      <p>Zona restringida. Ingresa con tu cuenta de administrador.</p>
+      <div class="wc-field">
+        <label class="wc-label" for="auth-email">Correo</label>
+        <input class="wc-input" id="auth-email" type="email" autocomplete="username" required />
+      </div>
+      <div class="wc-field">
+        <label class="wc-label" for="auth-pass">Contraseña</label>
+        <input class="wc-input" id="auth-pass" type="password" autocomplete="current-password" required />
+      </div>
+      <button class="wc-btn wc-btn--block" type="submit" id="auth-submit">Entrar ⚡</button>
+    </form>
+  </div>
+
+  <!-- ═════════════ PANEL (oculto hasta autenticar) ═════════════ -->
+  <div id="panel-app" hidden>
+    <header class="wc-panel-top">
+      <h1>Win<span>Clic</span> · Panel</h1>
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <small id="admin-email" style="opacity:.7"></small>
+        <button class="wc-btn wc-btn--yellow wc-btn--sm" id="btn-logout">Salir</button>
+      </div>
+    </header>
+
+    <nav class="wc-tabs" role="tablist" aria-label="Secciones">
+      <button class="wc-tab" role="tab" data-tab="contenidos" aria-selected="true">📁 Contenidos</button>
+      <button class="wc-tab" role="tab" data-tab="quizzes" aria-selected="false">📝 Evaluaciones</button>
+      <button class="wc-tab" role="tab" data-tab="analitica" aria-selected="false">🔥 Mapa de calor</button>
+    </nav>
+
+    <main class="wc-main">
+
+      <!-- ───────── TAB 1: GESTOR DOCUMENTAL ───────── -->
+      <section id="tab-contenidos" role="tabpanel">
+        <div class="wc-card">
+          <h2>➕ Nuevo módulo</h2>
+          <form id="mod-form" novalidate>
+            <div class="wc-grid-2">
+              <div class="wc-field">
+                <label class="wc-label" for="mod-titulo">Título</label>
+                <input class="wc-input" id="mod-titulo" maxlength="60" placeholder="Ej: Producto Internet" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mod-emoji">Emoji del nodo</label>
+                <input class="wc-input" id="mod-emoji" maxlength="4" value="📄" />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mod-tipo">Tipo</label>
+                <select class="wc-select" id="mod-tipo">
+                  <option value="pdf">📄 PDF (subir archivo)</option>
+                  <option value="video">🎬 Video (subir archivo)</option>
+                  <option value="html">🔗 Enlace / página HTML</option>
+                  <option value="quiz">🏆 Evaluación (quiz)</option>
+                </select>
+              </div>
+              <div class="wc-field" id="mod-url-wrap" hidden>
+                <label class="wc-label" for="mod-url">URL</label>
+                <input class="wc-input" id="mod-url" placeholder="modulos/modulo-historia.html o https://…" />
+              </div>
+              <div class="wc-field" id="mod-quiz-wrap" hidden>
+                <label class="wc-label" for="mod-quiz">Quiz asociado</label>
+                <select class="wc-select" id="mod-quiz"></select>
+              </div>
+            </div>
+
+            <div class="wc-field" id="mod-file-wrap">
+              <label class="wc-label">Archivo</label>
+              <div class="wc-drop" id="drop" tabindex="0" role="button" aria-label="Seleccionar archivo">
+                <b id="drop-title">Arrastra tu archivo aquí o toca para elegir</b>
+                <small id="drop-hint" style="color:var(--wc-text-soft)">PDF o Video MP4 · máx. 50 MB</small>
+                <input type="file" id="mod-file" hidden />
+              </div>
+              <div class="wc-bar" id="up-bar"><i id="up-fill"></i></div>
+            </div>
+
+            <button class="wc-btn wc-btn--block" type="submit" id="mod-submit">Publicar módulo 🚀</button>
+          </form>
+        </div>
+
+        <div class="wc-card">
+          <h2>🗺️ Ruta actual de módulos</h2>
+          <div class="wc-list" id="mod-list"><div class="wc-empty">Cargando…</div></div>
+          <input type="file" id="replace-file" hidden />
+        </div>
+      </section>
+
+      <!-- ───────── TAB 2: EDITOR DE QUIZZES ───────── -->
+      <section id="tab-quizzes" role="tabpanel" hidden>
+        <div class="wc-card">
+          <h2>📝 Editor de evaluación (5 preguntas)</h2>
+          <div class="wc-grid-2">
+            <div class="wc-field">
+              <label class="wc-label" for="qz-select">Evaluación</label>
+              <select class="wc-select" id="qz-select"></select>
+            </div>
+            <div class="wc-field">
+              <label class="wc-label" for="qz-id">ID (sin espacios)</label>
+              <input class="wc-input" id="qz-id" placeholder="checkpoint-1" pattern="[a-z0-9-]+" />
+            </div>
+            <div class="wc-field">
+              <label class="wc-label" for="qz-titulo">Título</label>
+              <input class="wc-input" id="qz-titulo" placeholder="Checkpoint 1" />
+            </div>
+            <div class="wc-field">
+              <label class="wc-label" for="qz-min">Nota mínima (%)</label>
+              <input class="wc-input" id="qz-min" type="number" min="0" max="100" value="80" />
+            </div>
+          </div>
+          <div id="qz-questions"></div>
+          <button class="wc-btn wc-btn--block" id="qz-save">Guardar evaluación 💾</button>
+        </div>
+      </section>
+
+      <!-- ───────── TAB 3: MAPA DE CALOR ───────── -->
+      <section id="tab-analitica" role="tabpanel" hidden>
+        <div class="wc-card">
+          <h2>🔥 Preguntas trampa</h2>
+          <div class="wc-grid-2">
+            <div class="wc-field">
+              <label class="wc-label" for="an-quiz">Evaluación</label>
+              <select class="wc-select" id="an-quiz"></select>
+            </div>
+            <div class="wc-field">
+              <label class="wc-label" for="an-rango">Periodo</label>
+              <select class="wc-select" id="an-rango">
+                <option value="7">Últimos 7 días</option>
+                <option value="30" selected>Últimos 30 días</option>
+                <option value="0">Todo el historial</option>
+              </select>
+            </div>
+          </div>
+          <div class="wc-kpis" id="an-kpis"></div>
+          <div class="wc-heat-bars" id="an-bars"></div>
+        </div>
+
+        <div class="wc-card">
+          <h2>🏢 Agencias × Preguntas <small style="font-weight:600;color:var(--wc-text-soft)">(% de error)</small></h2>
+          <div class="wc-matrix-wrap" id="an-matrix"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 1) Librería Supabase  2) Config  3) Cliente  4) Lógica del panel -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/panel.js"></script>
+</body>
+
+</html>

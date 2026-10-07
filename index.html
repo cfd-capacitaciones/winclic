@@ -2085,6 +2085,7 @@
       user-select: auto;
     }
   </style>
+  <link rel="stylesheet" href="css/winclic-ui.css" />
 </head>
 
 <body>
@@ -2364,6 +2365,7 @@
           checkRewardButtonState('b3'); // Verifica estado del botón de recompensa Bloque 3
           checkRewardButtonState('bk'); // Verifica estado del botón de recompensa Backoffice
           initVideoLock();             // Aplica estado del candado de video
+          if (window.PaseAbordaje) PaseAbordaje.abrir(entered); // 🎫 Pase de Abordaje (Supabase)
         }, 500);
 
       } else {
@@ -2914,6 +2916,16 @@
     initVideoLock();
 
   </script>
+
+  <!-- ============================================================
+       CAPA SUPABASE WINCLIC (orden obligatorio)
+       ============================================================ -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/pase-abordaje.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/modulos-loader.js"></script>
 
 </body>
 
