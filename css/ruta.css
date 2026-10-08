@@ -197,7 +197,26 @@
 .wcp-trophy.is-locked ~ .wcp-rays, .wcp-node-box:has(.is-locked) .wcp-rays { display: none; }
 
 /* ── Etiquetas ────────────────────────────────────────────────────────── */
-.wcp-label { text-align: center; max-width: 170px; font: 800 .88rem/1.2 'Outfit', 'Inter', sans-serif; color: var(--wc-text, #1A202C); }
+.wcp-label { 
+  position: absolute; /* CLAVE para que salgan del flujo normal */
+  max-width: 170px; 
+  font: 800 .88rem/1.2 'Outfit', 'Inter', sans-serif; 
+  color: var(--wc-text, #1A202C); 
+  top: 50%; /* Centra verticalmente respecto al círculo */
+  transform: translateY(-50%);
+}
+/* Nodos Izquierdos: Texto a la Derecha */
+.wcp-node-wrap:nth-child(odd) .wcp-label {
+  left: 100%;
+  margin-left: 1.5rem;
+  text-align: left;
+}
+/* Nodos Derechos: Texto a la Izquierda */
+.wcp-node-wrap:nth-child(even) .wcp-label {
+  right: 100%;
+  margin-right: 1.5rem;
+  text-align: right;
+}
 .wcp-label small { display: block; font: 800 .65rem 'Inter', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--wc-orange, #FF6B00); margin-bottom: .15rem; }
 .wcp-label em { display: block; font-style: normal; font: 700 .72rem 'Inter', sans-serif; color: var(--wc-text-soft, #4A5568); margin-top: .15rem; }
 .wcp-label em.ok { color: #2F9E44; }
