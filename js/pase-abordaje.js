@@ -44,6 +44,13 @@
           <label class="wc-label" for="wc-pase-apellido">Apellido</label>
           <input class="wc-input" id="wc-pase-apellido" autocomplete="family-name" placeholder="Ej: Pérez" maxlength="40" required>
         </div>
+        <div class="wc-field">
+          <span class="wc-label">¿Cuál es tu rol?</span>
+          <div class="wc-roles">
+            <label class="wc-role"><input type="radio" name="wc-rol" value="ventas" checked><span>🛒<b>Ventas</b><small>Asesor / Vendedor</small></span></label>
+            <label class="wc-role"><input type="radio" name="wc-rol" value="backoffice"><span>🖥️<b>Backoffice</b><small>Gestión y sistemas</small></span></label>
+          </div>
+        </div>
 
         <button type="submit" class="wc-btn wc-btn--block">Abordar 🚀</button>
       </form>`;
@@ -68,7 +75,7 @@
     }
     const a = sesion.get();
     if (a) {
-      chip.innerHTML = `🧑‍🚀 ${esc(a.nombre)} <small style="opacity:.6">· ${esc(a.agencia)}</small>`;
+      chip.innerHTML = `${a.rol === 'backoffice' ? '🖥️' : '🧑‍🚀'} ${esc(a.nombre)} <small style="opacity:.6">· ${esc(a.agencia)}</small>`;
       chip.classList.add('wc-show');
     } else {
       chip.classList.remove('wc-show');
@@ -97,6 +104,7 @@
       agencia,
       nombre: normalizar(inNom.value),
       apellido: normalizar(inApe.value),
+      rol: overlay.querySelector('input[name="wc-rol"]:checked').value, // 'ventas' | 'backoffice'
       desde: new Date().toISOString()
     };
     sesion.set(nueva);
@@ -129,6 +137,8 @@
     // Pre-llenamos con el último asesor de esta PC (cómodo si es el mismo)
     overlay.querySelector('#wc-pase-nombre').value = (previa && previa.nombre) || '';
     overlay.querySelector('#wc-pase-apellido').value = (previa && previa.apellido) || '';
+    const rolPrevio = (previa && previa.rol) || 'ventas';
+    overlay.querySelector(`input[name="wc-rol"][value="${rolPrevio}"]`).checked = true;
 
     overlay.classList.add('wc-open');
     document.body.style.overflow = 'hidden';

@@ -27,16 +27,18 @@ create table if not exists public.preguntas (
 
 create table if not exists public.modulos (
   id           uuid primary key default gen_random_uuid(),
+  slug         text,                             -- id de la tarjeta en js/curricula.js (ej: 'c01')
   orden        int  not null default 0,
   titulo       text not null,
   emoji        text not null default '📄',
-  tipo         text not null check (tipo in ('pdf','video','html','quiz')),
+  tipo         text not null check (tipo in ('pdf','video','html','imagen','quiz')),
   url          text,                             -- URL pública (Storage o externa/relativa)
   storage_path text,                             -- ruta dentro del bucket (para borrar)
   quiz_id      text references public.quizzes(id) on delete set null,
   activo       boolean not null default true,
   created_at   timestamptz not null default now()
 );
+create index if not exists modulos_slug_idx on public.modulos (slug);
 
 create table if not exists public.evaluaciones (
   id               uuid primary key default gen_random_uuid(),

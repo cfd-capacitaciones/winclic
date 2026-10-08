@@ -1,0 +1,235 @@
+/* =====================================================================
+   WINCLIC · RUTA ESTILO "PATH" (css/ruta.css)
+   Burbuja flotante · camino SVG sólido/punteado · cofres de Quiz ·
+   islas de bloque. Todo CSS puro + SVG inyectado por js/modulos-loader.js
+   Prefijo .wcp-  (no choca con index.html ni winclic-ui.css)
+   ===================================================================== */
+.wcp-path {
+  --wcp-k: 1;                       /* escala del zigzag (se reduce en pantallas chicas) */
+  --wcp-lock: #CBD5E1;              /* color del camino bloqueado */
+  --wcp-gold: #FFC400;
+  --wcp-gold-dark: #B97A00;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; max-width: 440px; margin: 0 auto;
+  padding: 1rem .5rem 5rem;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+[data-theme="dark"] .wcp-path { --wcp-lock: #3B3B3B; }
+@media (max-width: 380px) { .wcp-path { --wcp-k: .7; } }
+
+/* Todo lo que NO es el SVG se pinta por encima del camino */
+.wcp-path > *:not(.wcp-svg) { position: relative; z-index: 1; }
+
+/* ── Camino SVG ───────────────────────────────────────────────────────── */
+.wcp-svg { position: absolute !important; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0 !important; }
+.wcp-seg { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.wcp-seg--done { stroke: var(--wc-orange, #FF6B00); stroke-width: 14; }
+.wcp-seg--shadow { stroke: var(--wc-orange-dark, #D95700); stroke-width: 14; transform: translateY(5px); }
+.wcp-seg--lock { stroke: var(--wcp-lock); stroke-width: 9; stroke-dasharray: 2 18; }
+.wcp-seg--reveal { stroke-dasharray: var(--len) var(--len); animation: wcpReveal 1s cubic-bezier(.4, 0, .2, 1) forwards; }
+@keyframes wcpReveal { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+
+/* ── Cabecera / bienvenida ────────────────────────────────────────────── */
+.wcp-hero {
+  width: 100%; box-sizing: border-box; text-align: center;
+  padding: 1.6rem 1.2rem 1.4rem; margin-bottom: 1rem;
+  background: var(--wc-surface, #fff); color: var(--wc-text, #1A202C);
+  border-radius: 32px; border: 2px solid var(--wc-border, #E2E8F0);
+  box-shadow: 0 8px 0 var(--wc-border, #E2E8F0), 0 20px 40px rgba(0, 0, 0, .06);
+}
+.wcp-hero h2 { font: 900 1.5rem 'Outfit', sans-serif; margin: .2rem 0 .4rem; }
+.wcp-hero p { margin: 0 0 1.1rem; color: var(--wc-text-soft, #4A5568); line-height: 1.45; font-size: .95rem; }
+.wcp-hero-actions { display: flex; gap: .7rem; flex-wrap: wrap; justify-content: center; }
+.wcp-progress { height: 14px; border-radius: 999px; background: var(--wc-border, #E2E8F0); overflow: hidden; margin: 0 0 1.1rem; }
+.wcp-progress > i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--wc-yellow, #FFD000), var(--wc-orange, #FF6B00)); transition: width .6s ease; }
+
+/* ── ISLA / separador de bloque ───────────────────────────────────────── */
+.wcp-island {
+  --isl-bg: linear-gradient(135deg, #FF8A2B, #FF6B00);
+  --isl-edge: #D95700; --isl-ink: #fff; --isl-ink-soft: rgba(255, 255, 255, .85);
+  width: calc(100% + 1rem); box-sizing: border-box;
+  margin: 2.8rem 0 1.4rem; padding: 1.5rem 1.2rem 2.6rem;
+  text-align: center; color: var(--isl-ink);
+  background: var(--isl-bg);
+  /* borde inferior curvo = "isla" */
+  border-radius: 30px 30px 50% 50% / 30px 30px 44px 44px;
+  box-shadow: 0 9px 0 var(--isl-edge), 0 22px 36px rgba(0, 0, 0, .18);
+  overflow: visible;
+}
+.wcp-island[data-tema="black"]       { --isl-bg: linear-gradient(135deg, #2B2B2B, #111); --isl-edge: #000; --isl-ink: #FFD000; --isl-ink-soft: rgba(255, 255, 255, .8); }
+.wcp-island[data-tema="yellow"]      { --isl-bg: linear-gradient(135deg, #FFE24D, #FFD000); --isl-edge: #D9AE00; --isl-ink: #111; --isl-ink-soft: rgba(0, 0, 0, .7); }
+.wcp-island[data-tema="dark-orange"] { --isl-bg: linear-gradient(135deg, #E25F00, #B84700); --isl-edge: #8A3400; }
+/* píldora "NIVEL n" que cuelga del borde superior */
+.wcp-island::before {
+  content: attr(data-nivel);
+  position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+  padding: .3rem 1rem; border-radius: 999px;
+  font: 900 .75rem 'Outfit', sans-serif; letter-spacing: .12em; text-transform: uppercase;
+  background: #111; color: #FFD000; box-shadow: 0 4px 0 #000;
+  white-space: nowrap;
+}
+/* brillo decorativo */
+.wcp-island::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at 15% 0%, rgba(255, 255, 255, .28), transparent 45%), radial-gradient(circle at 90% 100%, rgba(255, 255, 255, .15), transparent 40%);
+}
+.wcp-island-emoji { font-size: 2.2rem; line-height: 1; display: block; margin-bottom: .2rem; }
+.wcp-island h3 { font: 900 1.3rem/1.15 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: .02em; }
+.wcp-island p { margin: .35rem 0 .6rem; font-size: .88rem; color: var(--isl-ink-soft); }
+.wcp-island-meta { display: inline-flex; gap: .4rem; align-items: center; font: 800 .75rem 'Inter', sans-serif; padding: .25rem .8rem; border-radius: 999px; background: rgba(0, 0, 0, .22); color: #fff; }
+.wcp-island.is-locked { filter: grayscale(.9) brightness(.95); opacity: .75; }
+.wcp-island.is-locked .wcp-island-meta::before { content: '🔒'; }
+
+/* ── Filas y nodos ────────────────────────────────────────────────────── */
+.wcp-row { width: 100%; display: flex; justify-content: center; padding: 1.5rem 0 1rem; }
+.wcp-node-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: .9rem;
+  transform: translateX(calc(var(--dx, 0) * 1px * var(--wcp-k)));
+}
+.wcp-node-box { position: relative; display: grid; place-items: center; }
+
+.wcp-node {
+  position: relative; display: grid; place-items: center;
+  width: 84px; height: 84px; border: 0; border-radius: 50%;
+  font-size: 2rem; line-height: 1; cursor: pointer;
+  background: var(--wc-surface, #fff); color: var(--wc-text, #1A202C);
+  box-shadow: 0 8px 0 var(--wc-border, #E2E8F0), 0 16px 26px rgba(0, 0, 0, .08);
+  transition: transform .1s ease, box-shadow .1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.wcp-node:active:not(:disabled), .wcp-chest:active:not(:disabled), .wcp-trophy:active:not(:disabled) { transform: translateY(8px); box-shadow: 0 0 0 transparent, 0 6px 10px rgba(0, 0, 0, .08); }
+.wcp-node:focus-visible, .wcp-chest:focus-visible, .wcp-trophy:focus-visible { outline: 4px solid var(--wc-yellow, #FFD000); outline-offset: 5px; }
+
+.wcp-node.is-done { background: var(--wc-orange, #FF6B00); color: #fff; box-shadow: 0 8px 0 var(--wc-orange-dark, #D95700), 0 16px 26px rgba(255, 107, 0, .3); }
+.wcp-node.is-current {
+  background: var(--wc-yellow, #FFD000); color: #111;
+  box-shadow: 0 8px 0 #D9AE00, 0 0 0 7px rgba(255, 107, 0, .25), 0 16px 30px rgba(255, 208, 0, .5);
+  animation: wcpPulse 2s ease-in-out infinite;
+}
+@keyframes wcpPulse { 50% { box-shadow: 0 8px 0 #D9AE00, 0 0 0 14px rgba(255, 107, 0, .08), 0 16px 30px rgba(255, 208, 0, .5); } }
+.wcp-node.is-locked { opacity: .65; cursor: not-allowed; }
+.wcp-node.is-locked .wcp-ico { filter: grayscale(1); opacity: .6; }
+
+/* insignias (✔ / 🔒) */
+.wcp-badge { position: absolute; right: -4px; bottom: -4px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: .9rem; background: #fff; box-shadow: 0 3px 0 rgba(0, 0, 0, .15); z-index: 4; }
+.wcp-badge--ok { background: #2F9E44; color: #fff; font-weight: 900; }
+[data-theme="dark"] .wcp-badge:not(.wcp-badge--ok) { background: #2A2A2A; }
+
+/* ── 1. BURBUJA DE ACCIÓN (tooltip flotante) ──────────────────────────── */
+.wcp-tip {
+  position: absolute; bottom: calc(100% + 16px); left: 50%;
+  transform: translateX(-50%);
+  padding: .55rem 1rem; white-space: nowrap; pointer-events: none; z-index: 6;
+  font: 900 .85rem 'Outfit', sans-serif; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--wc-orange, #FF6B00); background: #fff;
+  border: 3px solid var(--wc-orange, #FF6B00); border-radius: 16px;
+  box-shadow: 0 5px 0 var(--wc-orange-dark, #D95700);
+  animation: wcpTipBounce 1.3s ease-in-out infinite;
+}
+.wcp-tip::after { /* piquito de la burbuja */
+  content: ''; position: absolute; top: 100%; left: 50%; width: 14px; height: 14px;
+  background: #fff; border-right: 3px solid var(--wc-orange, #FF6B00); border-bottom: 3px solid var(--wc-orange, #FF6B00);
+  transform: translate(-50%, -8px) rotate(45deg); border-bottom-right-radius: 4px;
+}
+[data-theme="dark"] .wcp-tip, [data-theme="dark"] .wcp-tip::after { background: #1E1E1E; }
+@keyframes wcpTipBounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -9px); } }
+/* en cofres y trofeo la burbuja sube un poco más */
+.wcp-chest ~ .wcp-tip { bottom: calc(100% + 22px); }
+.wcp-trophy ~ .wcp-tip { bottom: calc(100% + 30px); }
+
+/* ── 3. NODOS DE QUIZ: COFRE DE "JEFE" ────────────────────────────────── */
+.wcp-chest {
+  position: relative; display: grid; place-items: end center;
+  width: 120px; height: 98px; padding: 0 0 9px; border: 0; cursor: pointer;
+  border-radius: 22px 22px 28px 28px;
+  background: linear-gradient(180deg, #FFE878 0%, #FFC400 100%);
+  box-shadow: 0 11px 0 var(--wcp-gold-dark), 0 22px 44px rgba(255, 196, 0, .65);
+  transition: transform .1s ease, box-shadow .1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.wcp-chest::before { /* tapa del cofre */
+  content: ''; position: absolute; left: -6px; right: -6px; top: -9px; height: 48%;
+  background: linear-gradient(180deg, #FF9A1F, #FF6B00);
+  border-radius: 34px 34px 10px 10px; border-bottom: 5px solid #B84700;
+  box-shadow: inset 0 5px 0 rgba(255, 255, 255, .35);
+  transform-origin: 6% 100%; transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
+}
+.wcp-chest::after { /* cerradura */
+  content: ''; position: absolute; left: 50%; top: 36%; width: 28px; height: 32px; transform: translateX(-50%);
+  background: #111; border: 4px solid #FFE878; border-radius: 9px; box-shadow: 0 3px 0 #B84700; z-index: 2;
+}
+.wcp-chest-label { position: relative; z-index: 3; font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .14em; color: #111; text-transform: uppercase; }
+.wcp-chest-label::before { content: '★ '; color: #B84700; } .wcp-chest-label::after { content: ' ★'; color: #B84700; }
+
+.wcp-halo { /* aura dorada que respira (solo en estado current) */
+  position: absolute; inset: -18px; border-radius: 40px; z-index: -1; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 208, 0, .75), rgba(255, 107, 0, 0) 70%);
+  animation: wcpHalo 1.8s ease-in-out infinite;
+}
+@keyframes wcpHalo { 0%, 100% { transform: scale(.92); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
+
+.wcp-chest.is-current { animation: wcpWiggle 2.4s ease-in-out infinite; }
+@keyframes wcpWiggle { 0%, 80%, 100% { rotate: 0deg; } 85% { rotate: -3deg; } 90% { rotate: 3deg; } 95% { rotate: -2deg; } }
+.wcp-chest.is-done::before { transform: rotate(-16deg) translateY(-6px); } /* cofre ABIERTO */
+.wcp-chest.is-done::after { background: #2F9E44; border-color: #fff; }
+.wcp-chest.is-locked { filter: grayscale(1) brightness(.92); opacity: .75; cursor: not-allowed; box-shadow: 0 11px 0 #9AA4B2, 0 16px 26px rgba(0, 0, 0, .1); }
+
+/* ── Meta Final: TROFEO ───────────────────────────────────────────────── */
+.wcp-trophy {
+  position: relative; display: grid; place-items: center;
+  width: 150px; height: 150px; border: 0; border-radius: 50%; cursor: pointer;
+  font-size: 4.4rem; line-height: 1;
+  background: radial-gradient(circle at 35% 30%, #FFF3A8, #FFC400 55%, #E59A00);
+  box-shadow: 0 12px 0 var(--wcp-gold-dark), 0 0 0 8px #fff, 0 0 0 14px var(--wc-orange, #FF6B00), 0 28px 50px rgba(255, 150, 0, .6);
+  transition: transform .1s ease, box-shadow .1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.wcp-trophy .wcp-ico { filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .18)); }
+.wcp-rays { position: absolute; inset: -60px; z-index: -1; pointer-events: none; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 208, 0, .5) 0 8deg, transparent 8deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 28%, transparent 68%); mask: radial-gradient(circle, #000 28%, transparent 68%);
+  animation: wcpSpin 14s linear infinite; }
+@keyframes wcpSpin { to { transform: rotate(360deg); } }
+.wcp-trophy.is-current { animation: wcpWiggle 2.4s ease-in-out infinite; }
+.wcp-trophy.is-locked { filter: grayscale(1) brightness(.9); opacity: .7; cursor: not-allowed; box-shadow: 0 12px 0 #9AA4B2, 0 0 0 8px var(--wc-surface, #fff), 0 0 0 14px var(--wcp-lock); }
+.wcp-trophy.is-locked ~ .wcp-rays, .wcp-node-box:has(.is-locked) .wcp-rays { display: none; }
+
+/* ── Etiquetas ────────────────────────────────────────────────────────── */
+.wcp-label { text-align: center; max-width: 170px; font: 800 .88rem/1.2 'Outfit', 'Inter', sans-serif; color: var(--wc-text, #1A202C); }
+.wcp-label small { display: block; font: 800 .65rem 'Inter', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--wc-orange, #FF6B00); margin-bottom: .15rem; }
+.wcp-label em { display: block; font-style: normal; font: 700 .72rem 'Inter', sans-serif; color: var(--wc-text-soft, #4A5568); margin-top: .15rem; }
+.wcp-label em.ok { color: #2F9E44; }
+.wcp-node-wrap.is-shaking { animation: wcpShake .4s; }
+@keyframes wcpShake { 25% { translate: -7px 0; } 75% { translate: 7px 0; } }
+
+/* ── Visor: pestañas de contenidos y guía ─────────────────────────────── */
+.wcp-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: .3rem; }
+.wcp-tab { flex: 0 0 auto; padding: .6rem 1rem; border: 0; border-radius: 14px; font: 800 .85rem 'Outfit', sans-serif; cursor: pointer; background: var(--wc-border, #E2E8F0); color: var(--wc-text-soft, #4A5568); box-shadow: 0 4px 0 rgba(0, 0, 0, .1); }
+.wcp-tab[aria-selected="true"] { background: var(--wc-orange, #FF6B00); color: #fff; }
+.wcp-tab.is-seen::after { content: ' ✓'; }
+.wcp-pending { padding: 2.2rem 1rem; border: 3px dashed var(--wc-border, #E2E8F0); border-radius: 22px; color: var(--wc-text-soft, #4A5568); }
+.wcp-guide { text-align: left; display: grid; gap: .9rem; margin-bottom: 1.2rem; }
+.wcp-guide-block { padding: .9rem 1rem; border-radius: 18px; background: var(--wc-bg, #FAFCFF); border: 2px solid var(--wc-border, #E2E8F0); }
+.wcp-guide-block h4 { margin: 0 0 .4rem; font: 900 .95rem 'Outfit', sans-serif; }
+.wcp-guide-block ul { margin: 0; padding-left: 1.1rem; font-size: .88rem; color: var(--wc-text-soft, #4A5568); line-height: 1.55; }
+.wcp-guide-block li.done { color: #2F9E44; font-weight: 700; }
+
+/* ── Roles en el Pase de Abordaje ─────────────────────────────────────── */
+.wc-roles { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.wc-role input { position: absolute; opacity: 0; pointer-events: none; }
+.wc-role span { display: flex; flex-direction: column; align-items: center; gap: .15rem; padding: .9rem .5rem; border-radius: 20px; border: 2px solid var(--wc-border, #E2E8F0); background: var(--wc-surface, #fff); font-size: 1.6rem; cursor: pointer; text-align: center; box-shadow: 0 4px 0 var(--wc-border, #E2E8F0); transition: transform .1s, box-shadow .1s, border-color .2s; }
+.wc-role span b { font: 800 .9rem 'Outfit', sans-serif; color: var(--wc-text, #1A202C); }
+.wc-role span small { font-size: .68rem; font-weight: 600; color: var(--wc-text-soft, #4A5568); text-transform: none; letter-spacing: 0; }
+.wc-role span:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
+.wc-role input:checked + span { border-color: var(--wc-orange, #FF6B00); background: rgba(255, 107, 0, .08); box-shadow: 0 4px 0 var(--wc-orange-dark, #D95700); }
+.wc-role input:focus-visible + span { outline: 3px solid var(--wc-yellow, #FFD000); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wcp-tip, .wcp-halo, .wcp-rays, .wcp-node.is-current, .wcp-chest.is-current, .wcp-trophy.is-current, .wcp-seg--reveal { animation: none !important; }
+  .wcp-seg--reveal { stroke-dasharray: none; }
+}
+
+/* Los nodos bloqueados no se hunden al presionar */
+.wcp-node.is-locked:active, .wcp-chest.is-locked:active, .wcp-trophy.is-locked:active { transform: none; }

@@ -54,24 +54,28 @@
       <!-- ───────── TAB 1: GESTOR DOCUMENTAL ───────── -->
       <section id="tab-contenidos" role="tabpanel">
         <div class="wc-card">
-          <h2>➕ Nuevo módulo</h2>
+          <h2>➕ Subir contenido a una tarjeta</h2>
           <form id="mod-form" novalidate>
             <div class="wc-grid-2">
               <div class="wc-field">
-                <label class="wc-label" for="mod-titulo">Título</label>
-                <input class="wc-input" id="mod-titulo" maxlength="60" placeholder="Ej: Producto Internet" required />
+                <label class="wc-label" for="mod-slot">Tarjeta destino</label>
+                <select class="wc-select" id="mod-slot" required></select>
               </div>
               <div class="wc-field">
-                <label class="wc-label" for="mod-emoji">Emoji del nodo</label>
-                <input class="wc-input" id="mod-emoji" maxlength="4" value="📄" />
+                <label class="wc-label" for="mod-titulo">Nombre de la pestaña</label>
+                <input class="wc-input" id="mod-titulo" maxlength="60" placeholder="Ej: Video, Infografía, Lectura" required />
               </div>
               <div class="wc-field">
-                <label class="wc-label" for="mod-tipo">Tipo</label>
+                <label class="wc-label" for="mod-emoji">Emoji</label>
+                <input class="wc-input" id="mod-emoji" maxlength="4" value="🎬" />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mod-tipo">Tipo de contenido</label>
                 <select class="wc-select" id="mod-tipo">
-                  <option value="pdf">📄 PDF (subir archivo)</option>
                   <option value="video">🎬 Video (subir archivo)</option>
+                  <option value="pdf">📄 PDF (subir archivo)</option>
+                  <option value="imagen">🖼️ Infografía / imagen (subir archivo)</option>
                   <option value="html">🔗 Enlace / página HTML</option>
-                  <option value="quiz">🏆 Evaluación (quiz)</option>
                 </select>
               </div>
               <div class="wc-field" id="mod-url-wrap" hidden>
@@ -99,7 +103,7 @@
         </div>
 
         <div class="wc-card">
-          <h2>🗺️ Ruta actual de módulos</h2>
+          <h2>🗺️ Contenidos publicados (por tarjeta)</h2>
           <div class="wc-list" id="mod-list"><div class="wc-empty">Cargando…</div></div>
           <input type="file" id="replace-file" hidden />
         </div>
@@ -116,7 +120,8 @@
             </div>
             <div class="wc-field">
               <label class="wc-label" for="qz-id">ID (sin espacios)</label>
-              <input class="wc-input" id="qz-id" placeholder="checkpoint-1" pattern="[a-z0-9-]+" />
+              <input class="wc-input" id="qz-id" list="qz-ids" placeholder="quiz-b1" pattern="[a-z0-9-]+" />
+              <datalist id="qz-ids"><option value="quiz-b1"><option value="quiz-b2"><option value="quiz-b3"><option value="quiz-b4"><option value="quiz-general"></datalist>
             </div>
             <div class="wc-field">
               <label class="wc-label" for="qz-titulo">Título</label>
@@ -166,6 +171,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="js/curricula.js"></script>
   <script src="js/panel.js"></script>
 </body>
 

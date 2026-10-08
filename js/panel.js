@@ -59,14 +59,25 @@
   /* ═══════════════════ 2. GESTOR DOCUMENTAL ═══════════════════ */
   let archivoElegido = null;
 
+  /* Tarjetas disponibles = las de js/curricula.js (única fuente de verdad) */
+  const SLOTS = [];
+  ((window.WC_CURRICULA && window.WC_CURRICULA.bloques) || []).forEach(b =>
+    b.items.filter(i => i.tipo === 'tarjeta').forEach(i =>
+      SLOTS.push({ id: i.id, titulo: `${i.n}. ${i.titulo}`, bloque: b.titulo, soloRol: b.soloRol })));
+  const nombreSlot = (s) => (SLOTS.find(x => x.id === s) || {}).titulo || '⚠️ Sin tarjeta (se ignora)';
+  $('mod-slot').innerHTML = '<option value="">— Elige la tarjeta —</option>' + SLOTS.map(s =>
+    `<option value="${esc(s.id)}">${esc(s.titulo)} · ${esc(s.bloque)}${s.soloRol ? ' (Backoffice)' : ''}</option>`).join('');
+
   const tipoSel = $('mod-tipo');
   function ajustarFormularioTipo() {
     const t = tipoSel.value;
-    $('mod-file-wrap').hidden = !(t === 'pdf' || t === 'video');
+    const conArchivo = t === 'pdf' || t === 'video' || t === 'imagen';
+    $('mod-file-wrap').hidden = !conArchivo;
     $('mod-url-wrap').hidden = t !== 'html';
-    $('mod-quiz-wrap').hidden = t !== 'quiz';
-    $('mod-emoji').value = { pdf: '📄', video: '🎬', html: '🔗', quiz: '🏆' }[t];
-    $('drop-hint').textContent = (t === 'pdf' ? 'PDF' : 'Video MP4') + ` · máx. ${C.MAX_UPLOAD_MB} MB`;
+    $('mod-quiz-wrap').hidden = true;
+    $('mod-emoji').value = { pdf: '📄', video: '🎬', imagen: '🖼️', html: '🔗' }[t] || '📄';
+    $('drop-hint').textContent = ({ pdf: 'PDF', video: 'Video MP4', imagen: 'Imagen PNG / JPG / WebP' }[t] || '') + ` · máx. ${C.MAX_UPLOAD_MB} MB`;
+    if (conArchivo) $('mod-file').accept = { pdf: 'application/pdf', video: 'video/*', imagen: 'image/*' }[t];
     archivoElegido = null; $('mod-file').value = '';
     $('drop-title').textContent = 'Arrastra tu archivo aquí o toca para elegir';
   }
@@ -86,6 +97,7 @@
     if (file.size > C.MAX_UPLOAD_MB * 1024 * 1024) return `El archivo pesa ${(file.size / 1048576).toFixed(1)} MB (máx. ${C.MAX_UPLOAD_MB} MB).`;
     if (tipo === 'pdf' && file.type !== 'application/pdf') return 'Debe ser un PDF.';
     if (tipo === 'video' && !file.type.startsWith('video/')) return 'Debe ser un video (MP4 recomendado).';
+    if (tipo === 'imagen' && !file.type.startsWith('image/')) return 'Debe ser una imagen (PNG, JPG o WebP).';
     return null;
   }
   function elegirArchivo(file) {
@@ -133,12 +145,15 @@
     const tipo = tipoSel.value;
     if (titulo.length < 2) { toast('Escribe un título', 'err'); return; }
 
-    const fila = { titulo, emoji: $('mod-emoji').value.trim() || '📄', tipo, activo: true };
+    const slug = $('mod-slot').value;
+    if (!slug) { toast('Elige la tarjeta destino', 'err'); return; }
+
+    const fila = { slug, titulo, emoji: $('mod-emoji').value.trim() || '📄', tipo, activo: true };
     const btn = $('mod-submit');
     btn.disabled = true; btn.textContent = 'Publicando…';
 
     try {
-      if (tipo === 'pdf' || tipo === 'video') {
+      if (tipo === 'pdf' || tipo === 'video' || tipo === 'imagen') {
         const err = validarArchivo(archivoElegido, tipo);
         if (err) throw new Error(err);
         barra(0);
@@ -171,22 +186,27 @@
   });
 
   async function listarModulos() {
-    const { data, error } = await db.from('modulos').select('*').order('orden');
+    const { data: crudo, error } = await db.from('modulos').select('*').order('orden');
     const cont = $('mod-list');
     if (error) { cont.innerHTML = `<div class="wc-empty">Error: ${esc(error.message)}</div>`; return; }
-    if (!data.length) { cont.innerHTML = '<div class="wc-empty">Aún no hay módulos. ¡Sube el primero!</div>'; return; }
+    if (!crudo.length) { cont.innerHTML = '<div class="wc-empty">Aún no hay contenidos. ¡Sube el primero!</div>'; return; }
+
+    // Agrupado por tarjeta, en el mismo orden que la currícula
+    const idxSlot = (s) => { const i = SLOTS.findIndex(x => x.id === s); return i < 0 ? 999 : i; };
+    const data = crudo.slice().sort((a, b) => idxSlot(a.slug) - idxSlot(b.slug) || a.orden - b.orden);
+    const mismoSlot = (i, j) => data[j] && data[i].slug === data[j].slug;
 
     cont.innerHTML = data.map((m, i) => `
       <div class="wc-row ${m.activo ? '' : 'wc-off'}" data-id="${m.id}">
         <span class="wc-row-emoji">${esc(m.emoji)}</span>
         <div class="wc-row-main">
-          <b>${i + 1}. ${esc(m.titulo)}</b>
+          <b>${esc(nombreSlot(m.slug))} · ${esc(m.titulo)}</b>
           <small><span class="wc-pill">${esc(m.tipo)}</span> ${m.activo ? '' : '· oculto'}</small>
         </div>
-        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="up" ${i === 0 ? 'disabled' : ''} title="Subir">↑</button>
-        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="down" ${i === data.length - 1 ? 'disabled' : ''} title="Bajar">↓</button>
-        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="edit" title="Renombrar">✏️</button>
-        ${(m.tipo === 'pdf' || m.tipo === 'video') ? '<button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="replace" title="Reemplazar archivo">🔄</button>' : ''}
+        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="up" ${mismoSlot(i, i - 1) ? '' : 'disabled'} title="Subir (dentro de la tarjeta)">↑</button>
+        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="down" ${mismoSlot(i, i + 1) ? '' : 'disabled'} title="Bajar (dentro de la tarjeta)">↓</button>
+        <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="edit" title="Renombrar pestaña">✏️</button>
+        ${['pdf', 'video', 'imagen'].includes(m.tipo) ? '<button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="replace" title="Reemplazar archivo">🔄</button>' : ''}
         <button class="wc-btn wc-btn--ghost wc-btn--sm" data-a="toggle" title="Mostrar/ocultar">${m.activo ? '👁️' : '🙈'}</button>
         <button class="wc-btn wc-btn--danger wc-btn--sm" data-a="del" title="Eliminar">🗑️</button>
       </div>`).join('');
@@ -231,7 +251,7 @@
     return new Promise((resolve) => {
       const inp = $('replace-file');
       inp.value = '';
-      inp.accept = m.tipo === 'pdf' ? 'application/pdf' : 'video/*';
+      inp.accept = { pdf: 'application/pdf', video: 'video/*', imagen: 'image/*' }[m.tipo] || '*/*';
       inp.onchange = async () => {
         const f = inp.files[0];
         const err = validarArchivo(f, m.tipo);
