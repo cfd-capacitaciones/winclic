@@ -310,12 +310,11 @@
         padding: 4px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       }
-
-      /* ── TEXTOS FIJOS (Estilo Memrise) ── */
+      
+      /* ── TEXTOS INTERCALADOS (Izquierda / Derecha) ── */
       .node-label {
         position: absolute;
         width: max-content;
-        text-align: center;
         font-size: 0.85rem;
         font-weight: 700;
         color: var(--color-text-primary);
@@ -324,31 +323,36 @@
         border-radius: 12px;
         padding: 0.4rem 0.8rem;
         pointer-events: none; /* Evita interferir con los clics */
+        top: 50%; /* Centra el texto verticalmente con el círculo */
+        transform: translateY(-50%);
       }
 
-      /* En celulares: los textos van debajo del botón */
-      .node-label {
-        top: 100%;
-        margin-top: 1rem;
+      /* Nodos Izquierdos: El texto va a la DERECHA del círculo */
+      .node-wrapper:nth-child(odd) .node-label {
+        left: 100%;
+        margin-left: 1.5rem; /* Espacio entre el círculo y el texto */
+        text-align: left;
       }
 
-      /* En PC: los textos van a los costados para no tapar el camino */
-      @media (min-width: 768px) {
-        .node-wrapper:nth-child(odd) .node-label {
-          top: 50%;
-          left: 100%;
-          transform: translateY(-50%);
-          margin-top: 0;
-          margin-left: 1.5rem;
-          text-align: left;
-        }
-        .node-wrapper:nth-child(even) .node-label {
-          top: 50%;
-          right: 100%;
-          transform: translateY(-50%);
-          margin-top: 0;
-          margin-right: 1.5rem;
-          text-align: right;
+      /* Nodos Derechos: El texto va a la IZQUIERDA del círculo */
+      .node-wrapper:nth-child(even) .node-label {
+        right: 100%;
+        margin-right: 1.5rem; /* Espacio entre el círculo y el texto */
+        text-align: right;
+      }
+
+      /* ── COMPORTAMIENTO EN MÓVILES (Opcional, pero recomendado) ── */
+      /* Si la pantalla es muy pequeña, es mejor que vuelvan abajo para que no se salgan de la pantalla */
+      @media (max-width: 480px) {
+        .node-label {
+          top: 100%;
+          left: 50% !important;
+          right: auto !important;
+          transform: translateX(-50%) !important;
+          margin-top: 1rem;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          text-align: center !important;
         }
       }
 
