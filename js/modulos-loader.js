@@ -77,6 +77,7 @@
   function nodoHTML(p, dx) {
     const claseBase = p.tipo === 'quiz' ? 'wcp-chest' : p.tipo === 'meta' ? 'wcp-trophy' : 'wcp-node';
     const cls = `${claseBase} is-${p.estado}`;
+    const alignClass = dx > 0 ? 'is-align-left' : (dx < 0 ? 'is-align-right' : 'is-align-right');
     const insignia = p.estado === 'done' ? '<span class="wcp-badge wcp-badge--ok">✓</span>'
       : p.estado === 'locked' ? '<span class="wcp-badge">🔒</span>' : '';
     const extra = p.tipo === 'quiz' && p.estado === 'current' ? '<span class="wcp-halo"></span>'
@@ -88,7 +89,7 @@
     const id = esc(p.id);
 
     return `
-      <div class="wcp-node-wrap" data-id="${id}" data-estado="${p.estado}" style="--dx:${dx}">
+      <div class="wcp-node-wrap ${alignClass}" data-id="${id}" data-estado="${p.estado}" style="--dx:${dx}">
         <div class="wcp-node-box">
           ${extra}
           <button type="button" class="${cls}" aria-label="${esc(p.titulo)} — ${p.estado}" ${p.estado === 'locked' ? 'aria-disabled="true"' : ''}>
@@ -307,39 +308,81 @@
     const hecho = p.estado === 'done';
     const { tabs, body, ok } = abrirVisorBase(`${p.emoji || '📄'} ${p.titulo}`);
 
-    const requeridos = lista.map((c, i) => (c.url ? i : -1)).filter(i => i >= 0);
-    const vistos = new Set();
+    let maxDesbloqueado = hecho ? lista.length - 1 : 0;
 
     function refrescarBoton() {
       ok.hidden = false;
       if (hecho) { ok.disabled = true; ok.textContent = '✅ Ya completado'; return; }
-      if (!requeridos.length) {
+      if (lista.length === 0) {
         ok.disabled = !PERMITIR_COMPLETAR_SIN_CONTENIDO;
         ok.textContent = PERMITIR_COMPLETAR_SIN_CONTENIDO ? 'Marcar como completado ✅' : 'Contenido próximamente';
         return;
       }
-      const faltan = requeridos.filter(i => !vistos.has(i)).length;
-      ok.disabled = faltan > 0;
-      ok.textContent = faltan > 0 ? `Revisa todo el contenido (${requeridos.length - faltan}/${requeridos.length})` : 'Marcar como completado ✅';
+      const todoDesbloqueado = maxDesbloqueado >= lista.length - 1;
+      ok.disabled = !todoDesbloqueado;
+      ok.textContent = !todoDesbloqueado ? 'Completa los pasos anteriores' : 'Marcar como completado ✅';
+    }
+
+    function pintarTab(c, i) {
+      const lockIcon = (i > maxDesbloqueado) ? '🔒 ' : '';
+      const cl = (i > maxDesbloqueado) ? 'wcp-tab is-locked' : 'wcp-tab';
+      return `<button type="button" role="tab" class="${cl}" aria-selected="false" data-idx="${i}" ${i > maxDesbloqueado ? 'disabled' : ''}>${lockIcon}${ICONO_TIPO[c.tipo] || '📎'} ${esc(c.titulo)}</button>`;
+    }
+
+    function renderTabs(activeIdx) {
+      if (lista.length > 1) {
+        tabs.innerHTML = lista.map((c, i) => pintarTab(c, i)).join('');
+        const activeTab = tabs.querySelector(`[data-idx="${activeIdx}"]`);
+        if (activeTab) activeTab.setAttribute('aria-selected', 'true');
+      }
+    }
+
+    function avanzarAlSiguiente(actualIdx) {
+      if (hecho) return;
+      const nextIdx = actualIdx + 1;
+      if (nextIdx > maxDesbloqueado && nextIdx < lista.length) {
+        maxDesbloqueado = nextIdx;
+        renderTabs(nextIdx);
+        const nextTab = tabs.querySelector(`[data-idx="${nextIdx}"]`);
+        if (nextTab) nextTab.classList.add('is-just-unlocked');
+        mostrar(nextIdx);
+      } else if (nextIdx >= lista.length) {
+        maxDesbloqueado = nextIdx;
+        renderTabs(actualIdx);
+        refrescarBoton();
+      }
     }
 
     function mostrar(i) {
       const c = lista[i];
-      body.innerHTML = pintarContenido(c);
-      tabs.querySelectorAll('.wcp-tab').forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
-      if (!c.url) return refrescarBoton();
-      if (c.tipo === 'video') {
+      let contentHtml = pintarContenido(c);
+
+      if (!hecho && c.url && c.tipo !== 'video' && i === maxDesbloqueado) {
+        const txtBoton = (i === lista.length - 1) ? 'Finalizar revisión ✅' : 'Siguiente paso ➡️';
+        contentHtml += `<div style="text-align:center; margin-top: 1.5rem;"><button type="button" class="wc-btn wc-btn--yellow" id="wcv-btn-avanzar">${txtBoton}</button></div>`;
+      }
+
+      body.innerHTML = contentHtml;
+      renderTabs(i);
+
+      if (c.tipo === 'video' && !hecho && i === maxDesbloqueado) {
         const v = body.querySelector('video');
-        if (hecho) vistos.add(i);
-        v.addEventListener('ended', () => { vistos.add(i); tabs.children[i] && tabs.children[i].classList.add('is-seen'); refrescarBoton(); }, { once: true });
-      } else { vistos.add(i); tabs.children[i] && tabs.children[i].classList.add('is-seen'); }
+        if (v) v.addEventListener('ended', () => avanzarAlSiguiente(i), { once: true });
+      }
+
+      const btnAvanzar = body.querySelector('#wcv-btn-avanzar');
+      if (btnAvanzar) btnAvanzar.onclick = () => avanzarAlSiguiente(i);
+
       refrescarBoton();
     }
 
     if (lista.length > 1) {
-      tabs.innerHTML = lista.map((c, i) => `<button type="button" role="tab" class="wcp-tab" aria-selected="false">${ICONO_TIPO[c.tipo] || '📎'} ${esc(c.titulo)}</button>`).join('');
-      tabs.onclick = (e) => { const t = e.target.closest('.wcp-tab'); if (t) mostrar([...tabs.children].indexOf(t)); };
+      tabs.onclick = (e) => { 
+        const t = e.target.closest('.wcp-tab'); 
+        if (t && !t.disabled) mostrar(Number(t.dataset.idx)); 
+      };
     }
+    
     if (lista.length) mostrar(0);
     else { body.innerHTML = pintarContenido({ url: '' }); refrescarBoton(); }
 

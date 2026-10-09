@@ -13,10 +13,19 @@
   display: flex; flex-direction: column; align-items: center;
   width: 100%; max-width: 440px; margin: 0 auto;
   padding: 1rem .5rem 5rem;
+  --lbl-gap: 18px;                  /* separación círculo ↔ etiqueta */
   box-sizing: border-box;
   isolation: isolate;
 }
 [data-theme="dark"] .wcp-path { --wcp-lock: #3B3B3B; }
+@media (max-width: 480px) {
+  .wcp-path {
+    --lbl-gap: 14px;
+    /* margen lateral mínimo: ninguna etiqueta toca el borde de la pantalla */
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+}
 @media (max-width: 380px) { .wcp-path { --wcp-k: .7; } }
 
 /* Todo lo que NO es el SVG se pinta por encima del camino */
@@ -83,10 +92,11 @@
 .wcp-island.is-locked .wcp-island-meta::before { content: '🔒'; }
 
 /* ── Filas y nodos ────────────────────────────────────────────────────── */
-.wcp-row { width: 100%; display: flex; justify-content: center; padding: 1.5rem 0 1rem; }
+.wcp-row { width: 100%; display: flex; justify-content: center; padding: 2.4rem 0 2.2rem; }
 .wcp-node-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: .9rem;
-  transform: translateX(calc(var(--dx, 0) * 1px * var(--wcp-k)));
+  position: relative;                /* ancla de la etiqueta absoluta */
+  display: flex; flex-direction: column; align-items: center;
+  transform: translateX(calc(var(--dx, 0) * 1px * var(--wcp-k) + var(--nx, 0px)));
 }
 .wcp-node-box { position: relative; display: grid; place-items: center; }
 
@@ -197,29 +207,37 @@
 .wcp-trophy.is-locked ~ .wcp-rays, .wcp-node-box:has(.is-locked) .wcp-rays { display: none; }
 
 /* ── Etiquetas ────────────────────────────────────────────────────────── */
-.wcp-label { 
-  position: absolute; /* CLAVE para que salgan del flujo normal */
-  max-width: 170px; 
-  font: 800 .88rem/1.2 'Outfit', 'Inter', sans-serif; 
-  color: var(--wc-text, #1A202C); 
-  top: 50%; /* Centra verticalmente respecto al círculo */
-  transform: translateY(-50%);
+/* ── Etiquetas: al costado del nodo, hacia el lado donde SOBRA espacio ───
+   El JS pone en cada .wcp-node-wrap:
+     .is-align-left   → nodo desplazado a la DERECHA  → etiqueta a su IZQUIERDA
+     .is-align-right  → nodo desplazado a la IZQUIERDA → etiqueta a su DERECHA
+     .is-compact      → poco espacio: tipografía/padding reducidos
+     .is-align-below  → casi sin espacio: la etiqueta baja debajo del círculo
+   --lbl-w  = ancho máximo medido en vivo (nunca se corta con el borde)
+   --nx     = micro-offset horizontal del nodo para ganar espacio en pantallas angostas */
+.wcp-label {
+  position: absolute; top: 50%; z-index: 5;
+  width: max-content; max-width: var(--lbl-w, 150px); box-sizing: border-box;
+  padding: .45rem .75rem;
+  font: 800 .88rem/1.2 'Outfit', 'Inter', sans-serif; color: var(--wc-text, #1A202C);
+  background: var(--wc-surface, #fff);
+  border: 2px solid var(--wc-border, #E2E8F0); border-radius: 16px;
+  box-shadow: 0 3px 0 var(--wc-border, #E2E8F0);
+  overflow-wrap: anywhere; hyphens: auto; cursor: pointer;
 }
-/* Nodos Izquierdos: Texto a la Derecha */
-.wcp-node-wrap:nth-child(odd) .wcp-label {
-  left: 100%;
-  margin-left: 1.5rem;
-  text-align: left;
-}
-/* Nodos Derechos: Texto a la Izquierda */
-.wcp-node-wrap:nth-child(even) .wcp-label {
-  right: 100%;
-  margin-right: 1.5rem;
-  text-align: right;
-}
+.wcp-node-wrap.is-align-left  .wcp-label { right: calc(100% + var(--lbl-gap)); transform: translateY(-50%); text-align: right; }
+.wcp-node-wrap.is-align-right .wcp-label { left:  calc(100% + var(--lbl-gap)); transform: translateY(-50%); text-align: left; }
+.wcp-node-wrap.is-align-below .wcp-label { position: static; transform: none; margin-top: .9rem; text-align: center; }
+.wcp-node-wrap.is-compact .wcp-label { padding: .3rem .5rem; font-size: .76rem; line-height: 1.15; border-radius: 14px; }
+.wcp-node-wrap.is-compact .wcp-label small { font-size: .55rem; }
+.wcp-node-wrap:has(.wcp-trophy) { --lbl-gap: 40px; }   /* el trofeo tiene anillos de 22px */
 .wcp-label small { display: block; font: 800 .65rem 'Inter', sans-serif; letter-spacing: .1em; text-transform: uppercase; color: var(--wc-orange, #FF6B00); margin-bottom: .15rem; }
 .wcp-label em { display: block; font-style: normal; font: 700 .72rem 'Inter', sans-serif; color: var(--wc-text-soft, #4A5568); margin-top: .15rem; }
 .wcp-label em.ok { color: #2F9E44; }
+@media (max-width: 480px) {
+  .wcp-label { font-size: .82rem; padding: .35rem .6rem; }
+  .wcp-label small { font-size: .58rem; }
+}
 .wcp-node-wrap.is-shaking { animation: wcpShake .4s; }
 @keyframes wcpShake { 25% { translate: -7px 0; } 75% { translate: 7px 0; } }
 
@@ -229,6 +247,26 @@
 .wcp-tab[aria-selected="true"] { background: var(--wc-orange, #FF6B00); color: #fff; }
 .wcp-tab.is-seen::after { content: ' ✓'; }
 .wcp-pending { padding: 2.2rem 1rem; border: 3px dashed var(--wc-border, #E2E8F0); border-radius: 22px; color: var(--wc-text-soft, #4A5568); }
+
+/* ── Flujo secuencial: Video → Lectura → Infografía → PDF ─────────────── */
+.wcp-tab { transition: opacity .3s ease, filter .3s ease, background .2s ease; }
+.wcp-tab.is-locked {                       /* paso aún no desbloqueado */
+  pointer-events: none; cursor: not-allowed;
+  opacity: .4; filter: grayscale(1); box-shadow: none;
+}
+.wcp-tab.is-just-unlocked { animation: wcpUnlock .9s ease; }
+@keyframes wcpUnlock {
+  0%   { transform: scale(.85); box-shadow: 0 0 0 0 rgba(255, 107, 0, .7); }
+  50%  { transform: scale(1.12); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 16px rgba(255, 107, 0, 0); }
+}
+.wcp-hint { margin: -.3rem 0 1rem; text-align: left; font-size: .85rem; font-weight: 700; color: var(--wc-text-soft, #4A5568); }
+.wcp-hint b { color: var(--wc-orange, #FF6B00); }
+.wcp-next { margin-top: 1.1rem; }
+.wcp-download { padding: 2rem 1.2rem; border-radius: 24px; background: var(--wc-bg, #FAFCFF); border: 2px solid var(--wc-border, #E2E8F0); text-align: center; }
+.wcp-download h3 { margin: .4rem 0 .3rem; font: 900 1.15rem 'Outfit', sans-serif; }
+.wcp-download p { margin: 0 0 1.2rem; font-size: .9rem; }
+.wcp-link { display: block; margin-top: .9rem; font-weight: 700; font-size: .85rem; color: var(--wc-orange, #FF6B00); }
 .wcp-guide { text-align: left; display: grid; gap: .9rem; margin-bottom: 1.2rem; }
 .wcp-guide-block { padding: .9rem 1rem; border-radius: 18px; background: var(--wc-bg, #FAFCFF); border: 2px solid var(--wc-border, #E2E8F0); }
 .wcp-guide-block h4 { margin: 0 0 .4rem; font: 900 .95rem 'Outfit', sans-serif; }
