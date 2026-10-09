@@ -290,3 +290,10 @@
 
 /* Los nodos bloqueados no se hunden al presionar */
 .wcp-node.is-locked:active, .wcp-chest.is-locked:active, .wcp-trophy.is-locked:active { transform: none; }
+.wcp-modal-content,
+.wcp-modal-body iframe,
+#content-frame-wrapper iframe {
+  height: 540px !important;
+  max-height: 70vh !important;
+  margin-bottom: 0 !important;
+}

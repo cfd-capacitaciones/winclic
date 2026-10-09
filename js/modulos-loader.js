@@ -362,15 +362,6 @@
       const c = lista[i];
       let contentHtml = pintarContenido(c);
 
-      // Render button if not completed, we're on the max unlocked tab, and it's either not a video or has no URL
-      if (!hecho && i === maxDesbloqueado) {
-        const esVideoConUrl = (c.tipo === 'video' && c.url);
-        if (!esVideoConUrl || (!c.url && PERMITIR_COMPLETAR_SIN_CONTENIDO)) {
-          const txtBoton = (i === lista.length - 1) ? 'Finalizar revisión ✅' : 'Siguiente paso ➡️';
-          contentHtml += `<div style="text-align:center; margin-top: 1.5rem;"><button type="button" class="wc-btn wc-btn--yellow" id="wcv-btn-avanzar">${txtBoton}</button></div>`;
-        }
-      }
-
       body.innerHTML = contentHtml;
       renderTabs(i);
 
