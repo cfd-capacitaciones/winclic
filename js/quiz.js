@@ -11,7 +11,7 @@
 (function () {
   'use strict';
   const { db, config, ls, esc, toast, formatCountdown, isNetworkError, outbox } = window.WC;
-  const LOCK_MS = config.LOCK_HORAS * 3600 * 1000;
+  const LOCK_MS = 30 * 60 * 1000;
 
   let overlay, box, timer = null;
   let S = null; // estado de la sesión de quiz en curso
