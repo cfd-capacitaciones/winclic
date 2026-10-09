@@ -18,7 +18,7 @@ window.WC_CURRICULA = Object.freeze({
   /* ── CABECERA: Bienvenida / Guía de contenidos ── */
   cabecera: {
     titulo: '¡Línea de Partida, Piloto!',
-    subtitulo: 'Supera cada sector a la velocidad de la fibra óptica, calibra tu transmisión en los Pit Stops y clasifica para el Gran Premio con tu Coach Made.',
+    subtitulo: 'Supera cada sector a la velocidad de la fibra óptica, calibra tu transmisión durante las pausas y clasifica al Gran Premio.',
     video: { titulo: 'Video de bienvenida', url: 'assets/video/videobienvenida.mp4' }
   },
 

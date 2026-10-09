@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 362.67 512">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #666;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-11 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #0065e3;
+      }
+
+      .cls-3 {
+        fill: #338bf6;
+      }
+
+      .cls-4 {
+        fill: #4fb53f;
+      }
+
+      .cls-5 {
+        fill: #e5e5e7;
+      }
+
+      .cls-6 {
+        fill: #333;
+      }
+
+      .cls-7 {
+        fill: #cbcace;
+      }
+
+      .cls-8 {
+        fill: #858585;
+      }
+
+      .cls-9 {
+        fill: #ffb012;
+      }
+
+      .cls-10 {
+        fill: #4f4f4f;
+      }
+
+      .cls-11 {
+        fill: #ffdb2d;
+      }
+    </style>
+  </defs>
+  <rect class="cls-8" x="190.33" y="91.67" width="141.46" height="146.83"/>
+  <polygon class="cls-10" points="190.33 172.67 190.33 238.49 271.83 178.06 190.33 172.67"/>
+  <polygon class="cls-2" points="78.83 0 78.83 28.61 93.83 99.67 78.83 178.06 78.83 394.67 108.83 394.67 108.83 0 78.83 0"/>
+  <rect class="cls-5" x="78.83" y="28.61" width="193" height="149.45"/>
+  <rect class="cls-7" x="190.33" y="28.61" width="81.5" height="149.45"/>
+  <rect class="cls-4" y="482" width="362.67" height="30"/>
+  <rect class="cls-11" x="49" y="379.67" width="264.67" height="132.33"/>
+  <rect class="cls-9" x="181.33" y="379.67" width="132.33" height="132.33"/>
+  <rect class="cls-3" x="128" y="430.83" width="106.67" height="30"/>
+  <g>
+    <rect class="cls-1" x="130.33" y="58.34" width="30" height="30"/>
+    <rect class="cls-1" x="160.33" y="88.34" width="30" height="30"/>
+  </g>
+  <rect class="cls-6" x="190.33" y="118.34" width="30" height="30"/>
+  <rect class="cls-2" x="181.34" y="430.83" width="53.33" height="30"/>
+</svg>
