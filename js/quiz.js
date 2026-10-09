@@ -134,7 +134,7 @@
       <div class="wc-emoji-big">🏆</div>
       <h2>${esc(S.quiz.titulo)}</h2>
       <p>${S.preguntas.length} preguntas · Nota mínima para aprobar: <b>${S.quiz.nota_minima}%</b><br>
-         Si desapruebas, deberás esperar <b>${config.LOCK_HORAS} horas</b> para reintentar.</p>
+         Si desapruebas, deberás esperar <strong>30 minutos</strong> para reintentar.</p>
       <div style="display:grid;gap:.75rem">
         <button class="wc-btn wc-btn--block" id="wc-q-start">¡Empezar! ⚡</button>
         <button class="wc-btn wc-btn--ghost wc-btn--sm" id="wc-q-close">Ahora no</button>
