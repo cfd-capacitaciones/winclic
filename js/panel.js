@@ -46,8 +46,12 @@
   /* ── Tabs ── */
   document.querySelectorAll('.wc-tab').forEach(tab => tab.addEventListener('click', () => {
     document.querySelectorAll('.wc-tab').forEach(t => t.setAttribute('aria-selected', String(t === tab)));
-    ['contenidos', 'quizzes', 'analitica'].forEach(n => { $('tab-' + n).hidden = n !== tab.dataset.tab; });
+    ['contenidos', 'quizzes', 'analitica', 'agencias'].forEach(n => { 
+      const section = $('tab-' + n);
+      if (section) section.hidden = n !== tab.dataset.tab; 
+    });
     if (tab.dataset.tab === 'analitica') cargarAnalitica();
+    if (tab.dataset.tab === 'agencias') listarAgencias();
   }));
 
   async function bootPanel() {
