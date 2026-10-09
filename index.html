@@ -2354,10 +2354,29 @@
     const loginBtn = document.getElementById('login-btn');
     const loginError = document.getElementById('login-error-msg');
 
-    function attemptLogin() {
+    async function attemptLogin() {
       const entered = passwordInput.value.trim();
+      const loginBtn = document.getElementById('login-btn');
+      
+      const originalText = loginBtn.textContent;
+      loginBtn.textContent = 'Verificando...';
+      loginBtn.disabled = true;
 
-      if (entered === CONFIG.password) {
+      const { data: agencia, error } = await window.WC.db
+        .from('agencias')
+        .select('*')
+        .eq('codigo_acceso', entered)
+        .eq('activa', true)
+        .maybeSingle();
+        
+      loginBtn.textContent = originalText;
+      loginBtn.disabled = false;
+
+      if (agencia) {
+        localStorage.setItem('agencia_nombre', agencia.nombre);
+        localStorage.setItem('agencia_zona', agencia.zona);
+        localStorage.setItem('agencia_departamento', agencia.departamento);
+
         loginError.classList.remove('visible');
         loginScreen.classList.add('hidden');
         

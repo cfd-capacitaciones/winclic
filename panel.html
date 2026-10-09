@@ -47,6 +47,7 @@
       <button class="wc-tab" role="tab" data-tab="contenidos" aria-selected="true">📁 Contenidos</button>
       <button class="wc-tab" role="tab" data-tab="quizzes" aria-selected="false">📝 Evaluaciones</button>
       <button class="wc-tab" role="tab" data-tab="analitica" aria-selected="false">🔥 Mapa de calor</button>
+      <button class="wc-tab" role="tab" data-tab="agencias" aria-selected="false">🏢 Agencias</button>
     </nav>
 
     <main class="wc-main">
@@ -162,6 +163,67 @@
         <div class="wc-card">
           <h2>🏢 Agencias × Preguntas <small style="font-weight:600;color:var(--wc-text-soft)">(% de error)</small></h2>
           <div class="wc-matrix-wrap" id="an-matrix"></div>
+        </div>
+      </section>
+
+      <!-- ───────── TAB 4: AGENCIAS ───────── -->
+      <section id="tab-agencias" role="tabpanel" hidden>
+        <div class="wc-card">
+          <h2>🏢 Registrar/Editar Agencia</h2>
+          <form id="ag-form" novalidate>
+            <div class="wc-grid-2">
+              <div class="wc-field" hidden>
+                <input type="hidden" id="ag-id" />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="ag-nombre">Nombre de la Agencia</label>
+                <input class="wc-input" id="ag-nombre" maxlength="100" placeholder="Ej: Agencia San Juan de Lurigancho" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="ag-codigo">Contraseña de Acceso</label>
+                <input class="wc-input" id="ag-codigo" type="password" maxlength="50" placeholder="Ej: sjl2026" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="ag-zona">Zona</label>
+                <select class="wc-select" id="ag-zona" required>
+                  <option value="Lima">Lima</option>
+                  <option value="Provincia">Provincia</option>
+                </select>
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="ag-departamento">Departamento</label>
+                <input class="wc-input" id="ag-departamento" placeholder="Ej: Lima, Arequipa" required />
+              </div>
+              <div class="wc-field" style="display:flex;align-items:center;gap:0.5rem;margin-top:1.5rem;">
+                <input type="checkbox" id="ag-activa" checked style="width: 20px; height: 20px;" />
+                <label for="ag-activa" style="font-weight:600;">Agencia Activa</label>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;margin-top:1rem;">
+                <button class="wc-btn wc-btn--block" type="submit" id="ag-submit">Guardar Agencia 🏢</button>
+                <button class="wc-btn wc-btn--ghost wc-btn--block" type="button" id="ag-cancel" hidden>Cancelar Edición</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="wc-card">
+          <h2>🏢 Directorio de Agencias</h2>
+          <div style="overflow-x: auto;">
+              <table style="width:100%; border-collapse: collapse; text-align: left; margin-top: 1rem;">
+                  <thead>
+                      <tr style="border-bottom: 2px solid var(--wc-border);">
+                          <th style="padding: 1rem 0.5rem;">Nombre</th>
+                          <th style="padding: 1rem 0.5rem;">Código</th>
+                          <th style="padding: 1rem 0.5rem;">Zona</th>
+                          <th style="padding: 1rem 0.5rem;">Estado</th>
+                          <th style="padding: 1rem 0.5rem; text-align: right;">Acciones</th>
+                      </tr>
+                  </thead>
+                  <tbody id="ag-list">
+                      <tr><td colspan="5" style="text-align: center; padding: 2rem;">Cargando...</td></tr>
+                  </tbody>
+              </table>
+          </div>
         </div>
       </section>
     </main>

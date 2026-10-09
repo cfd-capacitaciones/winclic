@@ -238,6 +238,8 @@
 
     const fila = {
       agencia: a.agencia,
+      zona: a.zona,
+      departamento: a.departamento,
       asesor_nombre: a.nombre,
       asesor_apellido: a.apellido,
       quiz_id: S.quiz.id,

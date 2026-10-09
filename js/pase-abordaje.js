@@ -1,4 +1,4 @@
-﻿/* =====================================================================
+/* =====================================================================
    WINCLIC · PASE DE ABORDAJE  (Fusión LocalStorage + Supabase)
    - Tras el login con clave de agencia, pide Nombre y Apellido.
    - Guarda la identidad en LocalStorage (sesión visual).
@@ -105,6 +105,8 @@
       nombre: normalizar(inNom.value),
       apellido: normalizar(inApe.value),
       rol: overlay.querySelector('input[name="wc-rol"]:checked').value, // 'ventas' | 'backoffice'
+      zona: localStorage.getItem('agencia_zona') || 'Lima',
+      departamento: localStorage.getItem('agencia_departamento') || 'Lima',
       desde: new Date().toISOString()
     };
     sesion.set(nueva);
@@ -127,7 +129,14 @@
     onReady = opts.alTerminar || null;
 
     const previa = sesion.get();
-    const agenciaPorClave = claveAgencia ? config.AGENCIAS[claveAgencia] : (previa && previa.agencia);
+    
+    // Leemos el nombre de la agencia traído desde Supabase en el Login, fallback al config.AGENCIAS
+    let agenciaPorClave = localStorage.getItem('agencia_nombre');
+    if (!agenciaPorClave && claveAgencia) {
+       agenciaPorClave = config.AGENCIAS[claveAgencia] || (previa && previa.agencia);
+    } else if (!agenciaPorClave) {
+       agenciaPorClave = previa && previa.agencia;
+    }
 
     overlay.dataset.agencia = agenciaPorClave || '';
     const wrapAg = overlay.querySelector('#wc-pase-agencia-wrap');
@@ -158,6 +167,8 @@
 
     const fila = {
       agencia: a.agencia,
+      zona: a.zona,
+      departamento: a.departamento,
       asesor_nombre: a.nombre,
       asesor_apellido: a.apellido,
       curso_id: String(cursoId),

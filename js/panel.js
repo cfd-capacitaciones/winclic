@@ -54,6 +54,7 @@
     await cargarQuizzesEnSelects();
     await listarModulos();
     construirEditorQuiz();
+    if ($('ag-list')) await listarAgencias();
   }
 
   /* ═══════════════════ 2. GESTOR DOCUMENTAL ═══════════════════ */
@@ -448,4 +449,104 @@
         </tbody>
       </table>`;
   }
+
+  /* ═══════════════════ 5. GESTIÓN DE AGENCIAS ═══════════════════ */
+  async function listarAgencias() {
+    const { data, error } = await db.from('agencias').select('*').order('created_at', { ascending: false });
+    const cont = $('ag-list');
+    if (error) { cont.innerHTML = `<tr><td colspan="5" class="wc-empty">Error: ${esc(error.message)}</td></tr>`; return; }
+    if (!data || !data.length) { cont.innerHTML = '<tr><td colspan="5" class="wc-empty" style="text-align: center; padding: 2rem;">No hay agencias registradas.</td></tr>'; return; }
+
+    cont.innerHTML = data.map(a => `
+      <tr style="border-bottom: 1px solid var(--wc-border);">
+        <td style="padding: 1rem 0.5rem;"><b>${esc(a.nombre)}</b><br><small style="color:var(--wc-text-soft)">${esc(a.departamento)}</small></td>
+        <td style="padding: 1rem 0.5rem;"><code>${esc(a.codigo_acceso)}</code></td>
+        <td style="padding: 1rem 0.5rem;">${esc(a.zona)}</td>
+        <td style="padding: 1rem 0.5rem;"><span class="wc-pill" style="background: ${a.activa ? 'var(--wc-green)' : 'var(--wc-red)'}; color: #fff;">${a.activa ? 'Activa' : 'Inactiva'}</span></td>
+        <td style="padding: 1rem 0.5rem; text-align: right; white-space: nowrap;">
+          <button class="wc-btn wc-btn--ghost wc-btn--sm" data-ag-a="edit" data-id="${a.id}" title="Editar">✏️</button>
+          <button class="wc-btn wc-btn--ghost wc-btn--sm" data-ag-a="toggle" data-id="${a.id}" title="${a.activa ? 'Desactivar' : 'Activar'}">${a.activa ? '🚫' : '✅'}</button>
+          <button class="wc-btn wc-btn--danger wc-btn--sm" data-ag-a="del" data-id="${a.id}" title="Eliminar">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  $('ag-list')?.addEventListener('click', async (ev) => {
+    const b = ev.target.closest('button[data-ag-a]');
+    if (!b) return;
+    const action = b.dataset.agA;
+    const id = b.dataset.id;
+    b.disabled = true;
+    try {
+      if (action === 'del') {
+        if (!confirm('¿Seguro que deseas eliminar esta agencia permanentemente?')) return;
+        await db.from('agencias').delete().eq('id', id);
+        toast('Agencia eliminada', 'ok');
+      } else if (action === 'toggle') {
+        const { data: ag } = await db.from('agencias').select('activa').eq('id', id).single();
+        if (ag) await db.from('agencias').update({ activa: !ag.activa }).eq('id', id);
+      } else if (action === 'edit') {
+        const { data: ag } = await db.from('agencias').select('*').eq('id', id).single();
+        if (ag) {
+          $('ag-id').value = ag.id;
+          $('ag-nombre').value = ag.nombre;
+          $('ag-codigo').value = ag.codigo_acceso;
+          $('ag-zona').value = ag.zona;
+          $('ag-departamento').value = ag.departamento;
+          $('ag-activa').checked = ag.activa;
+          $('ag-cancel').hidden = false;
+          $('ag-nombre').focus();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    } catch (err) {
+      console.error(err); toast('Error al procesar', 'err');
+    } finally {
+      b.disabled = false;
+      if (action !== 'edit') await listarAgencias();
+    }
+  });
+
+  $('ag-cancel')?.addEventListener('click', () => {
+    $('ag-form').reset();
+    $('ag-id').value = '';
+    $('ag-cancel').hidden = true;
+  });
+
+  $('ag-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = $('ag-id').value;
+    const fila = {
+      nombre: $('ag-nombre').value.trim(),
+      codigo_acceso: $('ag-codigo').value.trim(),
+      zona: $('ag-zona').value,
+      departamento: $('ag-departamento').value.trim(),
+      activa: $('ag-activa').checked
+    };
+    if (!fila.nombre || !fila.codigo_acceso || !fila.departamento) return toast('Completa los campos obligatorios', 'err');
+
+    const btn = $('ag-submit');
+    btn.disabled = true; btn.textContent = 'Guardando...';
+    try {
+      if (id) {
+        const { error } = await db.from('agencias').update(fila).eq('id', id);
+        if (error) throw error;
+        toast('Agencia actualizada', 'ok');
+      } else {
+        const { error } = await db.from('agencias').insert(fila);
+        if (error) throw error;
+        toast('Agencia registrada', 'ok');
+      }
+      $('ag-form').reset();
+      $('ag-id').value = '';
+      $('ag-cancel').hidden = true;
+      await listarAgencias();
+    } catch (err) {
+      console.error(err);
+      toast(err.message?.includes('duplicate key') ? 'El código de acceso ya existe' : 'Error al guardar', 'err');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Guardar Agencia 🏢';
+    }
+  });
 })();
