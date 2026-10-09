@@ -148,6 +148,16 @@
         margin-bottom: 3rem;
         padding-left: 1rem;
       }
+
+      .nav-spacer {
+        display: block;
+        flex-grow: 1;
+      }
+    }
+
+    .nav-spacer {
+      display: none;
+    }
       
       .nav-item, .theme-toggle-btn {
         flex-direction: row;
@@ -452,6 +462,8 @@
       position: relative;
       z-index: 1;
       border: 1px solid rgba(255, 255, 255, 0.5);
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .login-title {
@@ -485,6 +497,9 @@
 
     .login-input {
       width: 100%;
+      box-sizing: border-box;
+      display: block;
+      max-width: 100%;
       padding: 0.7rem 1.5rem;
       border: 2px solid var(--color-border);
       border-radius: 50px;
@@ -2158,10 +2173,19 @@
           <span class="nav-text">Ligas</span>
         </a>
 
-        <!-- El botón de Modo Noche al final -->
+        <!-- Espaciador para empujar los botones hacia abajo en PC -->
+        <div class="nav-spacer"></div>
+
+        <!-- El botón de Modo Noche -->
         <button id="theme-toggle-btn" class="nav-item theme-toggle-btn" aria-label="Cambiar modo de iluminación">
           <span class="nav-icon theme-icon">🌙</span>
           <span class="nav-text theme-text">Modo Noche</span>
+        </button>
+
+        <!-- Botón Salir -->
+        <button class="nav-item" aria-label="Cerrar sesión" onclick="cerrarSesion()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Salir</span>
         </button>
       </nav>
 
@@ -2407,6 +2431,26 @@
     passwordInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') attemptLogin();
     });
+
+    function cerrarSesion() {
+      // 1. Limpiar datos de sesión (incluye pase de abordaje y datos de agencia)
+      if (window.WC && window.WC.sesion) window.WC.sesion.clear();
+      localStorage.removeItem('agencia_nombre');
+      localStorage.removeItem('agencia_zona');
+      localStorage.removeItem('agencia_departamento');
+      
+      if (window.PaseAbordaje) window.PaseAbordaje.refrescarChip();
+
+      // 2. Ocultar dashboard y mostrar login limpio
+      dashboard.classList.remove('visible');
+      passwordInput.value = '';
+      loginError.classList.remove('visible');
+      
+      loginScreen.style.display = 'flex';
+      loginScreen.classList.remove('hidden');
+      setTimeout(() => passwordInput.focus(), 100);
+    }
+    window.cerrarSesion = cerrarSesion;
 
     /* ══════════════════════════════════════════════════════════════
        2. PROGRESO CON LOCAL STORAGE
