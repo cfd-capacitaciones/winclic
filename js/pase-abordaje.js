@@ -28,7 +28,8 @@
     overlay.setAttribute('aria-labelledby', 'wc-pase-title');
     overlay.innerHTML = `
       <form class="wc-modal" id="wc-pase-form" novalidate>
-        <div class="wc-emoji-big" aria-hidden="true">🪪</div>
+        <div class="wc-emoji-big" aria-hidden="true" style="display:flex; justify-content:center; align-items:center;">
+        <img src="assets/icons/licencia.svg" alt="Licencia de Piloto" style="width: 3.5rem; height: 3.5rem; display: block;" /></div>
         <h2 id="wc-pase-title">Licencia de Piloto</h2>
         <p>Antes de encender el motor, ingresa tus datos. Tu tiempo de vuelta y calificación quedarán registrados en el panel.</p>
 
@@ -47,12 +48,20 @@
         <div class="wc-field">
           <span class="wc-label">¿Cuál es tu rol?</span>
           <div class="wc-roles">
-            <label class="wc-role"><input type="radio" name="wc-rol" value="ventas" checked><span>🛒<b>Ventas</b><small>Asesor / Vendedor</small></span></label>
-            <label class="wc-role"><input type="radio" name="wc-rol" value="backoffice"><span>🖥️<b>Backoffice</b><small>Gestión y sistemas</small></span></label>
+            <label class="wc-role">
+            <input type="radio" name="wc-rol" value="ventas" checked><span>
+            <img src="./assets/icons/carrito-compra.svg" alt="Ventas" style="width: 1.5rem; height: 1.5rem; display: block; margin: 0 auto 0.25rem;" />
+            <b>Ventas</b><small>Asesor / Vendedor</small></span></label>
+            <label class="wc-role">
+            <input type="radio" name="wc-rol" value="backoffice"><span>
+            <img src="./assets/icons/backoffice.svg" alt="Backoffice" style="width: 1.5rem; height: 1.5rem; display: block; margin: 0 auto 0.25rem;" />
+            <b>Backoffice</b><small>Gestión y sistemas</small></span></label>
           </div>
         </div>
 
-        <button type="submit" class="wc-btn wc-btn--block">¡A la Pista! 🏎️</button>
+        <button type="submit" class="wc-btn wc-btn--block">¡A la Pista!
+        <img src="./assets/icons/carrito.svg" alt="Auto" style="width: 1.4rem; height: 1.4rem; display: block;" />
+        </button>
       </form>`;
     document.body.appendChild(overlay);
 
