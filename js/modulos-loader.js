@@ -314,18 +314,67 @@
     const { tabs, body, ok } = abrirVisorBase(`${p.emoji || '📄'} ${p.titulo}`);
 
     let maxDesbloqueado = hecho ? lista.length - 1 : 0;
+    let currentIndex = 0;
+    const pasosListos = new Set();
+    if (hecho) {
+      for (let i=0; i<lista.length; i++) pasosListos.add(i);
+    }
+
+    function completarActual() {
+      if (!tarjetaAbierta || ok.disabled) return;
+      const id = tarjetaAbierta.id;
+      cerrarVisor();
+      completar(id);
+      toast('¡Tarjeta completada! ⭐');
+    }
 
     function refrescarBoton() {
       ok.hidden = false;
-      if (hecho) { ok.disabled = true; ok.textContent = '✅ Ya completado'; return; }
+      ok.onclick = null;
+
+      if (hecho) { 
+        ok.disabled = true; 
+        ok.textContent = '✅ Ya completado'; 
+        ok.className = "wc-btn wc-btn--green wc-btn--block";
+        return; 
+      }
+      
       if (lista.length === 0) {
         ok.disabled = !PERMITIR_COMPLETAR_SIN_CONTENIDO;
-        ok.textContent = PERMITIR_COMPLETAR_SIN_CONTENIDO ? 'Marcar como completado ✅' : 'Contenido próximamente';
-        return;
+        ok.textContent = PERMITIR_COMPLETAR_SIN_CONTENIDO ? '✅ Marcar como Completado' : 'Contenido próximamente';
+        ok.className = ok.disabled ? "wc-btn wc-btn--block" : "wc-btn wc-btn--green wc-btn--block";
+        if (!ok.disabled) ok.onclick = completarActual;
+        return; 
       }
-      const todoDesbloqueado = maxDesbloqueado >= lista.length - 1;
-      ok.disabled = !todoDesbloqueado;
-      ok.textContent = !todoDesbloqueado ? 'Completa los pasos anteriores' : 'Marcar como completado ✅';
+
+      const c = lista[currentIndex];
+      const estaListo = pasosListos.has(currentIndex);
+
+      if (currentIndex === lista.length - 1) {
+         if (!estaListo) {
+            ok.disabled = true;
+            ok.textContent = (c.tipo === 'video' && c.url) ? 'Mira el video para finalizar 🔒' : 'Revisa el contenido para finalizar 🔒';
+            ok.className = "wc-btn wc-btn--block";
+         } else {
+            ok.disabled = false;
+            ok.textContent = '✅ Marcar como Completado';
+            ok.className = "wc-btn wc-btn--green wc-btn--block";
+            ok.onclick = completarActual;
+         }
+      } else {
+         if (!estaListo) {
+            ok.disabled = true;
+            ok.textContent = (c.tipo === 'video' && c.url) ? 'Mira el video para continuar 🔒' : 'Revisa el contenido para continuar 🔒';
+            ok.className = "wc-btn wc-btn--block";
+         } else {
+            ok.disabled = false;
+            const nextTab = lista[currentIndex + 1];
+            const isDescarga = nextTab.tipo === 'pdf';
+            ok.textContent = isDescarga ? `Siguiente: Descargar ${esc(nextTab.titulo)} 📄` : `Siguiente: Ir a ${esc(nextTab.titulo)} ➡️`;
+            ok.className = "wc-btn wc-btn--block";
+            ok.onclick = () => avanzarAlSiguiente(currentIndex);
+         }
+      }
     }
 
     function pintarTab(c, i) {
@@ -348,30 +397,31 @@
       if (nextIdx > maxDesbloqueado && nextIdx < lista.length) {
         maxDesbloqueado = nextIdx;
         renderTabs(nextIdx);
-        const nextTab = tabs.querySelector(`[data-idx="${nextIdx}"]`);
-        if (nextTab) nextTab.classList.add('is-just-unlocked');
-        mostrar(nextIdx);
-      } else if (nextIdx >= lista.length) {
-        maxDesbloqueado = nextIdx;
-        renderTabs(actualIdx);
-        refrescarBoton();
+        const nextTabEl = tabs.querySelector(`[data-idx="${nextIdx}"]`);
+        if (nextTabEl) nextTabEl.classList.add('is-just-unlocked');
       }
+      mostrar(nextIdx);
     }
 
     function mostrar(i) {
+      currentIndex = i;
       const c = lista[i];
-      let contentHtml = pintarContenido(c);
-
-      body.innerHTML = contentHtml;
+      body.innerHTML = pintarContenido(c);
       renderTabs(i);
 
-      if (c.tipo === 'video' && !hecho && i === maxDesbloqueado && c.url) {
-        const v = body.querySelector('video');
-        if (v) v.addEventListener('ended', () => avanzarAlSiguiente(i), { once: true });
+      if (!hecho) {
+        if (c.tipo === 'video' && c.url) {
+          const v = body.querySelector('video');
+          if (v) {
+            v.addEventListener('ended', () => {
+              pasosListos.add(i);
+              refrescarBoton();
+            }, { once: true });
+          }
+        } else {
+          pasosListos.add(i);
+        }
       }
-
-      const btnAvanzar = body.querySelector('#wcv-btn-avanzar');
-      if (btnAvanzar) btnAvanzar.onclick = () => avanzarAlSiguiente(i);
 
       refrescarBoton();
     }
@@ -385,14 +435,6 @@
     
     if (lista.length) mostrar(0);
     else { body.innerHTML = pintarContenido({ url: '' }); refrescarBoton(); }
-
-    ok.onclick = () => {
-      if (!tarjetaAbierta || ok.disabled) return;
-      const id = tarjetaAbierta.id;
-      cerrarVisor();
-      completar(id);
-      toast('¡Tarjeta completada! ⭐');
-    };
   }
 
   function abrirVideoBienvenida() {

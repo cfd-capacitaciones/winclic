@@ -2426,10 +2426,14 @@
       const total = CONFIG.totalCards;
       const pct = Math.min(100, Math.round((count / total) * 100));
 
-      document.getElementById('progress-fill').style.width = pct + '%';
-      document.getElementById('progress-text').textContent = `${count} / ${total} temas`;
+      const fillEl = document.getElementById('progress-fill');
+      if (fillEl) fillEl.style.width = pct + '%';
+
+      const textEl = document.getElementById('progress-text');
+      if (textEl) textEl.textContent = `${count} / ${total} temas`;
+
       const barEl = document.getElementById('progress-bar-el');
-      barEl.setAttribute('aria-valuenow', count);
+      if (barEl) barEl.setAttribute('aria-valuenow', count);
     }
 
     /** Marca una tarjeta como completada y guarda en localStorage. */
