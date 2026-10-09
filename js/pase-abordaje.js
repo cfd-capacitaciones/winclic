@@ -28,9 +28,9 @@
     overlay.setAttribute('aria-labelledby', 'wc-pase-title');
     overlay.innerHTML = `
       <form class="wc-modal" id="wc-pase-form" novalidate>
-        <div class="wc-emoji-big" aria-hidden="true">🎫</div>
-        <h2 id="wc-pase-title">Pase de Abordaje</h2>
-        <p>Antes de despegar, dinos quién eres. Tu avance y tus notas quedarán registrados a tu nombre.</p>
+        <div class="wc-emoji-big" aria-hidden="true">🪪</div>
+        <h2 id="wc-pase-title">Licencia de Piloto</h2>
+        <p>Antes de encender el motor, ingresa tus datos. Tu tiempo de vuelta y calificación quedarán registrados en el panel.</p>
 
         <div class="wc-field" id="wc-pase-agencia-wrap" hidden>
           <label class="wc-label" for="wc-pase-agencia">Agencia</label>
@@ -52,7 +52,7 @@
           </div>
         </div>
 
-        <button type="submit" class="wc-btn wc-btn--block">Abordar 🚀</button>
+        <button type="submit" class="wc-btn wc-btn--block">¡A la Pista! 🏎️</button>
       </form>`;
     document.body.appendChild(overlay);
 

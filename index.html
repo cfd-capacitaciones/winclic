@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WinClic</title>
+  <title>WinClic · Circuito Comercial</title>
   <meta name="description"
-    content="Plataforma de capacitación para agencias de Win" />
+    content="Plataforma de capacitación para agencias de Win (Circuito Comercial)" />
 
     <!-- ============================================================
         FUENTE: Google Fonts (Inter + Outfit)
@@ -2129,14 +2129,14 @@
             <img src="assets/img/logos/logo-winclic-naranja.png" alt="Logo WinClic" style="max-height:100px; width:auto; display:block; margin:0 auto;" />
           </div>
           
-          <h1 class="login-title">¡Bienvenido a WinClic! 🚀</h1>
-          <p class="login-subtitle">Tu armamento comercial a un solo clic. Ingresa la llave de tu agencia.</p>
+          <h1 class="login-title">¡Bienvenido a WinClic! 🏎️</h1>
+          <p class="login-subtitle">Tu circuito comercial a un solo clic. Ingresa la llave de tu agencia para arrancar.</p>
 
           <label class="login-label" for="password-input">Contraseña de Agencia</label>
           <input id="password-input" class="login-input" type="password" placeholder="••••••••" autocomplete="current-password" aria-describedby="login-error-msg" />
 
           <button id="login-btn" class="login-btn" type="button">
-            Ingresar ⚡
+            Arrancar 🏁
           </button>
 
           <div id="login-error-msg" class="login-error" role="alert">
@@ -2192,51 +2192,7 @@
       <main class="main-view">
         
         <div class="path-container">
-          
-          <!-- Nodo 1: Completado (Generará el camino Naranja hacia el Nodo 2) -->
-          <div class="node-wrapper completed">
-            <div class="node-path"></div>
-            <div class="node-content">
-              <button class="node-btn completed" data-card-id="card-1" data-content-url="modulos/modulo-historia.html" aria-label="Historia WIN">
-                ✔️
-              </button>
-              <div class="node-label">Historia WIN <br><span style="color:var(--color-orange);">Completado</span></div>
-            </div>
-          </div>
-
-          <!-- Nodo 2: Actual (Camino gris hacia abajo) -->
-          <div class="node-wrapper current">
-            <div class="node-path"></div>
-            <div class="node-content">
-              <button class="node-btn current" data-card-id="card-2" data-content-url="modulos/modulo-producto_internet.html" aria-label="Producto Internet">
-                🌐
-              </button>
-              <div class="node-label">Producto Internet <br><span style="color:var(--color-text-secondary);">En curso</span></div>
-            </div>
-          </div>
-
-          <!-- Nodo 3: Bloqueado -->
-          <div class="node-wrapper">
-            <div class="node-path"></div>
-            <div class="node-content">
-              <button class="node-btn locked" disabled aria-label="Planeta Gamer">
-                🎮
-              </button>
-              <div class="node-label">Planeta Gamer <br><span style="color:var(--color-text-secondary);">Bloqueado</span></div>
-            </div>
-          </div>
-
-          <!-- Nodo 4: Checkpoint -->
-          <div class="node-wrapper">
-            <div class="node-path"></div>
-            <div class="node-content">
-              <button class="node-btn locked" style="border-radius: 16px; width: 120px;" disabled>
-                🏆 Quiz
-              </button>
-              <div class="node-label">Checkpoint 1</div>
-            </div>
-          </div>
-
+          <!-- El circuito se inyecta dinámicamente mediante js/modulos-loader.js -->
         </div>
 
       </main>

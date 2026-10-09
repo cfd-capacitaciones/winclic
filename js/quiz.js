@@ -182,15 +182,21 @@
         ${!d.ok && ok ? `<br><small>Tu respuesta: ${esc(d.elegida_texto)}</small>` : ''}
       </div>`).join('');
 
+    const esMetaFinal = ok && S.quiz.id === 'quiz-general';
+    const tituloAprobacion = esMetaFinal ? '¡Pole Position conseguida! 🏁' : '¡Aprobaste!';
+    const subtituloAprobacion = esMetaFinal 
+      ? '<p>Has completado el circuito y tu tiempo récord quedó registrado. Tienes tu pase libre para subir al podio en el Gran Premio en Vivo: Taller de Habilidades Comerciales y Cierre con tu Coach Made.</p>' 
+      : `<p>${r.aciertos} de ${r.total} correctas · mínimo ${S.quiz.nota_minima}%</p>`;
+
     box.innerHTML = `
-      <div class="wc-emoji-big">${ok ? '🎉' : '💪'}</div>
-      <h2>${ok ? '¡Aprobaste!' : 'Casi lo logras'}</h2>
+      <div class="wc-emoji-big">${esMetaFinal ? '🏆' : (ok ? '🎉' : '💪')}</div>
+      <h2>${ok ? tituloAprobacion : 'Casi lo logras'}</h2>
       <div class="wc-result-score ${ok ? 'wc-pass' : 'wc-fail'}">${r.nota}%</div>
-      <p>${r.aciertos} de ${r.total} correctas · mínimo ${S.quiz.nota_minima}%</p>
+      ${ok ? subtituloAprobacion : `<p>${r.aciertos} de ${r.total} correctas · mínimo ${S.quiz.nota_minima}%</p>`}
       ${r.offline ? '<p style="color:var(--wc-red);font-weight:700">⚠️ Sin conexión: tu nota se enviará automáticamente al reconectar.</p>' : ''}
       <div class="wc-review">${revision}</div>
       <button class="wc-btn ${ok ? 'wc-btn--green' : 'wc-btn--yellow'} wc-btn--block" id="wc-q-fin">
-        ${ok ? 'Continuar 🚀' : '📚 Ir a repasar la teoría'}
+        ${ok ? 'Continuar 🏎️' : '📚 Ir a repasar la teoría'}
       </button>`;
 
     box.querySelector('#wc-q-fin').onclick = () => {
