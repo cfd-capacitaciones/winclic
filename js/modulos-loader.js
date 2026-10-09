@@ -304,7 +304,12 @@
 
   function abrirTarjeta(p) {
     tarjetaAbierta = p;
-    const lista = contenidosDe(p);
+    
+    // ORDEN ESTRICTO DE PESTAÑAS
+    const listaRaw = contenidosDe(p);
+    const ORDEN = { video: 1, html: 2, imagen: 3, pdf: 4 };
+    const lista = [...listaRaw].sort((a, b) => (ORDEN[a.tipo] || 99) - (ORDEN[b.tipo] || 99));
+
     const hecho = p.estado === 'done';
     const { tabs, body, ok } = abrirVisorBase(`${p.emoji || '📄'} ${p.titulo}`);
 
@@ -357,15 +362,19 @@
       const c = lista[i];
       let contentHtml = pintarContenido(c);
 
-      if (!hecho && c.url && c.tipo !== 'video' && i === maxDesbloqueado) {
-        const txtBoton = (i === lista.length - 1) ? 'Finalizar revisión ✅' : 'Siguiente paso ➡️';
-        contentHtml += `<div style="text-align:center; margin-top: 1.5rem;"><button type="button" class="wc-btn wc-btn--yellow" id="wcv-btn-avanzar">${txtBoton}</button></div>`;
+      // Render button if not completed, we're on the max unlocked tab, and it's either not a video or has no URL
+      if (!hecho && i === maxDesbloqueado) {
+        const esVideoConUrl = (c.tipo === 'video' && c.url);
+        if (!esVideoConUrl || (!c.url && PERMITIR_COMPLETAR_SIN_CONTENIDO)) {
+          const txtBoton = (i === lista.length - 1) ? 'Finalizar revisión ✅' : 'Siguiente paso ➡️';
+          contentHtml += `<div style="text-align:center; margin-top: 1.5rem;"><button type="button" class="wc-btn wc-btn--yellow" id="wcv-btn-avanzar">${txtBoton}</button></div>`;
+        }
       }
 
       body.innerHTML = contentHtml;
       renderTabs(i);
 
-      if (c.tipo === 'video' && !hecho && i === maxDesbloqueado) {
+      if (c.tipo === 'video' && !hecho && i === maxDesbloqueado && c.url) {
         const v = body.querySelector('video');
         if (v) v.addEventListener('ended', () => avanzarAlSiguiente(i), { once: true });
       }

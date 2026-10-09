@@ -2360,6 +2360,9 @@
       if (entered === CONFIG.password) {
         loginError.classList.remove('visible');
         loginScreen.classList.add('hidden');
+        
+        // 1. Invocamos INMEDIATAMENTE el Pase de Abordaje
+        if (window.PaseAbordaje) window.PaseAbordaje.abrir(entered);
 
         setTimeout(() => {
           loginScreen.style.display = 'none';
@@ -2370,7 +2373,6 @@
           checkRewardButtonState('b3'); // Verifica estado del botón de recompensa Bloque 3
           checkRewardButtonState('bk'); // Verifica estado del botón de recompensa Backoffice
           initVideoLock();             // Aplica estado del candado de video
-          if (window.PaseAbordaje) PaseAbordaje.abrir(entered); // 🎫 Pase de Abordaje (Supabase)
         }, 500);
 
       } else {
