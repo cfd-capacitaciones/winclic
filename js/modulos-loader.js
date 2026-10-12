@@ -71,7 +71,8 @@
   /* ══════════ PINTADO ══════════ */
   function iconoNodo(p) {
     if (p.tipo === 'quiz') return `<span class="wcp-chest-label">Quiz</span>`;
-    return `<span class="wcp-ico">${esc(p.emoji || '📄')}</span>`;
+    const icono = p.emoji || '📄';
+    return `<span class="wcp-ico">${icono}</span>`;
   }
 
   function nodoHTML(p, dx) {
@@ -108,7 +109,7 @@
     const rolTag = b.soloRol ? ' · Backoffice' : '';
     return `
       <section class="wcp-island ${bloqueado ? 'is-locked' : ''}" data-tema="${esc(b.tema)}" data-nivel="${esc(nivel)}" data-bloque="${esc(b.id)}" aria-label="${esc(b.titulo)}">
-        <span class="wcp-island-emoji" aria-hidden="true">${esc(b.emoji)}</span>
+        <span class="wcp-island-emoji" aria-hidden="true">${b.emoji || '🏝️'}</span>
         ${b.id !== 'meta' ? `<small style="font-weight:800;letter-spacing:.14em;opacity:.8">VUELTA ${b.nivel}${rolTag}</small>` : ''}
         <h3>${esc(b.titulo)}</h3>
         <p>${esc(b.subtitulo || '')}</p>
@@ -274,7 +275,7 @@
 
   function abrirVisorBase(titulo) {
     if (!visorEl) construirVisor();
-    visorEl.querySelector('#wcv-title').textContent = titulo;
+    visorEl.querySelector('#wcv-title').innerHTML = titulo;
     visorEl.querySelector('#wcv-tabs').innerHTML = '';
     visorEl.querySelector('#wcv-body').innerHTML = '';
     visorEl.querySelector('#wcv-ok').hidden = true;
@@ -311,7 +312,7 @@
     const lista = [...listaRaw].sort((a, b) => (ORDEN[a.tipo] || 99) - (ORDEN[b.tipo] || 99));
 
     const hecho = p.estado === 'done';
-    const { tabs, body, ok } = abrirVisorBase(`${p.emoji || '📄'} ${p.titulo}`);
+    const { tabs, body, ok } = abrirVisorBase(`${p.emoji || '📄'} ${esc(p.titulo)}`);
 
     let maxDesbloqueado = hecho ? lista.length - 1 : 0;
     let currentIndex = 0;
@@ -447,7 +448,7 @@
     const { lista, bloques } = construirPasos();
     const { body, ok } = abrirVisorBase('🧭 Guía de contenidos');
     body.innerHTML = `<div class="wcp-guide">${bloques.map(b => `
-      <div class="wcp-guide-block"><h4>${esc(b.emoji)} ${b.id === 'meta' ? '' : `Vuelta ${b.nivel}: `}${esc(b.titulo)}${b.soloRol ? ' <span class="wc-pill">Solo Backoffice</span>' : ''}</h4>
+      <div class="wcp-guide-block"><h4>${b.emoji || ''} ${b.id === 'meta' ? '' : `Vuelta ${b.nivel}: `}${esc(b.titulo)}${b.soloRol ? ' <span class="wc-pill">Solo Backoffice</span>' : ''}</h4>
         <ul>${lista.filter(p => p.bloque === b).map(p => `<li class="${p.estado === 'done' ? 'done' : ''}">${p.estado === 'done' ? '✅' : p.tipo === 'tarjeta' ? '📘' : '🏆'} ${esc(p.titulo)}</li>`).join('')}</ul>
       </div>`).join('')}
       ${rolActual() !== 'backoffice' ? '<p style="font-size:.85rem;margin:0">ℹ️ La Vuelta 4 (Pit Lane Técnico) es exclusiva para Backoffice. Tu ruta pasa directo a la Bandera a Cuadros.</p>' : ''}

@@ -122,6 +122,38 @@
 .wcp-node.is-locked { opacity: .65; cursor: not-allowed; }
 .wcp-node.is-locked .wcp-ico { filter: grayscale(1); opacity: .6; }
 
+/* Soporte para iconos personalizados (SVG / IMG) */
+.wcp-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.wcp-ico img,
+.wcp-ico svg {
+  max-width: 44px;
+  max-height: 44px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+.wcp-island-emoji img,
+.wcp-island-emoji svg {
+  max-width: 48px;
+  max-height: 48px;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+}
+#wcv-title img,
+#wcv-title svg {
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 6px;
+  display: inline-block;
+}
+
 /* insignias (✔ / 🔒) */
 .wcp-badge { position: absolute; right: -4px; bottom: -4px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: .9rem; background: #fff; box-shadow: 0 3px 0 rgba(0, 0, 0, .15); z-index: 4; }
 .wcp-badge--ok { background: #2F9E44; color: #fff; font-weight: 900; }
