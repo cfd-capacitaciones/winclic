@@ -61,60 +61,63 @@
       margin: 0;
       padding: 0;
     }
-      /* ============================================================
-   2. NAVEGACIÓN ESTILO DUOLINGO (MOBILE FIRST)
-   ============================================================ */
-    .app-container {
-      display: flex;
-      min-height: 100vh;
-      flex-direction: column;
-    }
+    /* ============================================================
+      NAVEGACIÓN ESTILO DUOLINGO (MOBILE FIRST)
+      ============================================================ */
+      .app-container {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
 
-    /* --- Menú Inferior (Móvil) --- */
-    .win-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    }
+      /* --- Menú Inferior (Celular) --- */
+      .win-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border);
+        box-shadow: var(--shadow-nav);
+        display: flex;
+        flex-direction: row; /* Fila para celular */
+        justify-content: space-around;
+        align-items: center;
+        padding: 0.5rem 0.5rem 1.5rem 0.5rem; 
+        z-index: 1000;
+        transition: var(--transition);
+        box-sizing: border-box;
+      }
 
-    .nav-logo { display: none; }
+      .nav-logo { display: none; }
 
-    /* Estilo base para botones y enlaces del menú */
-    .nav-item, .theme-toggle-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      text-decoration: none;
-      color: var(--color-text-secondary);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: 16px; /* Bordes muy redondeados tipo pastilla */
-      transition: var(--transition);
-      background: transparent; /* Fondo transparente por defecto */
-      border: none; /* Quitamos el borde cuadrado feo del navegador */
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
+      /* Estilo base para botones (Celular) */
+      .nav-item, .theme-toggle-btn {
+        display: flex;
+        flex-direction: column; /* Icono arriba, texto abajo */
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        text-decoration: none;
+        color: var(--color-text-secondary);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.5rem 1rem;
+        border-radius: 16px;
+        transition: var(--transition);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        width: auto;
+      }
 
-    .nav-icon { font-size: 1.4rem; }
+      .nav-icon { font-size: 1.4rem; }
 
-    /* Estado Activo del Menú */
-    .nav-item.active {
-      color: var(--color-orange);
-      background: rgba(255, 107, 0, 0.1);
-    }
-
-    /* Hover general */
-    .nav-item:hover, .theme-toggle-btn:hover {
-      background: rgba(0, 0, 0, 0.05); /* Gris muy suave al pasar el mouse */
-    }
-    [data-theme="dark"] .nav-item:hover, 
-    [data-theme="dark"] .theme-toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.05); /* Blanco suave en modo noche */
-    }
+      .nav-item.active {
+        color: var(--color-orange);
+        background: rgba(255, 107, 0, 0.1);
+      }
 
     /* --- Menú Lateral (PC) --- */
     @media (min-width: 768px) {
@@ -127,11 +130,12 @@
         height: 100vh;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: flex-start; /* Devolvemos esto a flex-start */
         border-top: none;
-        border-right: 1px solid var(--color-border);
+        border-right: 1px solid var(--color-border); /* Aquí está la línea blanca */
         box-shadow: var(--shadow-nav-pc);
         padding: 2rem 1.5rem;
+        box-sizing: border-box; 
       }
       
       .nav-logo {
@@ -139,35 +143,26 @@
         margin-bottom: 3rem;
         padding-left: 1rem;
       }
-
-      .nav-spacer {
-        display: block;
-        flex-grow: 1;
-      }
-    }
-
-    .nav-spacer {
-      display: none;
-    }
       
       .nav-item, .theme-toggle-btn {
         flex-direction: row;
-        width: 100%;
+        width: 100%; /* CAMBIO 1: Fuerza a que ocupen todo el espacio hasta la línea */
+        justify-content: flex-start; /* CAMBIO 2: Alinea el ícono y el texto a la izquierda */
+        align-items: center; /* Centra verticalmente el ícono con el texto */
         font-size: 1rem;
         gap: 1rem;
         padding: 1rem;
         margin-bottom: 0.5rem;
+        box-sizing: border-box;
       }
 
       .nav-icon { font-size: 1.2rem; }
-
-      /* Empujar el botón de tema al fondo en PC */
-      .theme-toggle-btn {
-        margin-top: auto; 
-      }
+      .theme-toggle-btn { margin-top: auto; }
+    }
+    
 
     /* Contenedor Principal */
-        /* ============================================================
+      /* ============================================================
         ZONA DEL CIRCUITO (Fondo Estático Pantalla Completa)
         ============================================================ */
       .main-view {
@@ -175,27 +170,28 @@
         padding: 1.5rem;
         padding-bottom: 100px; 
         
-        /* 1. FONDO DE PISTA CLARO (Nombre actualizado) */
+        /* 1. FONDO DE PISTA CLARO */
         background-image: url('assets/img/fondo-clara.jpeg'); 
-        
-        /* 2. CUBRIR TODA LA PANTALLA SIN REPETIRSE */
         background-size: cover; 
         background-repeat: no-repeat;
-        background-position: center center;
-        
-        /* 3. ESTÁTICO (Se queda pegado al fondo al hacer scroll) */
         background-attachment: fixed; 
+        
+        /* Centrado normal para el celular */
+        background-position: center center;
       }
 
-      /* Versión PC: Respeta el espacio del menú lateral */
+      /* Versión PC: Respeta el menú y centra la pista */
       @media (min-width: 768px) {
         .main-view {
           margin-left: 260px; 
           padding: 3rem 4rem;
+          
+          /* MAGIA: Compensa los 260px del menú moviendo el fondo 130px a la derecha */
+          background-position: calc(50% + 130px) center;
         }
       }
 
-      /* 4. FONDO PARA MODO NOCHE (Nombre actualizado) */
+      /* Fondo para MODO NOCHE */
       [data-theme="dark"] .main-view {
         background-image: url('assets/img/fondo-oscura.jpeg'); 
       }
