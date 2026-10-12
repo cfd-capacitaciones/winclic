@@ -72,19 +72,10 @@
 
     /* --- Menú Inferior (Móvil) --- */
     .win-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--color-surface);
-      border-top: 1px solid var(--color-border);
-      box-shadow: var(--shadow-nav);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 0.5rem 0.5rem 1.5rem 0.5rem; 
-      z-index: 1000;
-      transition: var(--transition);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
     }
 
     .nav-logo { display: none; }
@@ -176,18 +167,39 @@
       }
 
     /* Contenedor Principal */
-    .main-view {
-      flex: 1;
-      padding: 1.5rem;
-      padding-bottom: 100px; 
-    }
-
-    @media (min-width: 768px) {
+        /* ============================================================
+        ZONA DEL CIRCUITO (Fondo Estático Pantalla Completa)
+        ============================================================ */
       .main-view {
-        margin-left: 260px; 
-        padding: 3rem 4rem;
+        flex: 1;
+        padding: 1.5rem;
+        padding-bottom: 100px; 
+        
+        /* 1. FONDO DE PISTA CLARO (Nombre actualizado) */
+        background-image: url('assets/img/fondo-clara.jpeg'); 
+        
+        /* 2. CUBRIR TODA LA PANTALLA SIN REPETIRSE */
+        background-size: cover; 
+        background-repeat: no-repeat;
+        background-position: center center;
+        
+        /* 3. ESTÁTICO (Se queda pegado al fondo al hacer scroll) */
+        background-attachment: fixed; 
       }
-    }
+
+      /* Versión PC: Respeta el espacio del menú lateral */
+      @media (min-width: 768px) {
+        .main-view {
+          margin-left: 260px; 
+          padding: 3rem 4rem;
+        }
+      }
+
+      /* 4. FONDO PARA MODO NOCHE (Nombre actualizado) */
+      [data-theme="dark"] .main-view {
+        background-image: url('assets/img/fondo-oscura.jpeg'); 
+      }
+
       /* ============================================================
         3. CAMINO WIN (RUTA ESTILO SERPIENTE / DUOLINGO)
          ============================================================ */
@@ -215,7 +227,6 @@
       .node-wrapper:nth-child(even) { justify-content: flex-end; }
 
       /* ── EL CUERPO DE LA SERPIENTE (La línea conectora gruesa) ── */
-      /* ── EL CUERPO DE LA SERPIENTE (Línea conectora) ── */
       .node-path {
         position: absolute;
         top: 50%;
@@ -1615,7 +1626,18 @@
         box-shadow: 0 6px 45px rgba(255, 208, 0, 0.75);
       }
     }
-
+    /* ============================================================
+      ANIMACIÓN: MOVIMIENTO RETRO POR PÍXELES
+      ============================================================ */
+    @keyframes pixelVivo {
+      0% {
+        background-position: 0px 0px;
+      }
+      100% {
+        /* Un movimiento muy cortito para que solo se sienta "vivo" el píxel */
+        background-position: 0px 60px; 
+      }
+    }
     /* ================================================================
        BOTÓN DESBLOQUEABLE — MATERIAL DE REFUERZO
        ================================================================ */
