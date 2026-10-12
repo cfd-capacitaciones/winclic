@@ -29,8 +29,7 @@ window.WC_CURRICULA = Object.freeze({
       subtitulo: 'Calibra tu arranque y conoce la escudería WIN.',
       items: [
         {
-          id: 'c01', tipo: 'tarjeta', n: 1, titulo: 'Escudería WIN (Historia)', 
-          emoji: '<img src="./assets/icons/historia.svg" alt="Historia">',
+          id: 'c01', tipo: 'tarjeta', n: 1, titulo: 'Escudería WIN (Historia)', emoji: '<img src="./assets/icons/historia.svg" alt="Historia">',
           contenidos: [
             { tipo: 'html', titulo: 'Lectura', url: 'modulos/modulo-historia.html' },
             { tipo: 'video', titulo: 'Video', url: 'assets/video/intro_identidad.mp4' },
