@@ -28,7 +28,7 @@ window.WC_CURRICULA = Object.freeze({
         },
         { 
           id: 'c02', tipo: 'tarjeta', n: 2, 
-          titulo: 'Posición de Largada (Tu Rol en la Pista)', 
+          titulo: 'Posición (Tu Rol en la Pista)', 
           emoji: '<img src="./assets/icons/intro-puesto.svg" alt="Introducción al Puesto" style="width: 34px; height: 34px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;">', 
           contenidos: [] 
         },
@@ -43,13 +43,13 @@ window.WC_CURRICULA = Object.freeze({
     /* ───────────── BLOQUE 2 ───────────── */
     {
       id: 'b2', nivel: 2, tema: 'black', 
-      titulo: 'VUELTA 2: POTENCIA & AERODINÁMICA', 
+      titulo: 'POTENCIA & AERODINÁMICA', 
       emoji: '<img src="./assets/icons/vuelta-2.svg" alt="Vuelta 2" style="width: 44px; height: 44px; display: block; margin: 0 auto 0.5rem;">',
       subtitulo: 'Domina los caballos de fuerza de nuestra conexión simétrica y el arsenal de entretenimiento a bordo.',
       items: [
         { 
           id: 'c03', tipo: 'tarjeta', n: 3, 
-          titulo: 'Tracción 100% Simétrica & Nitro Gamer (Internet & Gamer)', 
+          titulo: 'Tracción 100% Simétrica & Nitro (Internet & Gamer)', 
           emoji: '<img src="./assets/icons/gamer.svg" alt="Producto Internet y Gamer" style="width: 34px; height: 34px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;">', 
           contenidos: [] 
         },
@@ -81,7 +81,7 @@ window.WC_CURRICULA = Object.freeze({
     /* ───────────── BLOQUE 3 ───────────── */
     {
       id: 'b3', nivel: 3, tema: 'yellow', 
-      titulo: 'VUELTA 3: MANIOBRAS & ESTRATEGIA EN PISTA', 
+      titulo: 'MANIOBRAS & ESTRATEGIA EN PISTA', 
       emoji: '<img src="./assets/icons/vuelta-3.svg" alt="Vuelta 3" style="width: 44px; height: 44px; display: block; margin: 0 auto 0.5rem;">',
       subtitulo: 'Trazado fino para adelantar objeciones, entender los contratos y cruzar la línea de meta comercial.',
       items: [
