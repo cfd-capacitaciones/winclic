@@ -94,24 +94,30 @@
         flex-direction: column;
       }
 
-      /* --- Menú Inferior (Celular) --- */
+      /* --- Menú Inferior (Celular / Móvil: @media max-width: 767px) --- */
       .win-nav {
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
+        height: auto;
         background: var(--color-surface);
         border-top: 1px solid var(--color-border);
         box-shadow: var(--shadow-nav);
         display: flex;
-        flex-direction: row; /* Fila para celular */
+        flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        padding: 0.5rem 0.5rem 1.5rem 0.5rem; 
+        padding: 0.5rem 0.25rem 1rem;
         z-index: 1000;
         transition: var(--transition);
         box-sizing: border-box;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
       }
+      .win-nav::-webkit-scrollbar { display: none; }
 
       .nav-logo { display: none; }
 
@@ -124,64 +130,103 @@
         gap: 4px;
         text-decoration: none;
         color: var(--color-text-secondary);
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 700;
-        padding: 0.5rem 1rem;
-        border-radius: 16px;
+        padding: 0.4rem 0.65rem;
+        border-radius: 14px;
         transition: var(--transition);
         background: transparent;
         border: none;
         cursor: pointer;
         font-family: 'Inter', sans-serif;
-        width: auto;
+        flex-shrink: 0;
+        min-width: 58px;
+        box-sizing: border-box;
       }
 
-      .nav-icon { font-size: 1.4rem; }
+      .nav-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        min-height: 24px;
+      }
 
       .nav-item.active {
         color: var(--color-orange);
         background: rgba(255, 107, 0, 0.1);
       }
 
-    /* --- Menú Lateral (PC) --- */
+      /* Modal close button para los modales base */
+      .wc-modal-close {
+        background: transparent;
+        border: none;
+        font-size: 1.3rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: var(--color-text-secondary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        line-height: 1;
+        transition: color 0.2s, background 0.2s;
+      }
+      .wc-modal-close:hover {
+        color: var(--color-orange);
+        background: rgba(255, 107, 0, 0.08);
+      }
+
+    /* --- Menú Lateral (PC: @media min-width: 768px) --- */
     @media (min-width: 768px) {
       .app-container { flex-direction: row; }
       
       .win-nav {
         top: 0;
         bottom: auto;
+        left: 0;
         width: 260px;
         height: 100vh;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: flex-start; /* Devolvemos esto a flex-start */
+        align-items: flex-start;
         border-top: none;
-        border-right: 1px solid var(--color-border); /* Aquí está la línea blanca */
+        border-right: 1px solid var(--color-border);
         box-shadow: var(--shadow-nav-pc);
-        padding: 2rem 1.5rem;
-        box-sizing: border-box; 
+        padding: 2rem 1.25rem;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: normal;
       }
       
       .nav-logo {
         display: block;
-        margin-bottom: 3rem;
-        padding-left: 1rem;
+        margin-bottom: 2rem;
+        padding-left: 0.75rem;
       }
       
       .nav-item, .theme-toggle-btn {
         flex-direction: row;
-        width: 100%; /* CAMBIO 1: Fuerza a que ocupen todo el espacio hasta la línea */
-        justify-content: flex-start; /* CAMBIO 2: Alinea el ícono y el texto a la izquierda */
-        align-items: center; /* Centra verticalmente el ícono con el texto */
-        font-size: 1rem;
-        gap: 1rem;
-        padding: 1rem;
-        margin-bottom: 0.5rem;
+        width: 100%;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 0.95rem;
+        gap: 0.85rem;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.35rem;
         box-sizing: border-box;
+        border-radius: 16px;
       }
 
       .nav-icon { font-size: 1.2rem; }
-      .theme-toggle-btn { margin-top: auto; }
+
+      /* Empujar Modo Noche y Salir al fondo */
+      .nav-spacer {
+        margin-top: auto;
+        width: 100%;
+        display: block;
+      }
+      .theme-toggle-btn { margin-top: 0; }
+      #btn-logout { margin-bottom: 0; }
     }
     
 
@@ -2209,36 +2254,51 @@
           <img src="assets/img/logos/logo-winclic-nnegro.png" alt="WinClic" style="max-height: 30px;">
         </div>
         
-        <a href="#" class="nav-item active">
-          <span class="nav-icon">🏠</span>
+        <a href="#ruta" class="nav-item active" data-nav="ruta">
+          <span class="nav-icon"></span>
           <span class="nav-text">Ruta</span>
         </a>
         
-        <a href="#" class="nav-item">
-          <span class="nav-icon">📊</span>
-          <span class="nav-text">Progreso</span>
-        </a>
+        <button type="button" class="nav-item" data-modal="modal-maletin">
+          <span class="nav-icon"></span>
+          <span class="nav-text">Maletín</span>
+        </button>
         
-        <a href="#" class="nav-item">
-          <span class="nav-icon">🏆</span>
-          <span class="nav-text">Ligas</span>
-        </a>
+        <button type="button" class="nav-item" data-modal="modal-glosario">
+          <span class="nav-icon"></span>
+          <span class="nav-text">Glosario Tech</span>
+        </button>
+
+        <button type="button" class="nav-item" data-modal="modal-ticket">
+          <span class="nav-icon"></span>
+          <span class="nav-text">Mi Ticket</span>
+        </button>
+
+        <button type="button" class="nav-item" data-modal="modal-pasaporte">
+          <span class="nav-icon"></span>
+          <span class="nav-text">Pasaporte</span>
+        </button>
+
+        <button type="button" class="nav-item" data-modal="modal-sos">
+          <span class="nav-icon"></span>
+          <span class="nav-text">Ayuda SOS</span>
+        </button>
 
         <!-- Espaciador para empujar los botones hacia abajo en PC -->
         <div class="nav-spacer"></div>
 
         <!-- El botón de Modo Noche -->
-        <button id="theme-toggle-btn" class="nav-item theme-toggle-btn" aria-label="Cambiar modo de iluminación">
+        <button id="theme-toggle-btn" class="nav-item theme-toggle-btn" aria-label="Cambiar modo de iluminación" type="button">
           <span class="nav-icon theme-icon">
-          <img src="./assets/icons/modo-noche.svg" alt="Modo Noche" style="width: 24px; height: 24px; display: block;">
+            <img src="./assets/icons/modo-noche.svg" alt="Modo Noche" style="width: 24px; height: 24px; display: block;">
           </span>
           <span class="nav-text theme-text">Modo Noche</span>
         </button>
 
         <!-- Botón Salir -->
-        <button class="nav-item" aria-label="Cerrar sesión" onclick="cerrarSesion()">
+        <button id="btn-logout" class="nav-item" aria-label="Cerrar sesión" type="button" onclick="cerrarSesion()">
           <span class="nav-icon theme-icon">
-          <img src="./assets/icons/salir.svg" alt="Cerrar sesión" style="width: 24px; height: 24px; display: block;">
+            <img src="./assets/icons/salir.svg" alt="Cerrar sesión" style="width: 24px; height: 24px; display: block;">
           </span>
           <span class="nav-text theme-text">Salir</span>
         </button>
@@ -2448,11 +2508,12 @@
     function cerrarSesion() {
       // 1. Limpiar datos de sesión (incluye pase de abordaje y datos de agencia)
       if (window.WC && window.WC.sesion) window.WC.sesion.clear();
-      localStorage.removeItem('agencia_nombre');
-      localStorage.removeItem('agencia_zona');
-      localStorage.removeItem('agencia_departamento');
+      localStorage.clear();
       
       if (window.PaseAbordaje) window.PaseAbordaje.refrescarChip();
+
+      // Cerrar modales si hubiera abiertos
+      cerrarModalesNav();
 
       // 2. Ocultar dashboard y mostrar login limpio
       dashboard.classList.remove('visible');
@@ -2464,6 +2525,86 @@
       setTimeout(() => passwordInput.focus(), 100);
     }
     window.cerrarSesion = cerrarSesion;
+
+    /* ── GESTIÓN DE MODALES DE LA BARRA RÁPIDA ── */
+    const MODALES_NAV = ['modal-maletin', 'modal-glosario', 'modal-ticket', 'modal-pasaporte', 'modal-sos'];
+
+    function cerrarModalesNav() {
+      MODALES_NAV.forEach(id => {
+        const m = document.getElementById(id);
+        if (m) {
+          m.classList.remove('wc-open');
+          m.setAttribute('hidden', '');
+        }
+      });
+      document.body.style.overflow = '';
+      // Si cerramos modales, marcar "Ruta" como activa por defecto
+      actualizarNavActivo('ruta');
+    }
+    window.cerrarModalesNav = cerrarModalesNav;
+
+    function abrirModalNav(modalId) {
+      // Cierra los demás primero
+      MODALES_NAV.forEach(id => {
+        const m = document.getElementById(id);
+        if (m) {
+          m.classList.remove('wc-open');
+          m.setAttribute('hidden', '');
+        }
+      });
+
+      const target = document.getElementById(modalId);
+      if (target) {
+        target.removeAttribute('hidden');
+        requestAnimationFrame(() => target.classList.add('wc-open'));
+        document.body.style.overflow = 'hidden';
+        actualizarNavActivo(modalId);
+      }
+    }
+    window.abrirModalNav = abrirModalNav;
+
+    function actualizarNavActivo(identificador) {
+      document.querySelectorAll('.win-nav .nav-item').forEach(btn => {
+        if (identificador === 'ruta' && btn.dataset.nav === 'ruta') {
+          btn.classList.add('active');
+        } else if (btn.dataset.modal === identificador) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Event listeners para la barra rápida
+    document.querySelectorAll('.win-nav [data-modal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.modal;
+        abrirModalNav(id);
+      });
+    });
+
+    const btnRuta = document.querySelector('.win-nav [data-nav="ruta"]');
+    if (btnRuta) {
+      btnRuta.addEventListener('click', (e) => {
+        e.preventDefault();
+        cerrarModalesNav();
+      });
+    }
+
+    // Cerrar al hacer clic en el backdrop oscuro de los modales rápidos
+    MODALES_NAV.forEach(id => {
+      const overlay = document.getElementById(id);
+      if (overlay) {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) cerrarModalesNav();
+        });
+      }
+    });
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cerrarModalesNav();
+    });
 
     /* ══════════════════════════════════════════════════════════════
        2. PROGRESO CON LOCAL STORAGE
@@ -3014,6 +3155,74 @@
   <script src="js/quiz.js"></script>
   <script src="js/curricula.js"></script>
   <script src="js/modulos-loader.js"></script>
+
+  <!-- ============================================================
+       MODALES BASE (ACCESOS RÁPIDOS)
+       ============================================================ -->
+  <!-- 1. Maletín -->
+  <div id="modal-maletin" class="wc-overlay" role="dialog" aria-modal="true" aria-labelledby="title-modal-maletin" hidden>
+    <div class="wc-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 id="title-modal-maletin" style="margin:0;">💼 Maletín de Descargas</h2>
+        <button class="wc-modal-close" type="button" aria-label="Cerrar modal" onclick="cerrarModalesNav()">✕</button>
+      </div>
+      <div class="modal-content-area" id="content-modal-maletin">
+        <!-- Contenedor vacío para poblar contenido en la siguiente etapa -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Glosario Tech -->
+  <div id="modal-glosario" class="wc-overlay" role="dialog" aria-modal="true" aria-labelledby="title-modal-glosario" hidden>
+    <div class="wc-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 id="title-modal-glosario" style="margin:0;">📖 Glosario Tech</h2>
+        <button class="wc-modal-close" type="button" aria-label="Cerrar modal" onclick="cerrarModalesNav()">✕</button>
+      </div>
+      <div class="modal-content-area" id="content-modal-glosario">
+        <!-- Contenedor vacío para poblar contenido en la siguiente etapa -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Mi Ticket -->
+  <div id="modal-ticket" class="wc-overlay" role="dialog" aria-modal="true" aria-labelledby="title-modal-ticket" hidden>
+    <div class="wc-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 id="title-modal-ticket" style="margin:0;">🎟️ Mi Ticket</h2>
+        <button class="wc-modal-close" type="button" aria-label="Cerrar modal" onclick="cerrarModalesNav()">✕</button>
+      </div>
+      <div class="modal-content-area" id="content-modal-ticket">
+        <!-- Contenedor vacío para poblar contenido en la siguiente etapa -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Pasaporte -->
+  <div id="modal-pasaporte" class="wc-overlay" role="dialog" aria-modal="true" aria-labelledby="title-modal-pasaporte" hidden>
+    <div class="wc-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 id="title-modal-pasaporte" style="margin:0;">🪪 Pasaporte de Piloto</h2>
+        <button class="wc-modal-close" type="button" aria-label="Cerrar modal" onclick="cerrarModalesNav()">✕</button>
+      </div>
+      <div class="modal-content-area" id="content-modal-pasaporte">
+        <!-- Contenedor vacío para poblar contenido en la siguiente etapa -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Ayuda SOS -->
+  <div id="modal-sos" class="wc-overlay" role="dialog" aria-modal="true" aria-labelledby="title-modal-sos" hidden>
+    <div class="wc-modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h2 id="title-modal-sos" style="margin:0;">🆘 Ayuda SOS</h2>
+        <button class="wc-modal-close" type="button" aria-label="Cerrar modal" onclick="cerrarModalesNav()">✕</button>
+      </div>
+      <div class="modal-content-area" id="content-modal-sos">
+        <!-- Contenedor vacío para poblar contenido en la siguiente etapa -->
+      </div>
+    </div>
+  </div>
 
 </body>
 

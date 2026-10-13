@@ -24,7 +24,7 @@
   // true  = una tarjeta SIN contenido cargado aún se puede marcar completada (útil mientras subes archivos).
   // false = en producción: sin contenido no se avanza.
   const PERMITIR_COMPLETAR_SIN_CONTENIDO = true;
-  const TEXTO_BURBUJA = '¡Semáforo en Verde!';
+  const TEXTO_BURBUJA = '¡SEMÁFORO EN VERDE!';
   const DX = [0, 56, 88, 56, 0, -56, -88, -56];            // vaivén del zigzag (px)
   const NIVELES = ['', 'Básico', 'Intermedio', 'Avanzado', 'Experto'];
 
@@ -70,7 +70,10 @@
 
   /* ══════════ PINTADO ══════════ */
   function iconoNodo(p) {
-    if (p.tipo === 'quiz') return `<span class="wcp-chest-label">Quiz</span>`;
+    if (p.tipo === 'quiz') {
+      const icoSvg = p.emoji || '<img src="./assets/icons/quizz.svg" alt="Pit Stop">';
+      return `<span class="wcp-pit-icon-wrap">${icoSvg}</span><span class="wcp-chest-label">PIT STOP</span>`;
+    }
     const icono = p.emoji || '📄';
     return `<span class="wcp-ico">${icono}</span>`;
   }
@@ -202,10 +205,18 @@
       if (recorrido) {
         const revelar = !a.isla && a.id === ultimoCompletado;     // "camino revelador"
         const anim = (p) => { const len = p.getTotalLength(); p.style.setProperty('--len', len); p.classList.add('wcp-seg--reveal'); };
+        // 1. Sombra / Relieve del asfalto
         trazo(d, 'wcp-seg wcp-seg--shadow', revelar ? anim : null);
-        trazo(d, 'wcp-seg wcp-seg--done', revelar ? anim : null);
+        // 2. Bordillos / Pianos deportivos exteriores (kerbs)
+        trazo(d, 'wcp-seg wcp-seg--kerb', revelar ? anim : null);
+        // 3. Asfalto principal (36px - 40px)
+        trazo(d, 'wcp-seg wcp-seg--asphalt', revelar ? anim : null);
+        // 4. Línea central discontinua reflectante/amarilla WIN
+        trazo(d, 'wcp-seg wcp-seg--centerline', revelar ? anim : null);
       } else {
-        trazo(d, 'wcp-seg wcp-seg--lock');
+        // Tramo bloqueado: asfalto gris mate atenuado + línea discontinua tenue
+        trazo(d, 'wcp-seg wcp-seg--lock-asphalt');
+        trazo(d, 'wcp-seg wcp-seg--lock-line');
       }
     }
     ultimoCompletado = null;

@@ -31,12 +31,65 @@
 /* Todo lo que NO es el SVG se pinta por encima del camino */
 .wcp-path > *:not(.wcp-svg) { position: relative; z-index: 1; }
 
-/* ── Camino SVG ───────────────────────────────────────────────────────── */
+/* ── Camino SVG: Pista de Carreras Real (Grand Prix) ─────────────────── */
 .wcp-svg { position: absolute !important; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0 !important; }
 .wcp-seg { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.wcp-seg--done { stroke: var(--wc-orange, #FF6B00); stroke-width: 14; }
-.wcp-seg--shadow { stroke: var(--wc-orange-dark, #D95700); stroke-width: 14; transform: translateY(5px); }
-.wcp-seg--lock { stroke: var(--wcp-lock); stroke-width: 9; stroke-dasharray: 2 18; }
+
+/* 1. Sombra inferior del asfalto para relieve 3D */
+.wcp-seg--shadow {
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 42;
+  transform: translateY(6px);
+}
+[data-theme="dark"] .wcp-seg--shadow { stroke: rgba(0, 0, 0, 0.7); }
+
+/* 2. Pianos deportivos exteriores (Kerbs): franjas de circuito */
+.wcp-seg--kerb {
+  stroke: #E2E8F0;
+  stroke-width: 44;
+  stroke-dasharray: 10 10;
+}
+[data-theme="dark"] .wcp-seg--kerb { stroke: #2D3748; }
+
+/* 3. Asfalto principal (38px de ancho visible, color carbón deportivo) */
+.wcp-seg--asphalt,
+.wcp-seg--done {
+  stroke: #22252A;
+  stroke-width: 38;
+}
+[data-theme="dark"] .wcp-seg--asphalt,
+[data-theme="dark"] .wcp-seg--done { stroke: #181A1E; }
+
+/* 4. Línea central reflectante / amarillo WIN discontinua */
+.wcp-seg--centerline {
+  stroke: var(--wc-yellow, #FFB800);
+  stroke-width: 4;
+  stroke-linecap: butt;
+  stroke-dasharray: 6 8;
+  filter: drop-shadow(0 0 2px rgba(255, 184, 0, 0.5));
+}
+
+/* 5. Tramos bloqueados: Asfalto gris mate atenuado con opacidad reducida */
+.wcp-seg--lock-asphalt {
+  stroke: #4A5568;
+  stroke-width: 36;
+  opacity: 0.35;
+}
+.wcp-seg--lock-line {
+  stroke: #A0AEC0;
+  stroke-width: 3;
+  stroke-linecap: butt;
+  stroke-dasharray: 4 10;
+  opacity: 0.3;
+}
+
+/* Compatibilidad heredada con la clase anterior wcp-seg--lock */
+.wcp-seg--lock {
+  stroke: #4A5568;
+  stroke-width: 36;
+  opacity: 0.35;
+}
+
 .wcp-seg--reveal { stroke-dasharray: var(--len) var(--len); animation: wcpReveal 1s cubic-bezier(.4, 0, .2, 1) forwards; }
 @keyframes wcpReveal { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
 
@@ -194,42 +247,138 @@
 .wcp-chest ~ .wcp-tip { bottom: calc(100% + 22px); }
 .wcp-trophy ~ .wcp-tip { bottom: calc(100% + 30px); }
 
-/* ── 3. NODOS DE QUIZ: COFRE DE "JEFE" ────────────────────────────────── */
+/* ── 3. NODOS DE QUIZ: BOX DE PIT STOP / CASETA DE TELEMETRÍA ───────── */
 .wcp-chest {
-  position: relative; display: grid; place-items: end center;
-  width: 120px; height: 98px; padding: 0 0 9px; border: 0; cursor: pointer;
-  border-radius: 22px 22px 28px 28px;
-  background: linear-gradient(180deg, #FFE878 0%, #FFC400 100%);
-  box-shadow: 0 11px 0 var(--wcp-gold-dark), 0 22px 44px rgba(255, 196, 0, .65);
-  transition: transform .1s ease, box-shadow .1s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 96px;
+  padding: 8px 10px 10px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #2D3748 0%, #1A202C 100%);
+  box-shadow: 0 10px 0 #11141A, 0 18px 30px rgba(0, 0, 0, 0.35);
+  transition: transform .1s ease, box-shadow .1s ease, border-color .2s;
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  overflow: visible;
 }
-.wcp-chest::before { /* tapa del cofre */
-  content: ''; position: absolute; left: -6px; right: -6px; top: -9px; height: 48%;
-  background: linear-gradient(180deg, #FF9A1F, #FF6B00);
-  border-radius: 34px 34px 10px 10px; border-bottom: 5px solid #B84700;
-  box-shadow: inset 0 5px 0 rgba(255, 255, 255, .35);
-  transform-origin: 6% 100%; transition: transform .4s cubic-bezier(.3, 1.6, .5, 1);
-}
-.wcp-chest::after { /* cerradura */
-  content: ''; position: absolute; left: 50%; top: 36%; width: 28px; height: 32px; transform: translateX(-50%);
-  background: #111; border: 4px solid #FFE878; border-radius: 9px; box-shadow: 0 3px 0 #B84700; z-index: 2;
-}
-.wcp-chest-label { position: relative; z-index: 3; font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .14em; color: #111; text-transform: uppercase; }
-.wcp-chest-label::before { content: '★ '; color: #B84700; } .wcp-chest-label::after { content: ' ★'; color: #B84700; }
 
-.wcp-halo { /* aura dorada que respira (solo en estado current) */
-  position: absolute; inset: -18px; border-radius: 40px; z-index: -1; pointer-events: none;
-  background: radial-gradient(circle, rgba(255, 208, 0, .75), rgba(255, 107, 0, 0) 70%);
+[data-theme="dark"] .wcp-chest {
+  background: linear-gradient(145deg, #252A33 0%, #15171B 100%);
+  box-shadow: 0 10px 0 #0D0E11, 0 20px 32px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Moldura superior deportiva (franja de cabina de boxes) */
+.wcp-chest::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 5px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--wc-orange, #FF6B00), var(--wc-yellow, #FFB800));
+  box-shadow: 0 0 8px rgba(255, 107, 0, 0.5);
+}
+
+/* Contenedor del ícono central de Pit Stop con soporte SVG */
+.wcp-pit-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: 2px;
+  pointer-events: none;
+}
+.wcp-pit-icon-wrap img,
+.wcp-pit-icon-wrap svg {
+  width: 42px !important;
+  height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  object-fit: contain !important;
+  display: block !important;
+  position: static !important;
+  transform: none !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+/* Rótulo deportivo tipo display digital */
+.wcp-chest-label {
+  position: relative;
+  z-index: 3;
+  margin-top: 4px;
+  font: 900 .72rem 'Outfit', 'Inter', sans-serif;
+  letter-spacing: .14em;
+  color: #FFF;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.wcp-chest-label::before { content: '🏁 '; font-size: .65rem; }
+.wcp-chest-label::after { content: ''; }
+
+/* Física al presionar (chunky button) */
+.wcp-chest:active:not(:disabled) {
+  transform: translateY(8px) !important;
+  box-shadow: 0 2px 0 #11141A, 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Aura / Glow de Telemetría cuando está activo/current */
+.wcp-halo {
+  position: absolute;
+  inset: -14px;
+  border-radius: 36px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 107, 0, 0.55), rgba(255, 184, 0, 0.15) 60%, transparent 80%);
   animation: wcpHalo 1.8s ease-in-out infinite;
 }
-@keyframes wcpHalo { 0%, 100% { transform: scale(.92); opacity: .8; } 50% { transform: scale(1.12); opacity: 1; } }
+@keyframes wcpHalo {
+  0%, 100% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
 
-.wcp-chest.is-current { animation: wcpWiggle 2.4s ease-in-out infinite; }
-@keyframes wcpWiggle { 0%, 80%, 100% { rotate: 0deg; } 85% { rotate: -3deg; } 90% { rotate: 3deg; } 95% { rotate: -2deg; } }
-.wcp-chest.is-done::before { transform: rotate(-16deg) translateY(-6px); } /* cofre ABIERTO */
-.wcp-chest.is-done::after { background: #2F9E44; border-color: #fff; }
-.wcp-chest.is-locked { filter: grayscale(1) brightness(.92); opacity: .75; cursor: not-allowed; box-shadow: 0 11px 0 #9AA4B2, 0 16px 26px rgba(0, 0, 0, .1); }
+.wcp-chest.is-current {
+  border-color: var(--wc-orange, #FF6B00);
+  box-shadow: 0 10px 0 var(--wc-orange-dark, #D95700), 0 0 25px rgba(255, 107, 0, 0.45);
+  animation: wcpWiggle 2.8s ease-in-out infinite;
+}
+@keyframes wcpWiggle {
+  0%, 80%, 100% { transform: translateY(0); }
+  85% { transform: translateY(-4px) rotate(-1deg); }
+  90% { transform: translateY(-4px) rotate(1deg); }
+  95% { transform: translateY(-2px); }
+}
+
+/* Estado completado (Bandera a cuadros ganada) */
+.wcp-chest.is-done {
+  background: linear-gradient(145deg, #1C3829 0%, #15261D 100%);
+  border-color: #2F9E44;
+  box-shadow: 0 10px 0 #0F1E16, 0 16px 26px rgba(47, 158, 68, 0.25);
+}
+.wcp-chest.is-done .wcp-chest-label {
+  color: #72E08A;
+  border-color: rgba(47, 158, 68, 0.4);
+}
+
+/* Estado bloqueado */
+.wcp-chest.is-locked {
+  filter: grayscale(1) brightness(0.7);
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: 0 10px 0 #1A1D24, 0 12px 18px rgba(0, 0, 0, 0.15);
+}
 
 /* ── Meta Final: TROFEO ───────────────────────────────────────────────── */
 .wcp-trophy {
