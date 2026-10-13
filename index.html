@@ -62,14 +62,14 @@
       overflow-x: hidden;
       
       /* 🌟 FONDO GLOBAL ANTI-LAG */
-      background-image: url('assets/img/fondo-clara.jpeg');
+      background-image: url('assets/img/fondo-claro.jpeg');
       background-size: cover;
       background-position: center top;
       background-attachment: fixed;
     }
 
     [data-theme="dark"] body {
-      background-image: url('assets/img/fondo-oscura.jpeg');
+      background-image: url('assets/img/fondo-oscuro.jpeg');
     }
     /* ============================================================
       CORRECCIÓN: ELIMINAR LÍNEA BLANCA LATERAL EN MÓVIL
@@ -1397,7 +1397,7 @@
       padding: 1.5rem 1.5rem 1rem;
       border-bottom: 2px solid var(--color-border);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 1rem;
       position: sticky;
       top: 0;
@@ -1407,8 +1407,22 @@
     }
 
     .modal-header-icon {
-      font-size: 2rem;
+      position: relative; 
+      width: 44px;
+      height: 44px;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-header-icon img {
+      position: static !important;
+      transform: none !important;
+      width: 100% !important;
+      height: auto !important;
+      display: block;
+      margin: 0 !important;
     }
 
     .modal-header-text {
@@ -2140,17 +2154,7 @@
       pointer-events: auto;
       user-select: auto;
     }
-    /* ============================================================
-      CORRECCIÓN: ÍCONOS QUE FLOTAN SOBRE EL VIDEO EN EL MODAL
-      ============================================================ */
-    .modal-header-icon img {
-      position: static !important; /* Le quita la orden de "volar" por la pantalla */
-      transform: none !important;  /* Quita el centrado forzado del circuito */
-      width: 36px !important;      /* Tamaño perfecto para el título del modal */
-      height: auto !important;
-      display: block !important;
-      margin: 0 auto !important;
-    }
+
   </style>
 
   <link rel="stylesheet" href="css/winclic-ui.css" />
@@ -2543,7 +2547,7 @@
       const { emoji = '📄', number = '', title = 'Módulo', url = '', type = 'pdf', id = '' } = data;
 
       currentCardId = id;
-      modalEmoji.textContent = emoji;
+      modalEmoji.innerHTML = emoji;
       modalNumber.textContent = number;
       modalTitleText.textContent = title;
 

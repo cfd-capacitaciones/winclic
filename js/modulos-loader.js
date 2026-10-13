@@ -105,7 +105,7 @@
   function islaHTML(b, items) {
     const hechos = items.filter(i => i.estado === 'done').length;
     const bloqueado = items.every(i => i.estado === 'locked');
-    const nivel = b.id === 'meta' ? '🏁 Meta final' : `Nivel ${b.nivel} · ${NIVELES[b.nivel] || ''}`;
+    const nivel = b.id === 'meta' ? 'Meta final' : `Nivel ${b.nivel} · ${NIVELES[b.nivel] || ''}`;
     const rolTag = b.soloRol ? ' · Backoffice' : '';
     return `
       <section class="wcp-island ${bloqueado ? 'is-locked' : ''}" data-tema="${esc(b.tema)}" data-nivel="${esc(nivel)}" data-bloque="${esc(b.id)}" aria-label="${esc(b.titulo)}">
@@ -122,7 +122,8 @@
     const a = asesor();
     return `
       <header class="wcp-hero">
-        <div style="font-size:2.4rem" aria-hidden="true">🚀</div>
+        <div style="font-size:2.4rem" aria-hidden="true"></div>
+        <img src="./assets/icons/bandera-inicio.svg" alt="Logo WinClic" style="width: 80px; height: auto; margin-bottom: 1rem;">
         <h2>${a ? `¡Hola, ${esc(a.nombre)}!` : esc(CUR.cabecera.titulo)}</h2>
         <p>${esc(CUR.cabecera.subtitulo)}</p>
         <div class="wcp-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
