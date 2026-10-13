@@ -2140,9 +2140,22 @@
       pointer-events: auto;
       user-select: auto;
     }
+    /* ============================================================
+      CORRECCIÓN: ÍCONOS QUE FLOTAN SOBRE EL VIDEO EN EL MODAL
+      ============================================================ */
+    .modal-header-icon img {
+      position: static !important; /* Le quita la orden de "volar" por la pantalla */
+      transform: none !important;  /* Quita el centrado forzado del circuito */
+      width: 36px !important;      /* Tamaño perfecto para el título del modal */
+      height: auto !important;
+      display: block !important;
+      margin: 0 auto !important;
+    }
   </style>
+
   <link rel="stylesheet" href="css/winclic-ui.css" />
   <link rel="stylesheet" href="css/ruta.css" />
+
 </head>
 
 <body>

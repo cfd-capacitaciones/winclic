@@ -16,7 +16,7 @@ window.WC_CURRICULA = Object.freeze({
     /* ───────────── BLOQUE 1 ───────────── */
     {
       id: 'b1', nivel: 1, tema: 'orange', 
-      titulo: 'VUELTA 1: PUESTA A PUNTO DEL MOTOR', 
+      titulo: 'INICIO DE PARTIDA', 
       emoji: '<img src="./assets/icons/vuelta-1.svg" alt="Vuelta 1" style="width: 44px; height: 44px; display: block; margin: 0 auto 0.5rem;">',
       subtitulo: 'Calibra tus cilindros con el ADN de la fibra y define tu posición de arranque en el equipo WIN.',
       items: [
