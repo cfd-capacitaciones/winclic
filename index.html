@@ -57,9 +57,19 @@
       font-family: 'Inter', sans-serif;
       background-color: var(--color-bg);
       color: var(--color-text-primary);
-      transition: background-color 0.4s ease, color 0.4s ease; /* Transición suave de modos */
-      margin: 0;
-      padding: 0;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      
+      /* 🌟 FONDO GLOBAL ANTI-LAG */
+      background-image: url('assets/img/fondo-clara.jpeg');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
+    }
+
+    [data-theme="dark"] body {
+      background-image: url('assets/img/fondo-oscura.jpeg');
     }
     /* ============================================================
       CORRECCIÓN: ELIMINAR LÍNEA BLANCA LATERAL EN MÓVIL
@@ -176,63 +186,54 @@
     
 
     /* Contenedor Principal */
-      /* ============================================================
-        ZONA DEL CIRCUITO (Fondo Estático Pantalla Completa)
+    /* ============================================================
+        1. ZONA DEL CIRCUITO (Centrado Exacto)
         ============================================================ */
       .main-view {
         flex: 1;
         padding: 1.5rem;
         padding-bottom: 100px; 
-        
-        /* 1. FONDO DE PISTA CLARO */
-        background-image: url('assets/img/fondo-claro.jpeg'); 
-        background-size: cover; 
-        background-repeat: no-repeat;
-        background-attachment: fixed; 
-        /* Centrado normal para el celular */
-        background-position: center center;
+        display: flex;
+        justify-content: center; /* Esto centrará la serpiente mágicamente */
+        background: transparent; /* El fondo ya lo está manejando el body arriba */
       }
 
-      /* Versión PC: Respeta el menú y centra la pista */
       @media (min-width: 768px) {
         .main-view {
-          margin-left: 260px; 
+          margin-left: 260px; /* Esquivamos el menú de PC */
+          width: calc(100% - 260px); /* 🌟 LA MAGIA: Le restamos los 260px del menú para que no se desborde a la derecha */
           padding: 3rem 4rem;
-          background-position: center center;
         }
       }
 
-      /* Fondo para MODO NOCHE */
-      [data-theme="dark"] .main-view {
-        background-image: url('assets/img/fondo-oscuro.jpeg'); 
-      }
-
       /* ============================================================
-        3. CAMINO WIN (RUTA ESTILO SERPIENTE / DUOLINGO)
-         ============================================================ */
+        2. CONTENEDOR DE LA RUTA (Limpio)
+        ============================================================ */
       .path-container {
         display: flex;
         flex-direction: column;
-        align-items: center; /* Centra el contenedor en la pantalla */
+        align-items: center; 
         padding: 2rem 1rem;
-        max-width: 500px; /* Define el ancho de las curvas de la serpiente */
-        margin: 0 auto;
+        width: 100%;
+        max-width: 600px; 
+        margin: 0; 
         position: relative;
-        overflow: hidden; /* Evita scrolls horizontales */
+        transform: none !important; /* Limpiamos los trucos de movimiento anteriores */
       }
 
-      /* El Nodo: Contenedor Principal */
       .node-wrapper {
         position: relative;
         width: 100%;
         display: flex;
-        padding: 2.5rem 0; /* Espacio vertical entre los cursos */
+        justify-content: center; 
+        padding: 2.5rem 0;
         z-index: 1;
       }
 
       /* Efecto Zig-zag partiendo desde el centro */
       .node-wrapper:nth-child(odd) .node-content { transform: translateX(40px); }
       .node-wrapper:nth-child(even) .node-content { transform: translateX(-40px); }
+      
 
       /* ── EL CUERPO DE LA SERPIENTE (La línea conectora gruesa) ── */
       .node-path {
