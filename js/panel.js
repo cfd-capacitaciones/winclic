@@ -51,7 +51,8 @@
       if (section) section.hidden = n !== tab.dataset.tab; 
     });
     if (tab.dataset.tab === 'analitica') cargarAnalitica();
-    if (tab.dataset.tab === 'agencias') listarAgencias();
+    if (tab.dataset.tab === 'agencias') { listarAgencias(); cargarMetricasAgencias(); }
+    if (tab.dataset.tab === 'quizzes') cargarIntentos();
   }));
 
   async function bootPanel() {
@@ -59,6 +60,9 @@
     await listarModulos();
     construirEditorQuiz();
     if ($('ag-list')) await listarAgencias();
+    iniciarFiltroMes();
+    cargarIntentos();
+    cargarMetricasAgencias();
   }
 
   /* ═══════════════════ 2. GESTOR DOCUMENTAL ═══════════════════ */
@@ -363,7 +367,9 @@
     for (let desde = 0; desde < 10000; desde += PAGINA) {
       let q = db.from('evaluaciones').select('agencia,nota,aprobado,created_at,detalle')
         .eq('quiz_id', quizId).order('created_at', { ascending: false }).range(desde, desde + PAGINA - 1);
-      if (dias > 0) q = q.gte('created_at', new Date(Date.now() - dias * 864e5).toISOString());
+      const rm = rangoMes();   // el filtro global por mes tiene prioridad sobre el selector de días
+      if (rm) q = q.gte('created_at', rm.desde).lte('created_at', rm.hasta);
+      else if (dias > 0) q = q.gte('created_at', new Date(Date.now() - dias * 864e5).toISOString());
       const { data, error } = await q;
       if (error) throw error;
       todas.push(...data);
@@ -553,4 +559,202 @@
       btn.disabled = false; btn.textContent = 'Guardar Agencia 🏢';
     }
   });
+
+  /* ═══════════════════ 6. HERRAMIENTAS DE ANÁLISIS (mes · CSV · métricas · reset) ═══════════════════ */
+  // La fecha de cada registro vive en la columna `created_at` (timestamptz) de las tablas.
+  const fmtFecha = (iso) => new Date(iso).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' });
+
+  /* ── 6.1 Filtro global por mes ── */
+  /** Devuelve {desde, hasta} (ISO) del mes elegido, o null si no hay mes (= todo el historial). */
+  function rangoMes() {
+    const v = $('f-mes') && $('f-mes').value;           // 'YYYY-MM'
+    if (!/^\d{4}-\d{2}$/.test(v || '')) return null;
+    const [y, m] = v.split('-').map(Number);
+    return {
+      desde: new Date(y, m - 1, 1, 0, 0, 0, 0).toISOString(),
+      hasta: new Date(y, m, 0, 23, 59, 59, 999).toISOString()
+    };
+  }
+
+  function refrescarPorMes() {
+    $('an-rango').disabled = !!rangoMes();              // con mes activo, el selector de días no aplica
+    cargarIntentos();
+    cargarMetricasAgencias();
+    if ($('an-quiz').value) cargarAnalitica();
+  }
+
+  function iniciarFiltroMes() {
+    if (!$('f-mes') || $('f-mes').dataset.ok) return;
+    $('f-mes').dataset.ok = '1';
+    const hoy = new Date();
+    $('f-mes').value = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+    $('an-rango').disabled = true;
+    $('f-mes').addEventListener('change', refrescarPorMes);
+    $('f-mes-clear').addEventListener('click', () => { $('f-mes').value = ''; refrescarPorMes(); });
+    $('btn-export').addEventListener('click', exportarCSV);
+  }
+
+  /** Trae una tabla completa (paginada) aplicando el filtro de mes. */
+  async function traerTabla(tabla, columnas) {
+    const rm = rangoMes();
+    const filas = [], PAGINA = 1000;
+    for (let desde = 0; desde < 50000; desde += PAGINA) {
+      let q = db.from(tabla).select(columnas).order('created_at', { ascending: false }).range(desde, desde + PAGINA - 1);
+      if (rm) q = q.gte('created_at', rm.desde).lte('created_at', rm.hasta);
+      const { data, error } = await q;
+      if (error) throw error;
+      filas.push(...data);
+      if (data.length < PAGINA) break;
+    }
+    return filas;
+  }
+
+  /* ── 6.2 Exportador CSV ── */
+  const celdaCSV = (v) => {
+    let s = v === null || v === undefined ? '' : String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;            // evita inyección de fórmulas en Excel
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+
+  async function exportarCSV() {
+    const btn = $('btn-export');
+    const txt = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Generando…';
+    try {
+      const [evs, cursos] = await Promise.all([
+        traerTabla('evaluaciones', '*'),
+        traerTabla('cursos_completados', '*')
+      ]);
+      const filas = [];
+      evs.forEach(e => filas.push({
+        f: e.created_at, ag: e.agencia, zona: e.zona, dep: e.departamento, nom: e.asesor_nombre,
+        ape: e.asesor_apellido, rol: e.rol, mod: e.quiz_id, nota: e.nota, est: e.aprobado ? 'Aprobado' : 'Desaprobado'
+      }));
+      // Las tarjetas completadas; los quizzes ya salen arriba con su nota real
+      cursos.filter(c => String(c.curso_id).startsWith('tarjeta-')).forEach(c => filas.push({
+        f: c.created_at, ag: c.agencia, zona: c.zona, dep: c.departamento, nom: c.asesor_nombre,
+        ape: c.asesor_apellido, rol: c.rol, mod: c.curso_id, nota: c.puntaje, est: 'Completado'
+      }));
+      if (!filas.length) { toast('No hay registros en este periodo 📭', 'err'); return; }
+      filas.sort((a, b) => new Date(b.f) - new Date(a.f));
+
+      const cab = ['Fecha', 'Agencia', 'Zona', 'Departamento', 'Nombre', 'Apellido', 'Rol', 'Módulo/Quiz', 'Nota', 'Estado'];
+      const lineas = [cab.map(celdaCSV).join(',')].concat(filas.map(r =>
+        [fmtFecha(r.f), r.ag, r.zona, r.dep, r.nom, r.ape, r.rol, r.mod, r.nota, r.est].map(celdaCSV).join(',')));
+      const blob = new Blob(['\uFEFF' + lineas.join('\r\n')], { type: 'text/csv;charset=utf-8;' });   // BOM → tildes OK en Excel
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `winclic-avance-${$('f-mes').value || 'historial'}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      toast(`CSV listo: ${filas.length} registros 📥`);
+    } catch (err) {
+      console.error(err); toast('No se pudo exportar: ' + (err.message || 'error'), 'err');
+    } finally { btn.disabled = false; btn.textContent = txt; }
+  }
+
+  /* ── 6.3 Intentos de evaluación + reset por asesor ── */
+  async function cargarIntentos() {
+    const tb = $('ev-list');
+    if (!tb) return;
+    tb.innerHTML = '<tr><td colspan="7" class="wc-empty" style="text-align:center;padding:1.5rem">Cargando…</td></tr>';
+    const rm = rangoMes();
+    let q = db.from('evaluaciones').select('id,created_at,agencia,asesor_nombre,asesor_apellido,quiz_id,nota,aprobado')
+      .order('created_at', { ascending: false }).limit(300);
+    if (rm) q = q.gte('created_at', rm.desde).lte('created_at', rm.hasta);
+    const { data, error } = await q;
+    if (error) { tb.innerHTML = `<tr><td colspan="7" class="wc-empty">Error: ${esc(error.message)}</td></tr>`; return; }
+    if (!data.length) { tb.innerHTML = '<tr><td colspan="7" class="wc-empty" style="text-align:center;padding:1.5rem">Sin intentos en este periodo 📭</td></tr>'; return; }
+    const td = 'padding:.7rem .5rem;';
+    tb.innerHTML = data.map(e => `
+      <tr style="border-bottom:1px solid var(--wc-border)">
+        <td style="${td}white-space:nowrap">${esc(fmtFecha(e.created_at))}</td>
+        <td style="${td}">${esc(e.agencia)}</td>
+        <td style="${td}"><b>${esc(e.asesor_nombre)} ${esc(e.asesor_apellido)}</b></td>
+        <td style="${td}"><code>${esc(e.quiz_id)}</code></td>
+        <td style="${td}">${esc(e.nota)}%</td>
+        <td style="${td}"><span class="wc-pill" style="background:${e.aprobado ? 'var(--wc-green)' : 'var(--wc-red)'};color:#fff">${e.aprobado ? 'Aprobado' : 'Desaprobado'}</span></td>
+        <td style="${td}text-align:right"><button class="wc-btn wc-btn--danger wc-btn--sm" data-ev-del="${esc(e.id)}" title="Resetear intento">🗑️</button></td>
+      </tr>`).join('') +
+      (data.length === 300 ? '<tr><td colspan="7" style="padding:.7rem;color:var(--wc-text-soft)"><small>Mostrando los 300 intentos más recientes. Usa el filtro de mes para acotar.</small></td></tr>' : '');
+  }
+
+  $('ev-list')?.addEventListener('click', async (ev) => {
+    const b = ev.target.closest('button[data-ev-del]');
+    if (!b) return;
+    if (!confirm('¿Estás seguro de resetear el intento de este asesor?')) return;
+    b.disabled = true;
+    try {
+      const { data, error } = await db.from('evaluaciones').delete().eq('id', b.dataset.evDel).select('id');
+      if (error) throw error;
+      if (!data || !data.length) throw new Error('Sin permiso o el registro ya no existe');
+      toast('Intento reseteado ✅ El asesor ya puede volver a intentarlo');
+    } catch (err) { console.error(err); toast(err.message || 'No se pudo resetear', 'err'); }
+    await cargarIntentos();
+    cargarMetricasAgencias();
+  });
+
+  /* ── 6.4 Tablero de rendimiento por agencia ── */
+  async function cargarMetricasAgencias() {
+    const tb = $('ag-metrics');
+    if (!tb) return;
+    tb.innerHTML = '<tr><td colspan="4" class="wc-empty" style="text-align:center;padding:1.5rem">Calculando…</td></tr>';
+    try {
+      const CUR = window.WC_CURRICULA;
+      const quizGeneral = CUR && CUR.meta ? CUR.meta.quizId : 'quiz-general';
+      // Pasos de la ruta común (sin el bloque exclusivo de Backoffice) + meta final
+      const ruta = new Set([quizGeneral]);
+      ((CUR && CUR.bloques) || []).filter(b => !b.soloRol).forEach(b => b.items.forEach(i =>
+        ruta.add(i.tipo === 'quiz' ? i.quizId : 'tarjeta-' + i.id)));
+
+      const [{ data: ags, error: eAg }, evs, cursos] = await Promise.all([
+        db.from('agencias').select('nombre').eq('activa', true).order('nombre'),
+        traerTabla('evaluaciones', 'agencia,asesor_nombre,asesor_apellido,quiz_id,nota,aprobado'),
+        traerTabla('cursos_completados', 'agencia,asesor_nombre,asesor_apellido,curso_id')
+      ]);
+      if (eAg) throw eAg;
+
+      const norm = (s) => String(s || '').trim().toLowerCase();
+      const porAg = new Map((ags || []).map(a => [norm(a.nombre), { nombre: a.nombre, asesores: new Map() }]));
+      const asesor = (ag, n, a) => {
+        const g = porAg.get(norm(ag)); if (!g) return null;       // agencias inactivas/desconocidas se omiten
+        const k = norm(n) + '|' + norm(a);
+        if (!g.asesores.has(k)) g.asesores.set(k, { hechos: new Set(), notaGeneral: null });
+        return g.asesores.get(k);
+      };
+      evs.forEach(e => {
+        const s = asesor(e.agencia, e.asesor_nombre, e.asesor_apellido); if (!s) return;
+        if (e.aprobado && ruta.has(e.quiz_id)) s.hechos.add(e.quiz_id);
+        if (e.quiz_id === quizGeneral) s.notaGeneral = Math.max(s.notaGeneral ?? 0, e.nota);   // mejor intento
+      });
+      cursos.forEach(c => {
+        const s = asesor(c.agencia, c.asesor_nombre, c.asesor_apellido); if (!s) return;
+        if (String(c.curso_id).startsWith('tarjeta-') && ruta.has(c.curso_id)) s.hechos.add(c.curso_id);
+      });
+
+      const filas = [...porAg.values()].map(g => {
+        const as = [...g.asesores.values()];
+        const pct = as.length ? as.reduce((t, s) => t + Math.min(1, s.hechos.size / ruta.size), 0) / as.length : 0;
+        const notas = as.filter(s => s.notaGeneral !== null).map(s => s.notaGeneral);
+        return { nombre: g.nombre, n: as.length, pct: Math.round(pct * 100), nota: notas.length ? Math.round(notas.reduce((t, x) => t + x, 0) / notas.length) : null };
+      });
+      if (!filas.length) { tb.innerHTML = '<tr><td colspan="4" class="wc-empty" style="text-align:center;padding:1.5rem">No hay agencias activas.</td></tr>'; return; }
+
+      const td = 'padding:.8rem .5rem;';
+      tb.innerHTML = filas.map(f => `
+        <tr style="border-bottom:1px solid var(--wc-border)">
+          <td style="${td}"><b>${esc(f.nombre)}</b></td>
+          <td style="${td}text-align:center">${f.n}</td>
+          <td style="${td}min-width:150px">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <div class="wc-bar" style="display:block;flex:1;margin:0"><i style="width:${f.pct}%"></i></div><b>${f.pct}%</b>
+            </div>
+          </td>
+          <td style="${td}text-align:center"><b>${f.nota === null ? '—' : f.nota + '%'}</b></td>
+        </tr>`).join('');
+    } catch (err) {
+      console.error(err);
+      tb.innerHTML = `<tr><td colspan="4" class="wc-empty">Error: ${esc(err.message || 'no se pudo calcular')}</td></tr>`;
+    }
+  }
 })();

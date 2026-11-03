@@ -37,7 +37,13 @@
   <div id="panel-app" hidden>
     <header class="wc-panel-top">
       <h1>Win<span>Clic</span> · Panel</h1>
-      <div style="display:flex;align-items:center;gap:.8rem">
+      <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:flex-end">
+        <div style="display:flex;align-items:center;gap:.4rem" title="Filtro global por mes">
+          <label for="f-mes" style="font-size:.8rem;font-weight:700;opacity:.8">📅 Mes</label>
+          <input class="wc-input" id="f-mes" type="month" style="padding:.4rem .6rem;width:auto;min-width:0" />
+          <button class="wc-btn wc-btn--ghost wc-btn--sm" id="f-mes-clear" type="button" title="Ver todo el historial">✕</button>
+        </div>
+        <button class="wc-btn wc-btn--sm" id="btn-export" type="button">📥 Exportar Avance (CSV)</button>
         <small id="admin-email" style="opacity:.7"></small>
         <button class="wc-btn wc-btn--yellow wc-btn--sm" id="btn-logout">Salir</button>
       </div>
@@ -136,6 +142,27 @@
           <div id="qz-questions"></div>
           <button class="wc-btn wc-btn--block" id="qz-save">Guardar evaluación 💾</button>
         </div>
+
+        <div class="wc-card">
+          <h2>🧹 Intentos registrados <small style="font-weight:600;color:var(--wc-text-soft)">(según el filtro de mes)</small></h2>
+          <p style="margin:.2rem 0 0;color:var(--wc-text-soft);font-size:.9rem">Usa 🗑️ para resetear el intento de un asesor y que pueda volver a rendir la evaluación sin esperar el bloqueo.</p>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;text-align:left;margin-top:1rem">
+              <thead>
+                <tr style="border-bottom:2px solid var(--wc-border)">
+                  <th style="padding:.7rem .5rem">Fecha</th>
+                  <th style="padding:.7rem .5rem">Agencia</th>
+                  <th style="padding:.7rem .5rem">Asesor</th>
+                  <th style="padding:.7rem .5rem">Evaluación</th>
+                  <th style="padding:.7rem .5rem">Nota</th>
+                  <th style="padding:.7rem .5rem">Estado</th>
+                  <th style="padding:.7rem .5rem;text-align:right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="ev-list"><tr><td colspan="7" style="text-align:center;padding:1.5rem">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- ───────── TAB 3: MAPA DE CALOR ───────── -->
@@ -168,6 +195,23 @@
 
       <!-- ───────── TAB 4: AGENCIAS ───────── -->
       <section id="tab-agencias" role="tabpanel" hidden>
+        <div class="wc-card">
+          <h2>📊 Rendimiento por agencia <small style="font-weight:600;color:var(--wc-text-soft)">(según el filtro de mes)</small></h2>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;text-align:left;margin-top:1rem">
+              <thead>
+                <tr style="border-bottom:2px solid var(--wc-border)">
+                  <th style="padding:.7rem .5rem">Agencia</th>
+                  <th style="padding:.7rem .5rem;text-align:center">Asesores activos</th>
+                  <th style="padding:.7rem .5rem">Finalización de ruta</th>
+                  <th style="padding:.7rem .5rem;text-align:center">Nota prom. Quiz General</th>
+                </tr>
+              </thead>
+              <tbody id="ag-metrics"><tr><td colspan="4" style="text-align:center;padding:1.5rem">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="wc-card">
           <h2>🏢 Registrar/Editar Agencia</h2>
           <form id="ag-form" novalidate>
