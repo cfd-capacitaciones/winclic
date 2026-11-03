@@ -241,13 +241,14 @@
     const total = detalle.length;
     const nota = Math.round((aciertos / total) * 100);
     const aprobado = nota >= S.quiz.nota_minima;
-
+    const rolAsesor = localStorage.getItem('wc_rol') || 'Sin rol';
     const fila = {
       agencia: a.agencia,
       zona: a.zona,
       departamento: a.departamento,
       asesor_nombre: a.nombre,
       asesor_apellido: a.apellido,
+      rol: rolAsesor,
       quiz_id: S.quiz.id,
       nota, aciertos, total, aprobado, detalle
     };
