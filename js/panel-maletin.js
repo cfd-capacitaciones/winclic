@@ -23,6 +23,15 @@
     url: (c) => c.url
   };
 
+  /* La tabla modulos guarda la tarjeta en 'slug' (ej. 'c01'). Deducimos el bloque
+     (b1, b2, b3, b4) buscando esa tarjeta en js/curricula.js ( o usando c.bloque si existe). */
+  function bloqueDeTarjeta(slug, bloqueDirecto) {
+    if (bloqueDirecto) return bloqueDirecto;
+    const bloques = (window.WC_CURRICULA && window.WC_CURRICULA.bloques) || [];
+    const b = bloques.find(x => x.items.some(i => i.id === slug));
+    return b ? b.id : '';
+  }
+
   let contenidos = [];            // cache para autocompletar título / tipo / tarjeta
   const sel = $('select-contenido');
 
@@ -36,17 +45,22 @@
     contenidos = (data || []).filter(c => ORIGEN.url(c));
     const previo = sel.value;
     sel.innerHTML = '<option value="">Selecciona un archivo existente...</option>' +
-      contenidos.map(c => `<option value="${esc(ORIGEN.url(c))}">${esc(ORIGEN.nombre(c))}${c.slug ? ' · ' + esc(c.slug) : ''}</option>`).join('');
+      contenidos.map(c => `<option value="${esc(ORIGEN.url(c))}"
+          data-titulo="${esc(ORIGEN.nombre(c))}"
+          data-tarjeta="${esc(c.slug || '')}"
+          data-bloque="${esc(bloqueDeTarjeta(c.slug))}"
+          data-tipo="${c.tipo === 'pdf' ? 'pdf' : 'infografia'}">${esc(ORIGEN.nombre(c))}${c.slug ? ' · ' + esc(c.slug) : ''}</option>`).join('');
     if (previo && contenidos.some(c => ORIGEN.url(c) === previo)) sel.value = previo;
   }
 
-  // Al elegir archivo: autocompleta título (editable), tipo y tarjeta (si estaba vacía)
+  // Al elegir archivo: llena título (editable), tarjeta requerida, bloque y tipo desde el dataset del option
   sel.addEventListener('change', () => {
-    const c = contenidos.find(x => ORIGEN.url(x) === sel.value);
-    if (!c) return;
-    $('mal-titulo').value = ORIGEN.nombre(c);
-    $('mal-tipo').value = c.tipo === 'pdf' ? 'pdf' : 'infografia';
-    if (!$('mal-card').value.trim() && c.slug) $('mal-card').value = c.slug;
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) return;
+    $('mal-titulo').value = opt.dataset.titulo || '';
+    $('mal-card').value = opt.dataset.tarjeta || '';
+    $('mal-bloque').value = opt.dataset.bloque || '';
+    $('mal-tipo').value = opt.dataset.tipo || 'pdf';
   });
 
   /* ── Lista de materiales publicados ── */
