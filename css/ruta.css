@@ -583,3 +583,82 @@
   position: static !important;
   transform: none !important;
 }
+
+/* =====================================================================
+   MALETÍN DINÁMICO + MICRO-RECOMPENSA (js/maletin.js)
+   ===================================================================== */
+.wcm-count { margin: 0 0 1rem; font: 800 .85rem 'Outfit', sans-serif; letter-spacing: .06em; color: var(--wc-text-soft, #4A5568); text-transform: uppercase; }
+.wcm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .85rem; }
+.wcm-item {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: .45rem;
+  padding: 1.1rem .7rem .9rem; border-radius: 20px; text-align: center; text-decoration: none;
+  font: 700 .82rem/1.25 'Inter', sans-serif; box-sizing: border-box;
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+.wcm-ico { font-size: 2rem; line-height: 1; }
+.wcm-state { font: 900 .72rem 'Outfit', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+/* Bloqueado: gris, desenfocado, sin clic */
+.wcm-item.is-locked {
+  background: var(--wc-border, #E2E8F0); color: #718096; cursor: not-allowed; pointer-events: auto;
+  box-shadow: 0 5px 0 #CBD5E1;
+}
+.wcm-item.is-locked .wcm-ico, .wcm-item.is-locked .wcm-title { filter: grayscale(1) blur(1.6px); opacity: .6; }
+[data-theme="dark"] .wcm-item.is-locked { background: #2A2A2A; color: #888; box-shadow: 0 5px 0 #1A1A1A; }
+/* Desbloqueado: naranja/amarillo corporativo + chunky */
+.wcm-item.is-unlocked {
+  background: linear-gradient(145deg, #FFE24D, #FFB800); color: #111; cursor: pointer;
+  box-shadow: 0 6px 0 #D9AE00, 0 12px 22px rgba(255, 150, 0, .35);
+  animation: wcmGlow 2.4s ease-in-out infinite;
+}
+.wcm-item.is-unlocked .wcm-state { background: var(--wc-orange, #FF6B00); color: #fff; padding: .25rem .6rem; border-radius: 999px; }
+.wcm-item.is-unlocked:active { transform: translateY(6px); box-shadow: 0 0 0 transparent; }
+@keyframes wcmGlow { 50% { box-shadow: 0 6px 0 #D9AE00, 0 0 22px rgba(255, 107, 0, .55); } }
+
+/* Micro-recompensa: no bloquea la pantalla (pointer-events: none) */
+.wcr-overlay { position: fixed; inset: 0; z-index: 30000; display: grid; place-items: center; pointer-events: none; animation: wcrIn .25s ease; }
+.wcr-overlay.is-out { opacity: 0; transition: opacity .4s ease; }
+@keyframes wcrIn { from { opacity: 0; } }
+.wcr-card {
+  padding: 1.4rem 1.8rem 1.2rem; border-radius: 28px; text-align: center;
+  background: var(--wc-surface, #fff); color: var(--wc-text, #1A202C);
+  box-shadow: 0 8px 0 var(--wc-border, #E2E8F0), 0 24px 60px rgba(0, 0, 0, .3);
+  animation: wcrPop .35s cubic-bezier(.2, 1.5, .4, 1);
+}
+@keyframes wcrPop { from { transform: scale(.6); opacity: 0; } }
+.wcr-stage { position: relative; width: 150px; height: 150px; margin: 0 auto; }
+.wcr-trophy {
+  position: absolute; left: 50%; top: 0; width: 64px; height: 64px; margin-left: -32px; z-index: 1;
+  transform: translateY(-140px); opacity: 0;
+  animation: wcrDrop .7s .1s cubic-bezier(.5, 0, .9, .6) forwards;
+}
+@keyframes wcrDrop {
+  0% { transform: translateY(-140px) rotate(-18deg); opacity: 0; }
+  20% { opacity: 1; }
+  85% { transform: translateY(56px) rotate(0); }
+  100% { transform: translateY(46px) rotate(0); opacity: 1; }
+}
+/* Cajita 100% CSS: fondo + panel frontal que "se traga" la base del trofeo */
+.wcr-box {
+  position: absolute; left: 50%; bottom: 8px; width: 96px; height: 62px; margin-left: -48px; z-index: 0;
+  background: #D95700; border-radius: 8px 8px 14px 14px; box-shadow: inset 0 8px 0 rgba(0, 0, 0, .25);
+  animation: wcrShake .3s .75s ease;
+}
+.wcr-box::before { content: ''; position: absolute; left: -6px; right: -6px; top: -8px; height: 12px; border-radius: 6px; background: #FF6B00; box-shadow: 0 3px 0 #B84700; }
+.wcr-box-front { position: absolute; inset: 0; z-index: 2; border-radius: 4px 4px 14px 14px; background: linear-gradient(180deg, #FF8A2B, #FF6B00); box-shadow: 0 5px 0 #B84700; }
+.wcr-box-front::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 14px; margin-left: -7px; background: #FFD000; }
+.wcr-box { z-index: 2; }
+.wcr-trophy { z-index: 1; }
+@keyframes wcrShake { 25% { transform: translateY(5px) scaleY(.94); } 60% { transform: translateY(-2px); } }
+.wcr-burst { position: absolute; left: 50%; top: 52%; width: 0; height: 0; z-index: 3; }
+.wcr-conf { position: absolute; left: 0; top: 0; width: 8px; height: 12px; border-radius: 2px; opacity: 0; animation: wcrConf 1.3s cubic-bezier(.15, .8, .3, 1) forwards; }
+@keyframes wcrConf {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--x), calc(var(--y) + 90px)) rotate(var(--r)); opacity: 0; }
+}
+.wcr-text { margin: .6rem 0 0; font: 900 1rem 'Outfit', sans-serif; max-width: 260px; }
+@media (prefers-reduced-motion: reduce) { .wcr-trophy, .wcr-conf, .wcr-box, .wcm-item.is-unlocked { animation-duration: .01s; animation-delay: 0s; } }
+
+/* Maletín dinámico: títulos de grupo y descripción */
+.wcm-group { margin: 1.2rem 0 .6rem; font: 900 .95rem 'Outfit', sans-serif; text-align: left; color: var(--wc-orange, #FF6B00); text-transform: uppercase; letter-spacing: .04em; }
+.wcm-desc { font: 500 .72rem/1.25 'Inter', sans-serif; opacity: .8; }

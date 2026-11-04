@@ -64,6 +64,7 @@
       <button class="wc-tab" role="tab" data-tab="quizzes" aria-selected="false">📝 Evaluaciones</button>
       <button class="wc-tab" role="tab" data-tab="analitica" aria-selected="false">🔥 Mapa de calor</button>
       <button class="wc-tab" role="tab" data-tab="agencias" aria-selected="false">🏢 Agencias</button>
+      <button class="wc-tab" role="tab" data-tab="maletin" aria-selected="false">💼 Gestión de Maletín</button>
     </nav>
 
     <main class="wc-main">
@@ -280,6 +281,52 @@
           </div>
         </div>
       </section>
+
+      <!-- ───────── TAB 5: GESTIÓN DE MALETÍN ───────── -->
+      <section id="tab-maletin" role="tabpanel" hidden>
+        <div class="wc-card">
+          <h2>💼 Agregar material al maletín</h2>
+          <form id="mal-form" novalidate>
+            <div class="wc-grid-2">
+              <div class="wc-field">
+                <label class="wc-label" for="mal-titulo">Título *</label>
+                <input class="wc-input" id="mal-titulo" maxlength="80" placeholder="Ej: Infografía: Historia WIN" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mal-tipo">Tipo</label>
+                <select class="wc-select" id="mal-tipo">
+                  <option value="pdf">📄 PDF</option>
+                  <option value="infografia">🖼️ Infografía</option>
+                </select>
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="select-contenido">Archivo existente *</label>
+                <select class="wc-select" id="select-contenido" required>
+                  <option value="">Selecciona un archivo existente...</option>
+                </select>
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mal-card">Tarjeta requerida *</label>
+                <input class="wc-input" id="mal-card" placeholder="Ej: card-1 (o c01)" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mal-bloque">Bloque *</label>
+                <input class="wc-input" id="mal-bloque" maxlength="4" placeholder="Ej: b1" required />
+              </div>
+              <div class="wc-field">
+                <label class="wc-label" for="mal-desc">Descripción</label>
+                <input class="wc-input" id="mal-desc" maxlength="140" placeholder="Opcional" />
+              </div>
+            </div>
+            <button class="wc-btn wc-btn--block" type="submit" id="mal-submit">Guardar en el maletín 💼</button>
+          </form>
+        </div>
+
+        <div class="wc-card">
+          <h2>📦 Materiales publicados</h2>
+          <div class="wc-list" id="mal-list"><div class="wc-empty">Cargando…</div></div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -289,6 +336,7 @@
   <script src="js/supabase-client.js"></script>
   <script src="js/curricula.js"></script>
   <script src="js/panel.js"></script>
+  <script src="js/panel-maletin.js"></script>
 </body>
 
 </html>

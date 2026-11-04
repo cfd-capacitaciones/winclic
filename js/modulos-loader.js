@@ -260,8 +260,12 @@
     ultimoCompletado = id;
     if (enviar && window.PaseAbordaje) window.PaseAbordaje.completarCurso('tarjeta-' + id, 100); // paquete a Supabase
     pintar();
+    document.dispatchEvent(new CustomEvent('winclic:tarjeta-completada', { detail: { id } }));   // → Maletín se actualiza
     if (construirPasos().lista.every(p => p.estado === 'done')) document.dispatchEvent(new CustomEvent('winclic:ruta-completada'));
   }
+
+  // API de solo lectura para el Maletín (js/maletin.js): IDs de tarjetas completadas por el asesor actual
+  window.WinProgreso = { completadas: () => leerProgreso() };
 
   /* ══════════ VISOR (modal + iframe / video / imagen) ══════════ */
   function construirVisor() {
@@ -336,9 +340,11 @@
     function completarActual() {
       if (!tarjetaAbierta || ok.disabled) return;
       const id = tarjetaAbierta.id;
+      const esNueva = !leerProgreso().has(id);
+      if (esNueva && window.WinRecompensa) window.WinRecompensa.mostrar();   // animación trofeo + confeti
       cerrarVisor();
       completar(id);
-      toast('¡Tarjeta completada! ⭐');
+      if (!esNueva) toast('¡Tarjeta completada! ⭐');
     }
 
     function refrescarBoton() {

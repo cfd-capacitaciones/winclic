@@ -46,7 +46,7 @@
   /* ── Tabs ── */
   document.querySelectorAll('.wc-tab').forEach(tab => tab.addEventListener('click', () => {
     document.querySelectorAll('.wc-tab').forEach(t => t.setAttribute('aria-selected', String(t === tab)));
-    ['contenidos', 'quizzes', 'analitica', 'agencias'].forEach(n => { 
+    ['contenidos', 'quizzes', 'analitica', 'agencias', 'maletin'].forEach(n => { 
       const section = $('tab-' + n);
       if (section) section.hidden = n !== tab.dataset.tab; 
     });
