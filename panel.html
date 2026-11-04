@@ -10,7 +10,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="assets/img/logos/logo_winnaranja.png" />
   <link rel="stylesheet" href="css/winclic-ui.css" />
+  <style>
+    /* Marca en la barra superior: [Logo WinClic] Panel */
+    .wc-panel-top h1.wc-brand { display: flex; align-items: center; gap: .6rem; }
+    .wc-panel-top .wc-brand img { max-height: 40px; width: auto; display: block; }
+    .wc-panel-top .wc-brand .wc-brand-text { font: 800 1.15rem 'Outfit', sans-serif; color: #fff; }
+  </style>
 </head>
 
 <body class="wc-panel">
@@ -36,7 +43,10 @@
   <!-- ═════════════ PANEL (oculto hasta autenticar) ═════════════ -->
   <div id="panel-app" hidden>
     <header class="wc-panel-top">
-      <h1>Win<span>Clic</span> · Panel</h1>
+      <h1 class="wc-brand">
+        <img src="assets/img/logos/logo-winclic-nblanco.png" alt="WinClic" />
+        <span class="wc-brand-text">Panel</span>
+      </h1>
       <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:flex-end">
         <div style="display:flex;align-items:center;gap:.4rem" title="Filtro global por mes">
           <label for="f-mes" style="font-size:.8rem;font-weight:700;opacity:.8">📅 Mes</label>
